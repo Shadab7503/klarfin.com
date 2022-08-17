@@ -1,0 +1,18 @@
+.contact-form {
+  background: white;
+  padding: 3rem 0rem;
+}
+
+.contact-heading {
+  font-size: 3rem;
+  font-family: "Epilogue";
+  text-align: center;
+}
+
+.MuiInputLabel-root.contact-form-field-label {
+  font-family: "Montserrat";
+}
+
+.MuiTextField-root.contact-form-field {
+  margin: 1rem 0rem;
+}

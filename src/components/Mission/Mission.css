@@ -1,0 +1,39 @@
+.mission {
+  padding: 6rem 1rem;
+  background: white;
+}
+
+.about-heading {
+  font-size: 3rem;
+  font-family: "Epilogue";
+  text-align: center;
+}
+
+.mission-text {
+  font-size: 2rem;
+  font-family: "Work Sans";
+  font-weight: bold;
+}
+
+.mission-points {
+  font-size: 1.5rem;
+}
+
+.mission-points-icon {
+  font-size: 1.5rem;
+}
+
+@media only screen and (max-width: 900px) {
+  .mission {
+    padding: 3rem 1rem;
+  }
+  .about-heading {
+    margin-bottom: 3rem;
+  }
+  .mission-text {
+    font-size: 1.5rem;
+  }
+  .mission-points {
+    font-size: 1.3rem;
+  }
+}
