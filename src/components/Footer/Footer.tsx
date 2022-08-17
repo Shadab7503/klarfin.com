@@ -1,6 +1,6 @@
 import "./Footer.css";
 import Grid from "@mui/material/Grid";
-import { Link, animateScroll as scroll } from "react-scroll";
+import { Link } from "react-scroll";
 
 const Footer = () => {
   return (

@@ -1,7 +1,6 @@
 import "./Landing.css";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import bg from "../../images/bg.jpg";
 
 const Landing = () => {
   return (
