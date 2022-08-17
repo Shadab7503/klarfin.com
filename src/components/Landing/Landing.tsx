@@ -13,7 +13,7 @@ const Landing = () => {
           height="100%"
         >
           <Grid item className="heading1">
-            <span>For Fast Growing Startups</span>
+            <span>For Fast Growing SMEs and Startups</span>
           </Grid>
           <Grid item className="heading2">
             <span>
