@@ -4,7 +4,6 @@ import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
 import "./NavBar2.css";
 
 const NavBar = () => {
