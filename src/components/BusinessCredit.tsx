@@ -1,13 +1,13 @@
-import "./BusinessCredit.css";
+import "../styles/styles.css";
 import { useState } from "react";
 import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Fade from "@mui/material/Fade";
 import CardContent from "@mui/material/CardContent";
-import bnpl from "../../images/bnpl2.png";
-import rbf from "../../images/rbf2.png";
-import id from "../../images/id2.png";
+import bnpl from "../images/bnpl2.png";
+import rbf from "../images/rbf2.png";
+import id from "../images/id2.png";
 
 const BusinessCredit = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);

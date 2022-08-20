@@ -1,4 +1,4 @@
-import "./CashManagement.css";
+import "../styles/styles.css";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";

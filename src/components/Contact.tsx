@@ -1,7 +1,7 @@
-import "./Contact.css";
-import NavBar2 from "../NavBar2/NavBar2";
-import ContactForm from "../ContactForm/ContactForm";
-import Footer from "../Footer/Footer";
+import "../styles/styles.css";
+import NavBar2 from "./NavBar2";
+import ContactForm from "./ContactForm";
+import Footer from "./Footer";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 

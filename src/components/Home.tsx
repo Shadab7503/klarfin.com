@@ -1,10 +1,10 @@
-import NavBar from "../Navbar/NavBar";
-import Landing from "../Landing/Landing";
-import Working from "../Working/Working";
-import BusinessCredit from "../BusinessCredit/BusinessCredit";
-import CashManagement from "../CashManagement/CashManagement";
-import Footer from "../Footer/Footer";
-import "./Home.css";
+import "../styles/styles.css";
+import NavBar from "./NavBar";
+import Landing from "./Landing";
+import Working from "./Working";
+import BusinessCredit from "./BusinessCredit";
+import CashManagement from "./CashManagement";
+import Footer from "./Footer";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 

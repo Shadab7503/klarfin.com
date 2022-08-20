@@ -1,4 +1,4 @@
-import "./Landing.css";
+import "../styles/styles.css";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 
