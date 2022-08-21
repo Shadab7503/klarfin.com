@@ -1,4 +1,3 @@
-import "../styles/styles.css";
 import NavBar from "./NavBar";
 import Landing from "./Landing";
 import Working from "./Working";
