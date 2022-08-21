@@ -1,0 +1,457 @@
+.footer-links,
+.footer-logo,
+.logo,
+.navItem {
+  cursor: pointer;
+}
+.MuiPaper-root.cards,
+.about-heading,
+.business-credit,
+.card-text,
+.cash-management,
+.contact-heading,
+.copyright,
+.drawerItem,
+.footer-logo,
+.get-started,
+.heading1,
+.heading2,
+.navItem,
+.working {
+  text-align: center;
+}
+.about,
+.contact {
+  height: 100%;
+  background: #f5e8c7;
+}
+.business-credit {
+  background: #f2f3f5;
+  padding: 3rem 0 4rem;
+}
+.business-credit-heading,
+.cash-management-heading {
+  font-family: Epilogue;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6rem;
+}
+.modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 95%;
+  overflow: inherit;
+  background: #1a1c20;
+  padding-right: 0;
+}
+.cards-container {
+  padding: 0.5rem;
+}
+.MuiPaper-root.cards {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background: #1a1c20;
+  cursor: pointer;
+}
+.card-image {
+  margin-top: 2rem;
+  max-width: 100%;
+  width: 300px;
+  height: 250px;
+}
+.background,
+.landing,
+.login-container,
+.login-page,
+.main {
+  height: 100%;
+}
+.MuiCardContent-root.card-content {
+  color: #fff;
+  text-align: center;
+}
+.MuiInputLabel-root.contact-form-field-label,
+.read-more {
+  font-family: Montserrat;
+}
+.card-title {
+  font-family: "Work Sans";
+  font-size: 1.8rem;
+}
+.card-text {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 1.3rem;
+  margin: 0;
+}
+.cash-management {
+  padding: 3rem 0 4rem;
+}
+.cash-management-points {
+  margin: 0;
+  font-size: 1.5rem;
+  font-family: "Work Sans";
+}
+.cash-management-points2 {
+  margin: 1rem;
+  font-family: Montserrat;
+}
+.points-icon {
+  font-size: 2rem;
+  color: #0096ff;
+}
+.points-icon2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: green;
+}
+
+.contact-form {
+  background: #fff;
+  padding: 3rem 0;
+}
+.about-heading,
+.contact-heading {
+  font-size: 3rem;
+  font-family: Epilogue;
+}
+.MuiTextField-root.contact-form-field {
+  margin: 1rem 0;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.footer {
+  width: 100%;
+  background: #f5e8c7;
+  padding-top: 3rem;
+}
+.footer-logo {
+  align-items: center;
+}
+.footer-logo-text {
+  font-family: "Baloo Thambi 2";
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+.footer-links-heading {
+  font-family: Epilogue;
+  padding-bottom: 2rem;
+  border-bottom: 3px solid #000;
+}
+.footer-links {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+.copyright {
+  font-family: "Work Sans";
+  font-size: 0.8rem;
+  margin-top: 3rem;
+  padding-bottom: 1rem;
+}
+.main {
+  background-color: #f5f5f4;
+}
+.landing {
+  background-image: url("../images/bg2.png");
+  background-size: cover;
+}
+.background-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+.background {
+  opacity: 0.4;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+.heading1 {
+  font-size: 2rem;
+  font-family: "Baloo Thambi 2";
+  font-weight: 400;
+}
+.heading2 {
+  font-family: Montserrat;
+  font-weight: 700;
+  font-size: 3rem;
+}
+.mission-text,
+.navItem {
+  font-family: "Work Sans";
+  font-weight: 700;
+}
+
+.mission {
+  padding: 6rem 1rem;
+  background: #fff;
+}
+.mission-text {
+  font-size: 2rem;
+}
+.mission-points,
+.mission-points-icon {
+  font-size: 1.5rem;
+}
+.navBar,
+.navBar2 {
+  padding-top: 10px;
+  z-index: 10;
+  background: #f8f8f7;
+}
+.navBar {
+  justify-content: center;
+  position: fixed;
+}
+.navItem {
+  font-size: 1rem;
+  max-width: 7rem;
+}
+.logo {
+  font-family: "Baloo Thambi 2";
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+}
+.navBar2 {
+  justify-content: center;
+}
+.drawerItem {
+  font-size: 1.5rem;
+  font-family: "Work Sans";
+}
+.working {
+  padding-bottom: 3rem;
+}
+.how {
+  font-family: Epilogue, sans-serif;
+  font-size: 2.5rem;
+  padding-top: 2.5rem;
+  margin: 0;
+}
+.section-heading {
+  font-size: 3.5rem;
+}
+.working1 {
+  font-family: Montserrat;
+  font-weight: 700;
+  margin: 0;
+  display: block;
+}
+.working2 {
+  font-family: Epilogue, sans-serif;
+  font-weight: 400;
+  font-size: 1.7rem;
+  max-width: 35rem;
+  margin: 2rem;
+  display: block;
+}
+.listItem,
+.login-heading {
+  font-weight: 600;
+  font-family: Montserrat;
+}
+.listItem {
+  font-size: 1.5rem;
+  margin: 1rem;
+}
+.MuiPaper-root {
+  margin: 0.5rem;
+}
+.MuiPaper-root.working-points:hover {
+  transform: scale(1.05);
+}
+.working-image {
+  width: 80%;
+}
+
+.login-page {
+  width: 100%;
+}
+.login-heading {
+  font-size: 2rem;
+  margin-bottom: 8rem;
+}
+.MuiInputLabel-root.login-label {
+  font-family: Montserrat;
+  font-weight: 800;
+}
+.login-field {
+  border-radius: 50px;
+}
+.login-label .MuiOutlinedInput-root {
+  border-radius: 50px;
+  border: 1px solid #186090;
+  color: #000;
+  font-family: Montserrat;
+  padding: 0.1rem 0.5rem;
+  margin: 0.7rem 0;
+  box-shadow: 3px 5px #d3d3d3;
+}
+.MuiFormControlLabel-root .MuiFormControlLabel-label {
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.forgot-password {
+  font-family: Montserrat;
+  color: #30a8d8;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.MuiButton-root.login-button,
+.not-registered {
+  font-family: Montserrat;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+.MuiCheckbox-root.Mui-checked.checkbox {
+  color: #30a8d8;
+}
+.MuiButton-root.login-button {
+  border-radius: 50px;
+  padding: 0.8rem 0;
+  background: #30a8d8;
+  margin: 2rem 0;
+  border: 1px solid #000;
+}
+.login-image {
+  width: 100%;
+  max-height: 95vh;
+}
+.login-right {
+  background-image: url("../images/login-bg.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  padding: 0;
+}
+@media only screen and (max-width: 1400px) {
+  .how {
+    font-size: 2.2rem;
+  }
+  .section-heading {
+    font-size: 2.8rem;
+  }
+  .listItem,
+  .working2 {
+    font-size: 1.3rem;
+  }
+  .working2 {
+    max-width: 25rem;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  .business-credit-heading {
+    margin-bottom: 4rem;
+  }
+  .how {
+    font-size: 1.9rem;
+  }
+  .section-heading {
+    font-size: 2.5rem;
+  }
+  .listItem,
+  .working2 {
+    font-size: 1.2rem;
+  }
+  .working2 {
+    max-width: 22rem;
+  }
+  .working-image {
+    width: 90%;
+  }
+  .login-heading {
+    margin-bottom: 5rem;
+  }
+}
+@media only screen and (max-width: 1050px) {
+  .how {
+    font-size: 1.5rem;
+  }
+  .section-heading {
+    font-size: 2.2rem;
+  }
+  .listItem {
+    font-size: 1.1rem;
+  }
+}
+@media only screen and (max-width: 900px) {
+  .business-credit-heading {
+    margin-bottom: 2rem;
+  }
+  .about-heading,
+  .cash-management-heading {
+    margin-bottom: 3rem;
+  }
+  .footer-logo-text {
+    font-size: 2rem;
+  }
+  .footer-links-heading,
+  .mission-text {
+    font-size: 1.5rem;
+  }
+  .footer-links {
+    font-size: 1rem;
+  }
+  .mission {
+    padding: 3rem 1rem;
+  }
+  .mission-points {
+    font-size: 1.3rem;
+  }
+  .how {
+    font-size: 1.2rem;
+  }
+  .working1 {
+    margin-top: 2rem;
+  }
+  .section-heading {
+    font-size: 1.8rem;
+  }
+  .listItem {
+    font-size: 0.9rem;
+  }
+  .MuiPaper-root,
+  .working2 {
+    margin: 1rem;
+  }
+  .working-image {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 750px) {
+  .cash-management-points {
+    font-size: 1.2rem;
+  }
+  .cash-management-points2 {
+    font-size: 1.5rem;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .heading1 {
+    font-size: 1.5rem;
+  }
+  .heading2 {
+    font-size: 2.5rem;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .heading1 {
+    font-size: 1rem;
+  }
+  .heading2 {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,453 @@
+{
+	"info": {
+		"_postman_id": "c9e8dbe7-c211-43d2-b1a9-5b276c719d9f",
+		"name": "cashflow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "api view",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"apiKey\": \"2354e5b2-11da-4d2a-a100-51c9ad3f3835\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/admin/verifyapikey",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"verifyapikey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name8\",\r\n    \"companyName\": \"malicious\",\r\n    \"panNumber\": \"121243232423\",\r\n    \"mobileNumber\": \"1234567890\",\r\n    \"email\": \"naroda.in@gmail.com\",  \r\n    \"password\": \"1234567p\",\r\n    \"industryName\": \"hamada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/admin/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"naroda.in@gmail.com\",\r\n    \"password\": \"1234567p\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/admin/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify email",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/admin/verifyEmail?token={{access_token_admin}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"verifyEmail"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addMember",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name4\",\r\n    \"email\": \"patelvishal1401@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/admin/addMember",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"addMember"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "membercheck",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{host}}/v1/admin/memberCheck/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"memberCheck",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId_member}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmZiNWYxNTcwZjdhNDczN2M4ZDc2YjUiLCJpYXQiOjE2NjA2NjEyNDEsImV4cCI6MTY2MzI1MzI0MSwidHlwZSI6InJlZnJlc2gifQ.iPB5GPAcyRZRyHfU89OhIvVBMmWr-6UPwpo6wAFBigc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/admin/refresh-tokens",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"admin",
+								"refresh-tokens"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "superadmin",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"name5@test.com\",\r\n    \"password\": \"1234567p\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/super/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"super",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_superadmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isAdminApproved\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/super/update/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"super",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId_admin}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name5\",\r\n    \"companyName\": \"malicious\",\r\n    \"email\": \"name5@test.com\",\r\n    \"password\": \"1234567p\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/super/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"super",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "member",
+			"item": [
+				{
+					"name": "test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_member}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/member/test",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"member",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"naroda.in@gmail.com\",\r\n    \"password\": \"1234567pa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/member/setPassword",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"member",
+								"setPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"naroda.in@gmail.com\",\r\n    \"password\": \"1234567pa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/member/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"member",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/member/verifyEmail",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"member",
+								"verifyEmail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

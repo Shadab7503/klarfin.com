@@ -1,3 +1,4 @@
+import "../styles/styles.css";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -7,8 +8,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import SavingsIcon from "@mui/icons-material/Savings";
 import Paper from "@mui/material/Paper";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import working from "../../images/working.jpg";
-import "./Working.css";
+import working from "../images/working.jpg";
 
 const Working = () => {
   return (

@@ -1,39 +1,16 @@
+import "../styles/styles.css";
 import { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
-import { Link, animateScroll as scroll } from "react-scroll";
-import "./NavBar.css";
 
 const NavBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const drawer = (
     <Grid container spacing={2.5} my={2}>
-      <Grid item xs={12} className="drawerItem">
-        <Link
-          to="business-credit"
-          smooth={true}
-          offset={-70}
-          duration={500}
-          onClick={() => setDrawerOpen(false)}
-        >
-          Business Credit
-        </Link>
-      </Grid>
-      <Grid item xs={12} className="drawerItem">
-        <Link
-          to="cash-management"
-          smooth={true}
-          offset={-70}
-          duration={500}
-          onClick={() => setDrawerOpen(false)}
-        >
-          Cash Management
-        </Link>
-      </Grid>
       <Grid item xs={12} style={{ textAlign: "center" }}>
         <Button
           sx={{
@@ -55,13 +32,13 @@ const NavBar = () => {
   );
 
   return (
-    <Grid container className="navBar">
+    <Grid container className="navBar2">
       <Grid item xl={9} lg={10} sm={12} xs={10}>
         <Grid container justifyContent="space-between">
           <Grid item lg={2} md={3} sm={4} style={{ textAlign: "center" }}>
-            <span className="logo" onClick={() => scroll.scrollToTop()}>
-              Klarfin
-            </span>
+            <a href="/">
+              <span className="logo">Klarfin</span>
+            </a>
           </Grid>
           <Grid item xl={4} lg={4.5} md={5} sm={7}>
             <Grid
@@ -70,26 +47,6 @@ const NavBar = () => {
               style={{ height: "100%" }}
               justifyContent="space-evenly"
             >
-              <Grid item sx={{ display: { xs: "none", sm: "block" } }}>
-                <Link
-                  to="business-credit"
-                  smooth={true}
-                  offset={-70}
-                  duration={500}
-                >
-                  <div className="navItem">Business Credit</div>
-                </Link>
-              </Grid>
-              <Grid item sx={{ display: { xs: "none", sm: "block" } }}>
-                <Link
-                  to="cash-management"
-                  smooth={true}
-                  offset={-70}
-                  duration={500}
-                >
-                  <div className="navItem">Cash Management</div>
-                </Link>
-              </Grid>
               <Button
                 sx={{
                   display: { xs: "none", sm: "block" },
