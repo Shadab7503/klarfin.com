@@ -53,7 +53,6 @@ const ContactForm = () => {
     )
       return;
     setValidating(false);
-    console.log(formResponse);
   };
 
   return (
