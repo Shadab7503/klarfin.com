@@ -1,3 +1,13 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 .footer-links,
 .footer-logo,
 .logo,
@@ -66,7 +76,9 @@
 .background,
 .landing,
 .login-container,
+.signup-container,
 .login-page,
+.signup-page,
 .main {
   height: 100%;
 }
@@ -274,21 +286,22 @@ a {
   width: 80%;
 }
 
-.login-page {
+.login-page,
+.signup-page {
   width: 100%;
 }
 .login-heading {
   font-size: 2rem;
   margin-bottom: 8rem;
 }
-.MuiInputLabel-root.login-label {
+.MuiInputLabel-root.form-label {
   font-family: Montserrat;
   font-weight: 800;
 }
 .login-field {
   border-radius: 50px;
 }
-.login-label .MuiOutlinedInput-root {
+.form-label .MuiOutlinedInput-root {
   border-radius: 50px;
   border: 1px solid #186090;
   color: #000;
@@ -324,7 +337,8 @@ a {
   margin: 2rem 0;
   border: 1px solid #000;
 }
-.login-image {
+.login-image,
+.signup-image {
   width: 100%;
   max-height: 95vh;
 }
@@ -335,6 +349,21 @@ a {
   background-size: cover;
   position: relative;
   padding: 0;
+}
+.signup-right {
+  background-image: url("../images/signup-bg.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  padding: 0;
+}
+
+.signup-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: "Montserrat";
+  margin-bottom: 5rem;
 }
 @media only screen and (max-width: 1400px) {
   .how {
@@ -373,6 +402,9 @@ a {
   }
   .login-heading {
     margin-bottom: 5rem;
+  }
+  .signup-heading {
+    margin-bottom: 3rem;
   }
 }
 @media only screen and (max-width: 1050px) {

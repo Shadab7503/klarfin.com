@@ -1,4 +1,3 @@
-import "../styles/styles.css";
 import NavBar2 from "./NavBar2";
 import Footer from "./Footer";
 import Mission from "./Mission";

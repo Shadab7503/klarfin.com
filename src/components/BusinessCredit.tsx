@@ -1,4 +1,3 @@
-import "../styles/styles.css";
 import { useState } from "react";
 import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";

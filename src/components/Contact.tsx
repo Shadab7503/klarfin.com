@@ -1,4 +1,3 @@
-import "../styles/styles.css";
 import NavBar2 from "./NavBar2";
 import ContactForm from "./ContactForm";
 import Footer from "./Footer";

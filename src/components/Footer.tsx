@@ -1,4 +1,3 @@
-import "../styles/styles.css";
 import Grid from "@mui/material/Grid";
 import { Link } from "react-scroll";
 

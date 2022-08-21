@@ -1,4 +1,3 @@
-import "../styles/styles.css";
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";

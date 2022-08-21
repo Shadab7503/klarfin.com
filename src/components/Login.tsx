@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
-import loginImage from "../images/test-login.png";
+import loginImage from "../images/login-image.png";
 
 const Login = () => {
   return (
@@ -23,9 +23,9 @@ const Login = () => {
                   <div className="login-heading">Login</div>
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel className="login-label">Email</InputLabel>
+                  <InputLabel className="form-label">Email</InputLabel>
                   <TextField
-                    className="login-label"
+                    className="form-label"
                     placeholder="example@gmail.com"
                     variant="outlined"
                     fullWidth
@@ -39,9 +39,9 @@ const Login = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel className="login-label">Password</InputLabel>
+                  <InputLabel className="form-label">Password</InputLabel>
                   <TextField
-                    className="login-label"
+                    className="form-label"
                     placeholder="passwordexample123"
                     variant="outlined"
                     fullWidth
@@ -50,9 +50,6 @@ const Login = () => {
                         "& > fieldset": {
                           borderColor: "#186090",
                         },
-                      },
-                      "&::placeholder": {
-                        color: "red",
                       },
                     }}
                   />
@@ -103,7 +100,6 @@ const Login = () => {
             display: { md: "block", sm: "none", xs: "none" },
           }}
         >
-          {/* <img src={loginBg} className="login-bg" /> */}
           <Grid
             container
             justifyContent="center"
