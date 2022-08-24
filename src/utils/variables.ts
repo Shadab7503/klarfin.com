@@ -1,0 +1,25 @@
+export const host = "https://klarfin.pics2art.xyz/";
+
+export const industries = [
+  "Hospitality",
+  "Education",
+  "Agri",
+  "Construction, Real Estate",
+  "Health services",
+  "Manufacturing",
+  "Restaurant/Bars/Catering",
+  "Retail - Primarily online",
+  "Retail - Primarily offline",
+  "Legal services",
+  "Other",
+  "Technology",
+  "Media, Advertising, Entertainment",
+  "Finance",
+  "Transportation",
+  "Health & wellness",
+  "Consulting",
+  "Logistics",
+  "Fashion",
+  "Ecommerce",
+  "Travel",
+];

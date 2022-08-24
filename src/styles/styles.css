@@ -291,12 +291,13 @@ a {
   width: 100%;
 }
 .login-heading {
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 8rem;
 }
 .MuiInputLabel-root.form-label {
   font-family: Montserrat;
   font-weight: 800;
+  font-size: 0.8rem;
 }
 .login-field {
   border-radius: 50px;
@@ -313,19 +314,19 @@ a {
 .MuiFormControlLabel-root .MuiFormControlLabel-label {
   font-family: Montserrat;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
 }
 .forgot-password {
   font-family: Montserrat;
   color: #30a8d8;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
 }
 .MuiButton-root.login-button,
 .not-registered {
   font-family: Montserrat;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
 }
 .MuiCheckbox-root.Mui-checked.checkbox {
   color: #30a8d8;
@@ -360,10 +361,13 @@ a {
 }
 
 .signup-heading {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 600;
   font-family: "Montserrat";
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
+}
+.MuiAlert-root.snack {
+  font-family: "Montserrat";
 }
 @media only screen and (max-width: 1400px) {
   .how {
