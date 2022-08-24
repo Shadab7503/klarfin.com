@@ -11,21 +11,23 @@ const NavBar = () => {
   const drawer = (
     <Grid container spacing={2.5} my={2}>
       <Grid item xs={12} style={{ textAlign: "center" }}>
-        <Button
-          sx={{
-            background: "black",
-            fontFamily: "Work Sans",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "black",
-            },
-            padding: "0.7rem 2rem",
-          }}
-          variant="contained"
-          className="login"
-        >
-          Login
-        </Button>
+        <a href="/login">
+          <Button
+            sx={{
+              background: "black",
+              fontFamily: "Work Sans",
+              fontWeight: "bold",
+              "&:hover": {
+                backgroundColor: "black",
+              },
+              padding: "0.7rem 2rem",
+            }}
+            variant="contained"
+            className="login"
+          >
+            Login
+          </Button>
+        </a>
       </Grid>
     </Grid>
   );
@@ -46,22 +48,24 @@ const NavBar = () => {
               style={{ height: "100%" }}
               justifyContent="space-evenly"
             >
-              <Button
-                sx={{
-                  display: { xs: "none", sm: "block" },
-                  background: "black",
-                  fontFamily: "Work Sans",
-                  fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "black",
-                  },
-                  padding: "0.7rem 2rem",
-                }}
-                variant="contained"
-                className="login"
-              >
-                Login
-              </Button>
+              <a href="/login">
+                <Button
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+                    background: "black",
+                    fontFamily: "Work Sans",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "black",
+                    },
+                    padding: "0.7rem 2rem",
+                  }}
+                  variant="contained"
+                  className="login"
+                >
+                  Login
+                </Button>
+              </a>
             </Grid>
           </Grid>
           <IconButton

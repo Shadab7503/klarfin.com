@@ -7,53 +7,12 @@ import MenuItem from "@mui/material/MenuItem";
 import signUpImage from "../images/signup-image.png";
 import * as validators from "../utils/validators";
 import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-const host = "https://klarfin.pics2art.xyz/";
-
-const industries = [
-  "Hospitality",
-  "Education",
-  "Agri",
-  "Construction, Real Estate",
-  "Health services",
-  "Manufacturing",
-  "Restaurant/Bars/Catering",
-  "Retail - Primarily online",
-  "Retail - Primarily offline",
-  "Legal services",
-  "Other",
-  "Technology",
-  "Media, Advertising, Entertainment",
-  "Finance",
-  "Transportation",
-  "Health & wellness",
-  "Consulting",
-  "Logistics",
-  "Fashion",
-  "Ecommerce",
-  "Travel",
-];
-
-interface user {
-  name: string;
-  companyName: string;
-  panNumber: string;
-  mobileNumber: string;
-  email: string;
-  industryName: string;
-  password: string;
-}
+import { user } from "../utils/interface";
+import { host, industries } from "../utils/variables";
+import { Alert } from "../utils/components";
 
 const SignUp = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
@@ -72,12 +31,42 @@ const SignUp = () => {
   });
 
   useEffect(() => {
-    const val = localStorage.getItem("tokens");
-    if (val) window.location.href = "/dashboard";
-    else setIsLoggedIn(false);
+    let tokens = localStorage.getItem("tokens");
+    try {
+      if (tokens) {
+        const tokensObj = JSON.parse(tokens);
+        const acccess_expiry = new Date(tokensObj.access.expires);
+        const currentTime = new Date().getTime();
+        if (acccess_expiry.getTime() < currentTime) {
+          const refresh_expiry = new Date(tokensObj.refresh.expires);
+          if (refresh_expiry.getTime() < currentTime) {
+            localStorage.removeItem("tokens");
+            setIsLoggedIn(false);
+          } else {
+            axios
+              .post(host + "v1/admin/refresh-tokens", {
+                refreshToken: tokensObj.refresh.token,
+              })
+              .then((response) => {
+                localStorage.setItem("tokens", JSON.stringify(response.data));
+                window.location.href = "/dashboard";
+              })
+              .catch((err) => {
+                localStorage.removeItem("tokens");
+                setIsLoggedIn(false);
+              });
+          }
+        } else {
+          window.location.href = "/dashboard";
+        }
+      } else setIsLoggedIn(false);
+    } catch (err) {
+      localStorage.removeItem("tokens");
+      setIsLoggedIn(false);
+    }
   }, []);
 
-  const handleChange = (event: { target: { value: string; name: string } }) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     if (name === "mobileNumber" && value.length > 10) return;
     setNewUser({ ...newUser, [name]: value });
@@ -150,7 +139,7 @@ const SignUp = () => {
               className="signup-container"
             >
               <Grid item xl={6} lg={8} md={10} sm={8} xs={10.5}>
-                <Grid container py={5}>
+                <Grid container py={4}>
                   <Grid item xs={12}>
                     <div className="signup-heading">Sign Up</div>
                   </Grid>
@@ -174,7 +163,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{
@@ -210,7 +199,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{
@@ -243,7 +232,7 @@ const SignUp = () => {
                       inputProps={{ maxLength: 10 }}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{
@@ -280,7 +269,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{
@@ -314,7 +303,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{
@@ -348,7 +337,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{
@@ -389,7 +378,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       InputProps={{
                         style: {
-                          fontSize: "0.9rem",
+                          fontSize: "0.8rem",
                         },
                       }}
                       sx={{

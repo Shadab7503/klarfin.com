@@ -21,5 +21,5 @@ export const validateMobile = (mobile: string) => {
 };
 
 export const validatePassword = (str: string) => {
-  return str.length > 8 && /\d/.test(str) && /[a-zA-Z]/.test(str);
+  return str.length >= 8 && /\d/.test(str) && /[a-zA-Z]/.test(str);
 };

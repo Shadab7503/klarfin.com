@@ -7,15 +7,118 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
 import loginImage from "../images/login-image.png";
+import axios from "axios";
+import { loginDetails } from "../utils/interface";
+import { validateEmail, validatePassword } from "../utils/validators";
+import { host } from "../utils/variables";
+import { Alert } from "../utils/components";
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
+  const [loginStatus, setLoginStatus] = useState<string>("");
+  const [validating, setValidating] = useState<boolean>(false);
+  const [loginInfo, setLoginInfo] = useState<loginDetails>({
+    email: "",
+    password: "",
+    remember: true,
+  });
+
   useEffect(() => {
-    const val = localStorage.getItem("tokens");
-    if (val) window.location.href = "/dashboard";
-    else setIsLoggedIn(false);
+    let tokens = localStorage.getItem("tokens");
+    try {
+      if (tokens) {
+        const tokensObj = JSON.parse(tokens);
+        const acccess_expiry = new Date(tokensObj.access.expires);
+        const currentTime = new Date().getTime();
+        if (acccess_expiry.getTime() < currentTime) {
+          const refresh_expiry = new Date(tokensObj.refresh.expires);
+          if (refresh_expiry.getTime() < currentTime) {
+            localStorage.removeItem("tokens");
+            setIsLoggedIn(false);
+          } else {
+            axios
+              .post(host + "v1/admin/refresh-tokens", {
+                refreshToken: tokensObj.refresh.token,
+              })
+              .then((response) => {
+                localStorage.setItem("tokens", JSON.stringify(response.data));
+                window.location.href = "/dashboard";
+              })
+              .catch((err) => {
+                localStorage.removeItem("tokens");
+                setIsLoggedIn(false);
+              });
+          }
+        } else {
+          window.location.href = "/dashboard";
+        }
+      } else setIsLoggedIn(false);
+    } catch (err) {
+      localStorage.removeItem("tokens");
+      setIsLoggedIn(false);
+    }
   }, []);
+
+  const handleSnackClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setLoginStatus("");
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = event.target;
+    if (name === "remember")
+      setLoginInfo({ ...loginInfo, remember: event.target.checked });
+    else setLoginInfo({ ...loginInfo, [name]: value });
+  };
+
+  const loginUser = (user: loginDetails) => {
+    setValidating(true);
+    if (!validateEmail(user.email) || !validatePassword(user.password)) return;
+    setValidating(false);
+    setWaitingForResponse(true);
+    axios
+      .post(host + "v1/admin/login", {
+        email: user.email,
+        password: user.password,
+      })
+      .then((response) => {
+        setWaitingForResponse(false);
+        setLoginStatus("success");
+        setLoginInfo({
+          email: "",
+          password: "",
+          remember: true,
+        });
+        if (!user.remember) {
+          const hoursBeforeExpire = 6;
+          let expire = new Date();
+          expire.setTime(expire.getTime() + hoursBeforeExpire * 3600 * 1000);
+          response.data.detail.tokens.access.expires =
+            response.data.detail.tokens.refresh.expires = expire.toISOString();
+        }
+        localStorage.setItem(
+          "tokens",
+          JSON.stringify(response.data.detail.tokens)
+        );
+        setTimeout(function () {
+          window.location.href = "/dashboard";
+        }, 1000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setWaitingForResponse(false);
+        setLoginStatus("error");
+      });
+  };
+
   if (!isLoggedIn)
     return (
       <div className="login-page">
@@ -39,6 +142,15 @@ const Login = () => {
                       placeholder="example@gmail.com"
                       variant="outlined"
                       fullWidth
+                      name="email"
+                      value={loginInfo.email}
+                      onChange={handleChange}
+                      error={validating && !validateEmail(loginInfo.email)}
+                      helperText={
+                        validating && !validateEmail(loginInfo.email)
+                          ? "Invalid Email"
+                          : ""
+                      }
                       sx={{
                         "& .MuiOutlinedInput-root:hover": {
                           "& > fieldset": {
@@ -55,6 +167,18 @@ const Login = () => {
                       placeholder="passwordexample123"
                       variant="outlined"
                       fullWidth
+                      type="password"
+                      name="password"
+                      value={loginInfo.password}
+                      onChange={handleChange}
+                      error={
+                        validating && !validatePassword(loginInfo.password)
+                      }
+                      helperText={
+                        validating && !validatePassword(loginInfo.password)
+                          ? "Password must be atleast 8 characters and contain atleast one character and one number"
+                          : ""
+                      }
                       sx={{
                         "& .MuiOutlinedInput-root:hover": {
                           "& > fieldset": {
@@ -72,7 +196,13 @@ const Login = () => {
                     >
                       <FormControlLabel
                         control={
-                          <Checkbox className="checkbox" defaultChecked />
+                          <Checkbox
+                            name="remember"
+                            value={loginInfo.remember}
+                            onChange={handleChange}
+                            className="checkbox"
+                            defaultChecked
+                          />
                         }
                         label="Remember Me"
                         className="remember-me"
@@ -85,6 +215,7 @@ const Login = () => {
                       variant="contained"
                       fullWidth
                       className="login-button"
+                      onClick={() => loginUser(loginInfo)}
                       sx={{
                         "&:hover": {
                           backgroundColor: "#30a8d8",
@@ -128,6 +259,41 @@ const Login = () => {
             </Grid>
           </Grid>
         </Grid>
+        <Snackbar
+          open={loginStatus === "success"}
+          autoHideDuration={6000}
+          onClose={handleSnackClose}
+        >
+          <Alert
+            onClose={handleSnackClose}
+            severity="success"
+            sx={{ width: "100%" }}
+            className="snack"
+          >
+            Successfully Logged In!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={loginStatus === "error"}
+          autoHideDuration={6000}
+          onClose={handleSnackClose}
+        >
+          <Alert
+            onClose={handleSnackClose}
+            severity="error"
+            sx={{ width: "100%" }}
+            className="snack"
+          >
+            Error: Failed to Login
+          </Alert>
+        </Snackbar>
+        <Backdrop
+          sx={{ color: "white" }}
+          open={waitingForResponse}
+          onClick={() => {}}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     );
   else

@@ -34,21 +34,23 @@ const NavBar = () => {
         </Link>
       </Grid>
       <Grid item xs={12} style={{ textAlign: "center" }}>
-        <Button
-          sx={{
-            background: "black",
-            fontFamily: "Work Sans",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "black",
-            },
-            padding: "0.7rem 2rem",
-          }}
-          variant="contained"
-          className="login"
-        >
-          Login
-        </Button>
+        <a href="/login">
+          <Button
+            sx={{
+              background: "black",
+              fontFamily: "Work Sans",
+              fontWeight: "bold",
+              "&:hover": {
+                backgroundColor: "black",
+              },
+              padding: "0.7rem 2rem",
+            }}
+            variant="contained"
+            className="login"
+          >
+            Login
+          </Button>
+        </a>
       </Grid>
     </Grid>
   );
