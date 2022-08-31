@@ -27,7 +27,8 @@ input[type="number"] {
 .heading1,
 .heading2,
 .navItem,
-.working {
+.features,
+.works {
   text-align: center;
 }
 .about,
@@ -41,7 +42,7 @@ input[type="number"] {
 }
 .business-credit-heading,
 .cash-management-heading {
-  font-family: Epilogue;
+  font-family: Montserrat;
   font-weight: 700;
   display: block;
   margin-bottom: 6rem;
@@ -91,7 +92,7 @@ input[type="number"] {
   font-family: Montserrat;
 }
 .card-title {
-  font-family: "Work Sans";
+  font-family: "Montserrat";
   font-size: 1.8rem;
 }
 .card-text {
@@ -106,7 +107,7 @@ input[type="number"] {
 .cash-management-points {
   margin: 0;
   font-size: 1.5rem;
-  font-family: "Work Sans";
+  font-family: "Montserrat";
 }
 .cash-management-points2 {
   margin: 1rem;
@@ -129,7 +130,7 @@ input[type="number"] {
 .about-heading,
 .contact-heading {
   font-size: 3rem;
-  font-family: Epilogue;
+  font-family: Montserrat;
 }
 .MuiTextField-root.contact-form-field {
   margin: 1rem 0;
@@ -140,19 +141,19 @@ a {
 }
 .footer {
   width: 100%;
-  background: #f5e8c7;
+  background: #47b5ff;
   padding-top: 3rem;
 }
 .footer-logo {
   align-items: center;
 }
 .footer-logo-text {
-  font-family: "Baloo Thambi 2";
+  font-family: "Montserrat";
   font-weight: 700;
   font-size: 2.5rem;
 }
 .footer-links-heading {
-  font-family: Epilogue;
+  font-family: Montserrat;
   padding-bottom: 2rem;
   border-bottom: 3px solid #000;
 }
@@ -162,7 +163,7 @@ a {
   font-size: 1.5rem;
 }
 .copyright {
-  font-family: "Work Sans";
+  font-family: "Montserrat";
   font-size: 0.8rem;
   margin-top: 3rem;
   padding-bottom: 1rem;
@@ -171,8 +172,7 @@ a {
   background-color: #f5f5f4;
 }
 .landing {
-  background-image: url("../images/bg2.png");
-  background-size: cover;
+  background: #00d7ff;
 }
 .background-wrap {
   position: relative;
@@ -188,19 +188,21 @@ a {
   z-index: 0;
 }
 .heading1 {
-  font-size: 2rem;
-  font-family: "Baloo Thambi 2";
+  font-size: 1.9rem;
+  font-family: "Montserrat";
   font-weight: 400;
+  color: white;
 }
 .heading2 {
   font-family: Montserrat;
   font-weight: 700;
-  font-size: 3rem;
+  font-size: 3.5rem;
+  color: white;
 }
 .mission-text,
 .navItem {
-  font-family: "Work Sans";
-  font-weight: 700;
+  font-family: "Montserrat";
+  font-weight: 600;
 }
 
 .mission {
@@ -218,18 +220,18 @@ a {
 .navBar2 {
   padding-top: 10px;
   z-index: 10;
-  background: #f8f8f7;
+  background: #00d7ff;
 }
 .navBar {
   justify-content: center;
   position: fixed;
+  color: #fcfcfc;
 }
 .navItem {
-  font-size: 1rem;
-  max-width: 7rem;
+  font-size: 1.2rem;
 }
 .logo {
-  font-family: "Baloo Thambi 2";
+  font-family: "Montserrat";
   font-size: 3rem;
   font-weight: 700;
   margin: 0;
@@ -237,19 +239,101 @@ a {
 .navBar2 {
   justify-content: center;
 }
+
+.MuiDrawer-root .MuiDrawer-paper {
+  background-color: #11324d;
+}
+
 .drawerItem {
   font-size: 1.5rem;
-  font-family: "Work Sans";
+  font-family: "Montserrat";
+  color: white;
 }
-.working {
-  padding-bottom: 3rem;
+.features {
+  padding: 4rem 0rem;
 }
-.how {
-  font-family: Epilogue, sans-serif;
+.features-title,
+.works-title {
+  display: block;
+  font-family: Montserrat, sans-serif;
+  font-size: 3rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 7rem;
+}
+
+.features-heading {
+  font-family: "Montserrat";
+  font-weight: bold;
   font-size: 2.5rem;
-  padding-top: 2.5rem;
-  margin: 0;
+  background: #2e75b6;
+  padding: 1.5rem 0rem;
+  color: white;
 }
+
+.MuiGrid-root.features-item {
+  padding: 2rem 0rem;
+  border: 2px solid #d3d3d3;
+  margin: 0.5rem 0rem;
+}
+
+.features-item-heading {
+  font-family: "Montserrat";
+  font-weight: 600;
+  font-size: 2rem;
+  display: block;
+  margin: 1rem 0rem;
+}
+
+.features-item-image {
+  width: 100%;
+  height: auto;
+}
+
+.features-item-text {
+  font-family: "Montserrat";
+  font-size: 1.5rem;
+}
+
+.works {
+  background: #dff6ff;
+  padding: 4rem 0rem;
+}
+
+.works-step {
+  background: white;
+}
+
+.works-step-heading {
+  padding: 2rem 0rem;
+}
+
+.MuiGrid-root.works-heading-number {
+  font-size: 2rem;
+  font-family: "Montserrat";
+  background: #1363df;
+  width: 50px;
+  height: 50px;
+  border-radius: 5rem;
+  color: white;
+}
+
+.works-heading {
+  font-size: 1.8rem;
+  font-family: "Montserrat";
+  font-weight: 800;
+}
+
+.works-step-text {
+  font-family: "Montserrat";
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.company-icon {
+  border: 1px solid black;
+}
+
 .section-heading {
   font-size: 3.5rem;
 }
@@ -260,7 +344,7 @@ a {
   display: block;
 }
 .working2 {
-  font-family: Epilogue, sans-serif;
+  font-family: Montserrat, sans-serif;
   font-weight: 400;
   font-size: 1.7rem;
   max-width: 35rem;
@@ -369,8 +453,141 @@ a {
 .MuiAlert-root.snack {
   font-family: "Montserrat";
 }
+
+.dashboard {
+  height: 100%;
+  width: 100%;
+}
+
+.dashboard-container {
+  height: 100%;
+}
+
+.MuiGrid-root.dashboard-sidebar {
+  background-image: linear-gradient(#2f83d8, #3db1cc);
+  height: 100%;
+  max-height: 100vh;
+}
+
+.dashboard-sidebar-section {
+  padding: 0rem 1.2rem;
+  overflow-y: auto;
+}
+
+.MuiList-root.section-items {
+  padding: 0.8rem 0rem 0.8rem 0.5rem;
+}
+
+.dashboard-section-heading {
+  font-family: "Montserrat";
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+}
+
+.MuiGrid-root.show-sidebar {
+  max-width: 16.5rem;
+}
+
+.MuiPaper-root.section-item-text {
+  font-family: "Montserrat";
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.section-item-icon {
+  width: 21px;
+}
+
+.sidebar-bottom-item {
+  margin: 0.7rem 0rem;
+}
+
+.sidebar-bottom-icon {
+  width: 28px;
+}
+
+.sidebar-bottom-text {
+  color: white;
+  font-family: "Montserrat";
+}
+
+.cashflows {
+  max-height: 100vh;
+}
+
+.MuiGrid-root.test-account {
+  background: #edf0f2;
+  color: black;
+  font-family: "Montserrat";
+  font-weight: 600;
+  text-align: center;
+  padding: 0.7rem 0rem;
+  margin: 1rem 1rem 0rem;
+}
+
+.MuiGrid-root.util-buttons {
+  padding: 0rem 0.5rem;
+  margin-left: 0.4rem;
+}
+
+.util-button-paper {
+  display: inline-block;
+  outline: 1px solid #d3d3d3;
+  height: 100%;
+  cursor: pointer;
+}
+
+.util-button-text {
+  font-family: "Montserrat";
+  font-weight: bold;
+  padding: 0.5rem;
+}
+
+.cash-display {
+  padding: 0rem 1rem;
+}
+
+.cash-balance {
+  text-align: center;
+  background: #f5f6f7;
+  border: 2px solid #d3d3d3;
+  border-radius: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.cash-balance-heading {
+  font-family: "Montserrat";
+  font-weight: bold;
+  font-size: 1rem;
+  display: block;
+}
+
+.cash-value {
+  font-family: "Montserrat";
+  font-weight: 1000;
+  font-size: 1.8rem;
+  display: block;
+}
+
+.delete-mock {
+  background: #edf0f2;
+  border: 2px solid #d3d3d3;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.8rem;
+}
+
+.delete-mock-text {
+  font-family: "Montserrat";
+  color: #c33636;
+  font-weight: 600;
+}
+
 @media only screen and (max-width: 1400px) {
-  .how {
+  .features-title,
+  .works-title {
     font-size: 2.2rem;
   }
   .section-heading {
@@ -388,8 +605,15 @@ a {
   .business-credit-heading {
     margin-bottom: 4rem;
   }
-  .how {
-    font-size: 1.9rem;
+
+  .features-business-credit {
+    margin-top: 2rem;
+  }
+
+  .features-title,
+  .works-title {
+    font-size: 2rem;
+    margin-bottom: 4rem;
   }
   .section-heading {
     font-size: 2.5rem;
@@ -410,11 +634,20 @@ a {
   .signup-heading {
     margin-bottom: 3rem;
   }
+  .dashboard-sidebar-section {
+    padding: 0rem 0.5rem;
+  }
+  .dashboard-section-heading {
+    font-size: 0.9rem;
+  }
+  .MuiPaper-root.section-item-text {
+    font-size: 0.7rem;
+  }
+  .sidebar-bottom-text {
+    font-size: 0.8rem;
+  }
 }
 @media only screen and (max-width: 1050px) {
-  .how {
-    font-size: 1.5rem;
-  }
   .section-heading {
     font-size: 2.2rem;
   }
@@ -446,8 +679,9 @@ a {
   .mission-points {
     font-size: 1.3rem;
   }
-  .how {
-    font-size: 1.2rem;
+  .features-title,
+  .works-title {
+    font-size: 2rem;
   }
   .working1 {
     margin-top: 2rem;
@@ -458,12 +692,24 @@ a {
   .listItem {
     font-size: 0.9rem;
   }
-  .MuiPaper-root,
-  .working2 {
+  .MuiPaper-root.working2 {
     margin: 1rem;
   }
   .working-image {
     width: 100%;
+  }
+  .show-sidebar {
+    display: none;
+  }
+  .util-button-text {
+    font-size: 0.8rem;
+  }
+  .features-item-heading {
+    font-size: 1.5rem;
+  }
+  .features-item-image {
+    width: auto;
+    height: 100%;
   }
 }
 
@@ -480,6 +726,18 @@ a {
     font-size: 1.5rem;
   }
   .heading2 {
+    font-size: 2.5rem;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .xs-none {
+    display: none;
+  }
+  .features-item-image {
+    width: 100%;
+    height: auto;
+  }
+  .features-heading {
     font-size: 2.5rem;
   }
 }

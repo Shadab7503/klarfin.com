@@ -4,15 +4,15 @@ import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import signUpImage from "../images/signup-image.png";
-import * as validators from "../utils/validators";
+import signUpImage from "../../images/signup-image.png";
+import * as validators from "../../utils/validators";
 import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import { user } from "../utils/interface";
-import { host, industries } from "../utils/variables";
-import { Alert } from "../utils/components";
+import { user } from "../../utils/interface";
+import { host, industries } from "../../utils/variables";
+import { Alert } from "../../utils/components";
 
 const SignUp = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);

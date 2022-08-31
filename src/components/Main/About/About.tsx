@@ -1,23 +1,23 @@
-import NavBar2 from "./NavBar2";
-import ContactForm from "./ContactForm";
-import Footer from "./Footer";
+import NavBar from "../NavBar";
+import Footer from "../Home/Footer";
+import Mission from "../Home/Mission";
+
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const Contact = () => {
+const About = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-
   return (
-    <div className="contact">
-      <NavBar2 />
-      <ContactForm />
+    <div className="about">
+      <NavBar />
+      <Mission />
       <Footer />
     </div>
   );
 };
 
-export default Contact;
+export default About;
