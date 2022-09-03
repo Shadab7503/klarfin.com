@@ -34,7 +34,7 @@ input[type="number"] {
 .about,
 .contact {
   height: 100%;
-  background: #f5e8c7;
+  background: #47b5ff;
 }
 .business-credit {
   background: #f2f3f5;
@@ -90,6 +90,7 @@ input[type="number"] {
 .MuiInputLabel-root.contact-form-field-label,
 .read-more {
   font-family: Montserrat;
+  color: #1f4690;
 }
 .card-title {
   font-family: "Montserrat";
@@ -125,12 +126,13 @@ input[type="number"] {
 
 .contact-form {
   background: #fff;
-  padding: 3rem 0;
+  padding: 6rem 0;
 }
 .about-heading,
 .contact-heading {
   font-size: 3rem;
   font-family: Montserrat;
+  color: #1f4690;
 }
 .MuiTextField-root.contact-form-field {
   margin: 1rem 0;
@@ -151,28 +153,33 @@ a {
   font-family: "Montserrat";
   font-weight: 700;
   font-size: 2.5rem;
+  color: #dff6ff;
 }
 .footer-links-heading {
   font-family: Montserrat;
-  padding-bottom: 2rem;
-  border-bottom: 3px solid #000;
+  font-size: 1.3rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #d3d3d3;
+  color: #dff6ff;
 }
 .footer-links {
   font-family: Montserrat;
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
+  color: #dff6ff;
 }
 .copyright {
   font-family: "Montserrat";
   font-size: 0.8rem;
   margin-top: 3rem;
   padding-bottom: 1rem;
+  color: #dff6ff;
 }
 .main {
   background-color: #f5f5f4;
 }
 .landing {
-  background: #00d7ff;
+  background-image: linear-gradient(#dff6ff, #f5ffff);
 }
 .background-wrap {
   position: relative;
@@ -191,13 +198,13 @@ a {
   font-size: 1.9rem;
   font-family: "Montserrat";
   font-weight: 400;
-  color: white;
+  color: black;
 }
 .heading2 {
   font-family: Montserrat;
   font-weight: 700;
   font-size: 3.5rem;
-  color: white;
+  color: black;
 }
 .mission-text,
 .navItem {
@@ -206,7 +213,7 @@ a {
 }
 
 .mission {
-  padding: 6rem 1rem;
+  padding: 6rem;
   background: #fff;
 }
 .mission-text {
@@ -216,11 +223,10 @@ a {
 .mission-points-icon {
   font-size: 1.5rem;
 }
-.navBar,
-.navBar2 {
+.navBar {
   padding-top: 10px;
   z-index: 10;
-  background: #00d7ff;
+  background-image: linear-gradient(#2f83d8, #3db1cc);
 }
 .navBar {
   justify-content: center;
@@ -300,12 +306,9 @@ a {
   padding: 4rem 0rem;
 }
 
-.works-step {
-  background: white;
-}
-
-.works-step-heading {
-  padding: 2rem 0rem;
+.MuiGrid-root.works-step {
+  background: inherit;
+  margin: 2rem 0rem;
 }
 
 .MuiGrid-root.works-heading-number {
@@ -318,10 +321,11 @@ a {
   color: white;
 }
 
-.works-heading {
+.MuiGrid-root.works-heading {
   font-size: 1.8rem;
   font-family: "Montserrat";
   font-weight: 800;
+  margin-bottom: 1rem;
 }
 
 .works-step-text {
@@ -668,10 +672,10 @@ a {
   }
   .footer-links-heading,
   .mission-text {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
   .footer-links {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   .mission {
     padding: 3rem 1rem;
@@ -739,6 +743,17 @@ a {
   }
   .features-heading {
     font-size: 2.5rem;
+  }
+  .MuiGrid-root.works-heading {
+    font-size: 1.5rem;
+  }
+  .MuiGrid-root.works-step-text {
+    font-size: 1.2rem;
+  }
+  .MuiGrid-root.works-heading-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
   }
 }
 @media only screen and (max-width: 500px) {

@@ -17,7 +17,7 @@ const Landing = () => {
             <span>
               For CXOs of Growing{" "}
               <ReactTypingEffect
-                text={["SMBs.", "STARTUPS"]}
+                text={["SMBs", "Startups"]}
                 speed={200}
                 typingDelay={1000}
                 eraseDelay={3000}

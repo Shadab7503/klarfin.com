@@ -33,6 +33,7 @@ const NavBar = () => {
           offset={-70}
           duration={500}
           onClick={() => {
+            setDrawerOpen(false);
             if (window.location.pathname !== "/")
               window.location.assign("/#works");
           }}

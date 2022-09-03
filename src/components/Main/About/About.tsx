@@ -1,5 +1,5 @@
 import NavBar from "../NavBar";
-import Footer from "../Home/Footer";
+import Footer from "../Footer";
 import Mission from "../Home/Mission";
 
 import { useEffect } from "react";

@@ -1,6 +1,6 @@
 import NavBar from "../NavBar";
 import ContactForm from "./ContactForm";
-import Footer from "../Home/Footer";
+import Footer from "../Footer";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
