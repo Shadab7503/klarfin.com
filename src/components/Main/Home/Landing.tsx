@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import ReactTypingEffect from "react-typing-effect";
