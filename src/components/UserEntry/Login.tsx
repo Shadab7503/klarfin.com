@@ -8,12 +8,12 @@ import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
-import loginImage from "../images/login-image.png";
+import loginImage from "../../images/login-image.png";
 import axios from "axios";
-import { loginDetails } from "../utils/interface";
-import { validateEmail, validatePassword } from "../utils/validators";
-import { host } from "../utils/variables";
-import { Alert } from "../utils/components";
+import { loginDetails } from "../../utils/interface";
+import { validateEmail, validatePassword } from "../../utils/validators";
+import { host } from "../../utils/variables";
+import { Alert } from "../../utils/components";
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);

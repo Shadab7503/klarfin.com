@@ -1,9 +1,9 @@
-import Home from "./components/Home";
-import About from "./components/About";
-import Contact from "./components/Contact";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import Dashboard from "./components/Dashboard";
+import Home from "./components/Main/Home/Home";
+import About from "./components/Main/About/About";
+import Contact from "./components/Main/Contact/Contact";
+import Login from "./components/UserEntry/Login";
+import SignUp from "./components/UserEntry/SignUp";
+import Dashboard from "./components/Dashboard/Dashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/styles.css";
 

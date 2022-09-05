@@ -1,6 +1,6 @@
-import NavBar2 from "./NavBar2";
+import NavBar from "../NavBar";
 import ContactForm from "./ContactForm";
-import Footer from "./Footer";
+import Footer from "../Footer";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const Contact = () => {
 
   return (
     <div className="contact">
-      <NavBar2 />
+      <NavBar />
       <ContactForm />
       <Footer />
     </div>
