@@ -5,11 +5,11 @@ const Footer = () => {
   return (
     <div className="footer">
       <Grid container justifyContent="space-evenly">
-        <Grid item xl={1} md={1} sm={2} xs={12} className="footer-logo">
+        {/* <Grid item xl={1} md={1} sm={2} xs={12} className="footer-logo">
           <a href="/">
             <h1 className="footer-logo-text">Klarfin</h1>
           </a>
-        </Grid>
+        </Grid> */}
         <Grid item xl={1} md={2} sm={2} xs={3.5} className="footer-product">
           <h1 className="footer-links-heading">Product</h1>
           <Link

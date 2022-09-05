@@ -148,7 +148,7 @@ const ContactForm = () => {
             }}
             onClick={handleSubmit}
           >
-            SUBMIT
+            REQUEST DEMO{" "}
           </Button>
         </Grid>
       </Grid>

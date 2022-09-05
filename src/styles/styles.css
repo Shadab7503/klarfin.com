@@ -34,7 +34,7 @@ input[type="number"] {
 .about,
 .contact {
   height: 100%;
-  background: #47b5ff;
+  background: #3db1cc;
 }
 .business-credit {
   background: #f2f3f5;
@@ -128,7 +128,6 @@ input[type="number"] {
   background: #fff;
   padding: 6rem 0;
 }
-.about-heading,
 .contact-heading {
   font-size: 3rem;
   font-family: Montserrat;
@@ -143,7 +142,7 @@ a {
 }
 .footer {
   width: 100%;
-  background: #47b5ff;
+  background-image: linear-gradient(#2f83d8, #3db1cc);
   padding-top: 3rem;
 }
 .footer-logo {
@@ -154,6 +153,7 @@ a {
   font-weight: 700;
   font-size: 2.5rem;
   color: #dff6ff;
+  visibility: hidden;
 }
 .footer-links-heading {
   font-family: Montserrat;
@@ -206,15 +206,43 @@ a {
   font-size: 3.5rem;
   color: black;
 }
+
+.mission {
+  padding: 6rem;
+  background: #e8f9fd;
+}
+
+.about-container {
+  padding: 5rem 0rem 3rem;
+  background: #e8f9fd;
+}
+
+.about-heading {
+  display: block;
+  font-size: 4rem;
+  font-family: "Montserrat";
+  font-weight: bold;
+  color: #e1ffee;
+}
+
+.about-text-points-title,
+.about-text-content-main {
+  font-size: 1.5rem;
+  font-family: "Montserrat";
+  /* font-weight: 600; */
+}
+
+.about-text-points {
+  font-size: 1.3rem;
+  font-family: "Montserrat";
+  margin: 1.5rem 0rem;
+  /* font-weight: 600; */
+}
+
 .mission-text,
 .navItem {
   font-family: "Montserrat";
   font-weight: 600;
-}
-
-.mission {
-  padding: 6rem;
-  background: #fff;
 }
 .mission-text {
   font-size: 2rem;
@@ -258,6 +286,11 @@ a {
 .features {
   padding: 4rem 0rem;
 }
+
+.features-section {
+  margin: 4rem 0rem;
+}
+
 .features-title,
 .works-title {
   display: block;
@@ -279,7 +312,6 @@ a {
 
 .MuiGrid-root.features-item {
   padding: 2rem 0rem;
-  border: 2px solid #d3d3d3;
   margin: 0.5rem 0rem;
 }
 
@@ -294,6 +326,7 @@ a {
 .features-item-image {
   width: 100%;
   height: auto;
+  max-width: 100px;
 }
 
 .features-item-text {
@@ -303,12 +336,11 @@ a {
 
 .works {
   background: #dff6ff;
-  padding: 4rem 0rem;
+  padding: 4rem 0rem 8rem;
 }
 
 .MuiGrid-root.works-step {
   background: inherit;
-  margin: 2rem 0rem;
 }
 
 .MuiGrid-root.works-heading-number {
@@ -322,16 +354,18 @@ a {
 }
 
 .MuiGrid-root.works-heading {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   font-family: "Montserrat";
   font-weight: 800;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  color: #1f4690;
 }
 
 .works-step-text {
   font-family: "Montserrat";
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
+  color: #112b3c;
 }
 
 .company-icon {
@@ -604,6 +638,12 @@ a {
   .working2 {
     max-width: 25rem;
   }
+  .MuiGrid-root.works-heading {
+    font-size: 2rem;
+  }
+  .features-section {
+    margin: 0rem;
+  }
 }
 @media only screen and (max-width: 1200px) {
   .business-credit-heading {
@@ -650,6 +690,24 @@ a {
   .sidebar-bottom-text {
     font-size: 0.8rem;
   }
+  .MuiGrid-root.works-step {
+    margin-bottom: 5rem;
+  }
+  .features-item-heading {
+    font-size: 1.5rem;
+  }
+  .features-item-text {
+    font-size: 1.1rem;
+  }
+  .MuiGrid-root.features-item {
+    padding: 1rem 0rem;
+  }
+  .features-section {
+    margin: 4rem 0rem;
+  }
+  .works {
+    padding: 4rem 0rem 2rem;
+  }
 }
 @media only screen and (max-width: 1050px) {
   .section-heading {
@@ -663,7 +721,6 @@ a {
   .business-credit-heading {
     margin-bottom: 2rem;
   }
-  .about-heading,
   .cash-management-heading {
     margin-bottom: 3rem;
   }
@@ -678,7 +735,7 @@ a {
     font-size: 0.9rem;
   }
   .mission {
-    padding: 3rem 1rem;
+    padding: 6rem 1rem;
   }
   .mission-points {
     font-size: 1.3rem;
@@ -715,6 +772,9 @@ a {
     width: auto;
     height: 100%;
   }
+  .features-section-image {
+    width: 80%;
+  }
 }
 
 @media only screen and (max-width: 750px) {
@@ -723,6 +783,9 @@ a {
   }
   .cash-management-points2 {
     font-size: 1.5rem;
+  }
+  .features-section-image {
+    width: 100%;
   }
 }
 @media only screen and (max-width: 700px) {
@@ -754,6 +817,16 @@ a {
     width: 40px;
     height: 40px;
     font-size: 1.5rem;
+  }
+  .about-heading {
+    font-size: 3rem;
+  }
+  .about-text-points-title,
+  .about-text-content-main {
+    font-size: 1.2rem;
+  }
+  .about-text-points {
+    font-size: 1.1rem;
   }
 }
 @media only screen and (max-width: 500px) {
