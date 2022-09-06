@@ -1,55 +1,43 @@
 import Grid from "@mui/material/Grid";
-import about from "../../../images/about.png";
+import about from "../../../images/about.jpeg";
 
 const Mission = () => {
   return (
     <div className="mission">
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 0,
-          background: "#7FBCD2",
-          height: "60vh",
-          width: "100vw",
-          maxWidth: "100%",
-        }}
-      ></div>
       <Grid
         container
         alignItems="center"
         justifyContent="center"
         className="about-container"
-        style={{ zIndex: 2, background: "#e8f9fd" }}
       >
-        <Grid item xl={6} lg={9} xs={11.5} style={{ zIndex: 2 }}>
+        <Grid item xl={10} xs={11.5}>
           <Grid
             container
-            justifyContent="center"
-            spacing={10}
-            style={{ zIndex: 200 }}
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={{ xs: 5 }}
           >
-            <Grid item xs={12} textAlign="center" style={{ zIndex: 2 }}>
-              <span className="about-heading">About Us</span>
-            </Grid>
-            <Grid
-              item
-              lg={9}
-              sm={10}
-              xs={12}
-              textAlign="center"
-              style={{ zIndex: 2 }}
-            >
-              <img src={about} width="100%" alt="about" />
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} className="about-text-content-main">
+            <Grid item sm={6}>
+              <Grid container style={{ height: "100%" }}>
+                <Grid item xs={12}>
+                  <span className="about-heading" style={{ textAlign: "left" }}>
+                    About Us
+                  </span>
+                </Grid>
+                <Grid item xs={12} className="about-text-content-main" mt={3}>
                   Klarfin's mission is to keep CXOs of SMBs and startups on top
                   of their cash flows and take smart decisions for cash and
                   credit management.
                 </Grid>
+              </Grid>
+            </Grid>
+            <Grid item sm={5.5} xs={12}>
+              <img src={about} width="100%" alt="about" />
+            </Grid>
+          </Grid>
+          <Grid container justifyContent="center" spacing={10} mt={0}>
+            <Grid item xs={12}>
+              <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <span className="about-text-points-title">
                     Our cash management solution helps SMBs manage their cash

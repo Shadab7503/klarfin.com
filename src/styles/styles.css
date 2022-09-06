@@ -15,7 +15,6 @@ input[type="number"] {
   cursor: pointer;
 }
 .MuiPaper-root.cards,
-.about-heading,
 .business-credit,
 .card-text,
 .cash-management,
@@ -27,8 +26,7 @@ input[type="number"] {
 .heading1,
 .heading2,
 .navItem,
-.features,
-.works {
+.features {
   text-align: center;
 }
 .about,
@@ -128,11 +126,7 @@ input[type="number"] {
   background: #fff;
   padding: 6rem 0;
 }
-.contact-heading {
-  font-size: 3rem;
-  font-family: Montserrat;
-  color: #1f4690;
-}
+
 .MuiTextField-root.contact-form-field {
   margin: 1rem 0;
 }
@@ -209,31 +203,22 @@ a {
 
 .mission {
   padding: 6rem;
-  background: #e8f9fd;
+  background: white;
 }
 
 .about-container {
-  padding: 5rem 0rem 3rem;
-  background: #e8f9fd;
+  padding: 2rem 0rem;
+  background: white;
 }
-
-.about-heading {
-  display: block;
-  font-size: 4rem;
-  font-family: "Montserrat";
-  font-weight: bold;
-  color: #e1ffee;
-}
-
 .about-text-points-title,
 .about-text-content-main {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-family: "Montserrat";
   /* font-weight: 600; */
 }
 
 .about-text-points {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-family: "Montserrat";
   margin: 1.5rem 0rem;
   /* font-weight: 600; */
@@ -290,7 +275,8 @@ a {
 .features-section {
   margin: 4rem 0rem;
 }
-
+.contact-heading,
+.about-heading,
 .features-title,
 .works-title {
   display: block;
@@ -298,6 +284,12 @@ a {
   font-size: 3rem;
   font-weight: 600;
   display: block;
+  color: #231955;
+  text-align: center;
+}
+
+.features-title,
+.works-title {
   margin-bottom: 7rem;
 }
 
@@ -318,7 +310,6 @@ a {
 .features-item-heading {
   font-family: "Montserrat";
   font-weight: 600;
-  font-size: 2rem;
   display: block;
   margin: 1rem 0rem;
 }
@@ -328,10 +319,10 @@ a {
   height: auto;
   max-width: 100px;
 }
-
+.works-step-text,
 .features-item-text {
   font-family: "Montserrat";
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .works {
@@ -346,26 +337,21 @@ a {
 .MuiGrid-root.works-heading-number {
   font-size: 2rem;
   font-family: "Montserrat";
-  background: #1363df;
+  background-image: linear-gradient(#2f83d8, #3db1cc);
   width: 50px;
   height: 50px;
   border-radius: 5rem;
   color: white;
 }
 
-.MuiGrid-root.works-heading {
-  font-size: 2.2rem;
-  font-family: "Montserrat";
-  font-weight: 800;
-  margin-bottom: 2rem;
-  color: #1f4690;
+.MuiGrid-root.works-heading,
+.features-item-heading {
+  font-size: 2rem;
 }
 
-.works-step-text {
+.MuiGrid-root.works-heading {
   font-family: "Montserrat";
-  font-size: 1.8rem;
   font-weight: 600;
-  color: #112b3c;
 }
 
 .company-icon {
@@ -638,9 +624,6 @@ a {
   .working2 {
     max-width: 25rem;
   }
-  .MuiGrid-root.works-heading {
-    font-size: 2rem;
-  }
   .features-section {
     margin: 0rem;
   }
@@ -653,10 +636,12 @@ a {
   .features-business-credit {
     margin-top: 2rem;
   }
-
   .features-title,
   .works-title {
     font-size: 2rem;
+  }
+  .works-title,
+  .features-title {
     margin-bottom: 4rem;
   }
   .section-heading {
@@ -690,14 +675,9 @@ a {
   .sidebar-bottom-text {
     font-size: 0.8rem;
   }
-  .MuiGrid-root.works-step {
-    margin-bottom: 5rem;
-  }
+  .MuiGrid-root.works-heading,
   .features-item-heading {
     font-size: 1.5rem;
-  }
-  .features-item-text {
-    font-size: 1.1rem;
   }
   .MuiGrid-root.features-item {
     padding: 1rem 0rem;
@@ -707,6 +687,11 @@ a {
   }
   .works {
     padding: 4rem 0rem 2rem;
+  }
+  .about-text-points-title,
+  .about-text-content-main,
+  .about-text-points {
+    font-size: 1.2rem;
   }
 }
 @media only screen and (max-width: 1050px) {
@@ -744,6 +729,10 @@ a {
   .works-title {
     font-size: 2rem;
   }
+  .contact-heading,
+  .about-heading {
+    font-size: 2.5rem;
+  }
   .working1 {
     margin-top: 2rem;
   }
@@ -765,15 +754,15 @@ a {
   .util-button-text {
     font-size: 0.8rem;
   }
-  .features-item-heading {
-    font-size: 1.5rem;
-  }
   .features-item-image {
     width: auto;
     height: 100%;
   }
   .features-section-image {
     width: 80%;
+  }
+  .MuiGrid-root.works-step {
+    margin-bottom: 5rem;
   }
 }
 
@@ -807,26 +796,13 @@ a {
   .features-heading {
     font-size: 2.5rem;
   }
-  .MuiGrid-root.works-heading {
-    font-size: 1.5rem;
-  }
-  .MuiGrid-root.works-step-text {
-    font-size: 1.2rem;
-  }
   .MuiGrid-root.works-heading-number {
     width: 40px;
     height: 40px;
     font-size: 1.5rem;
   }
-  .about-heading {
-    font-size: 3rem;
-  }
-  .about-text-points-title,
-  .about-text-content-main {
-    font-size: 1.2rem;
-  }
   .about-text-points {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 }
 @media only screen and (max-width: 500px) {

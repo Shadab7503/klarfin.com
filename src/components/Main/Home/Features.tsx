@@ -4,7 +4,9 @@ import paidFaster from "../../../images/paid-faster.png";
 import financialInsights from "../../../images/financial-insights.png";
 import payVendors from "../../../images/pay-vendors.png";
 import bank from "../../../images/bank.png";
-import platform from "../../../images/platform.png";
+import manageCashflow from "../../../images/cashflow.jpeg";
+import invoice from "../../../images/invoice.jpg";
+import credit from "../../../images/credit.jpeg";
 
 const Features = () => {
   return (
@@ -101,10 +103,10 @@ const Features = () => {
                 </Grid>
                 <Grid item md={6} sm={10}>
                   <img
-                    src={platform}
+                    src={manageCashflow}
                     className="features-section-image"
                     width="100%"
-                    alt="platform"
+                    alt="manage cashflows"
                   />
                 </Grid>
               </Grid>
@@ -124,10 +126,10 @@ const Features = () => {
                   sx={{ display: { xs: "none", md: "block" } }}
                 >
                   <img
-                    src={platform}
+                    src={invoice}
                     className="features-section-image"
                     width="100%"
-                    alt="platform"
+                    alt="Invoice"
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
@@ -220,15 +222,15 @@ const Features = () => {
                   sx={{ display: { xs: "block", md: "none" } }}
                 >
                   <img
-                    src={platform}
+                    src={invoice}
                     className="features-section-image"
                     width="100%"
-                    alt="platform"
+                    alt="invoice"
                   />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} className="instant-credit">
               <Grid
                 container
                 alignItems="center"
@@ -266,7 +268,7 @@ const Features = () => {
                           Get Instant Credit
                         </span>
                         <span className="features-item-text">
-                          Avail Klarfin’s credit facility to cover your
+                          Avail Klarfin's credit facility to cover your
                           operational costs like payroll, inventory, marketing
                           and others
                         </span>
@@ -275,7 +277,7 @@ const Features = () => {
                   </Grid>
                 </Grid>
                 <Grid item md={6} sm={10} textAlign="center">
-                  <img src={platform} width="100%" alt="platform" />
+                  <img src={credit} width="100%" alt="credit" />
                 </Grid>
               </Grid>
             </Grid>

@@ -127,7 +127,7 @@ const NavBar = () => {
                       fontFamily: "Work Sans",
                       fontWeight: "bold",
                       "&:hover": {
-                        backgroundColor: "black",
+                        backgroundColor: "#231955",
                       },
                       padding: "0.7rem 1rem",
                     }}

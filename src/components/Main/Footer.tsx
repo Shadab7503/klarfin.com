@@ -35,9 +35,20 @@ const Footer = () => {
                   Cash Management
                 </h1>
               </Link>
-              <h1 className="footer-links" id="features-footer-link">
-                Business Credit
-              </h1>
+              <Link
+                to="instant-credit"
+                smooth={true}
+                offset={-70}
+                duration={800}
+                onClick={() => {
+                  if (window.location.pathname !== "/")
+                    window.location.assign("/#instant-credit");
+                }}
+              >
+                <h1 className="footer-links" id="features-footer-link">
+                  Business Credit
+                </h1>
+              </Link>
               <Link
                 to="works"
                 smooth={true}

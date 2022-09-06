@@ -136,12 +136,12 @@ const ContactForm = () => {
           <Button
             fullWidth
             sx={{
-              background: "#1F4690",
+              background: "#231955",
               fontFamily: "Work Sans",
               fontWeight: "bold",
               margin: "1rem 0rem",
               "&:hover": {
-                backgroundColor: "#1F4690",
+                backgroundColor: "#231955",
               },
               padding: "0.7rem 2rem",
               color: "white",

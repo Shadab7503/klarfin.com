@@ -33,6 +33,19 @@ const Home = () => {
           behavior: "smooth",
         });
       }, 500);
+    } else if (window.location.hash === "#instant-credit") {
+      setTimeout(() => {
+        var element = document.getElementsByClassName("instant-credit")[0];
+        var headerOffset = 70;
+        var elementPosition = element?.getBoundingClientRect().top;
+        var offsetPosition =
+          elementPosition! + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }, 500);
     } else window.scrollTo(0, 0);
   }, [pathname]);
 
