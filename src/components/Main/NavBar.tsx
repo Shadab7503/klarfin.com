@@ -74,7 +74,7 @@ const NavBar = () => {
         <Grid container justifyContent="space-between" py={1.5}>
           <Grid item lg={2} md={2} sm={4} style={{ textAlign: "center" }}>
             <a href="/">
-              <span className="logo">Klarfin</span>
+              <span className="logo">KLARFIN</span>
             </a>
           </Grid>
           <Grid item lg={9} md={10} sm={6}>

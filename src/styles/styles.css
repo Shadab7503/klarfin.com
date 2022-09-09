@@ -4,6 +4,11 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+@font-face {
+  font-family: "logoFont";
+  src: url(../fonts/ZenTokyoZoo-Regular.ttf);
+}
+
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
@@ -206,6 +211,13 @@ a {
   background: white;
 }
 
+.about-image {
+  float: right;
+  width: 40%;
+  margin-left: 1rem;
+  padding-bottom: 1rem;
+}
+
 .about-container {
   padding: 2rem 0rem;
   background: white;
@@ -250,9 +262,9 @@ a {
   font-size: 1.2rem;
 }
 .logo {
-  font-family: "Montserrat";
+  font-family: "logoFont";
   font-size: 3rem;
-  font-weight: 700;
+  font-weight: normal;
   margin: 0;
 }
 .navBar2 {
@@ -773,6 +785,9 @@ a {
   .MuiGrid-root.works-step {
     margin-bottom: 5rem;
   }
+  .about-image {
+    width: 45%;
+  }
 }
 
 @media only screen and (max-width: 750px) {
@@ -812,6 +827,10 @@ a {
   }
   .about-text-points {
     font-size: 1.2rem;
+  }
+  .about-image {
+    width: 100%;
+    padding: 2rem 0rem;
   }
 }
 @media only screen and (max-width: 500px) {

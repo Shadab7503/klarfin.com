@@ -75,7 +75,7 @@ const Footer = () => {
             >
               <h1 className="footer-links-heading">Company</h1>
               <a href="/about">
-                <h1 className="footer-links">About</h1>
+                <h1 className="footer-links">About Us</h1>
               </a>
               <a href="/contact">
                 <h1 className="footer-links">Contact Us</h1>
