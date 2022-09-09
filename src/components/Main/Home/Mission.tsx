@@ -11,66 +11,6 @@ const Mission = () => {
         className="about-container"
       >
         <Grid item xl={10} xs={11.5}>
-          {/* <Grid
-            container
-            justifyContent="space-between"
-            // alignItems="center"
-            spacing={{ xs: 5 }}
-          >
-            <Grid item sm={6}>
-              <Grid container>
-                <Grid item xs={12}>
-                  <span
-                    className="about-heading"
-                    style={{ textAlign: "center" }}
-                  >
-                    About Us
-                  </span>
-                  <div
-                    className="about-text-content-main"
-                    style={{ marginTop: "3rem" }}
-                  >
-                    Klarfin's mission is to keep CXOs of SMBs and startups on
-                    top of their cash flows and take smart decisions for cash
-                    and credit management.
-                  </div>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item sm={5.5} xs={12}>
-              <img src={about} width="100%" alt="about" />
-            </Grid>
-          </Grid> */}
-          {/* <Grid container justifyContent="center" spacing={10} mt={0}>
-            <Grid item xs={12}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <span className="about-text-points-title">
-                    Our cash flow management platform provides SMBs with -
-                  </span>
-                  <ul>
-                    <li className="about-text-points">
-                      a simplified dashboard with real time view of their cash
-                      flow activity to help make smarter decisions
-                    </li>
-                    <li className="about-text-points">
-                      a single source of truth with data unified from all bank
-                      accounts, accounting software and other business tools
-                    </li>
-                    <li className="about-text-points">
-                      in-built features for forecasting, scenario planning,
-                      automated invoice collections and embedded payments
-                    </li>
-                  </ul>
-                </Grid>
-                <Grid item xs={12} className="about-text-content-main">
-                  Our embedded credit functionality allows SMBs to avail credit
-                  instantly at critical points in their workflow to cover
-                  operational costs like payroll, inventory, marketing etc.
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid> */}
           <div style={{ width: "100%" }}>
             <Grid
               item
