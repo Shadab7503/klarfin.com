@@ -1,6 +1,6 @@
-import NavBar2 from "./NavBar2";
-import Footer from "./Footer";
-import Mission from "./Mission";
+import NavBar from "../NavBar";
+import Footer from "../Footer";
+import Mission from "../Home/Mission";
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -13,7 +13,7 @@ const About = () => {
   }, [pathname]);
   return (
     <div className="about">
-      <NavBar2 />
+      <NavBar />
       <Mission />
       <Footer />
     </div>

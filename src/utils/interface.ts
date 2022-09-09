@@ -13,3 +13,14 @@ export interface loginDetails {
   password: string;
   remember: boolean;
 }
+
+export interface sidebarUtils {
+  selectedItem: string;
+  drawerOpen: boolean;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface dashboardAreaUtils {
+  setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}

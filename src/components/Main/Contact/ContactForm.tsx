@@ -136,19 +136,19 @@ const ContactForm = () => {
           <Button
             fullWidth
             sx={{
-              background: "black",
+              background: "#231955",
               fontFamily: "Work Sans",
               fontWeight: "bold",
               margin: "1rem 0rem",
               "&:hover": {
-                backgroundColor: "black",
+                backgroundColor: "#231955",
               },
               padding: "0.7rem 2rem",
               color: "white",
             }}
             onClick={handleSubmit}
           >
-            SUBMIT
+            REQUEST DEMO{" "}
           </Button>
         </Grid>
       </Grid>
