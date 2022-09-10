@@ -10,8 +10,6 @@ import receivables from "../../images/receivables.png";
 import bills from "../../images/bills.png";
 import banking from "../../images/banking.png";
 import categories from "../../images/categories.png";
-import companyLogo from "../../images/company-logo.png";
-import settings from "../../images/settings.png";
 import { sidebarUtils } from "../../utils/interface";
 
 const sidebarData = {
@@ -38,11 +36,12 @@ const SideBar = (props: sidebarUtils) => {
         container
         direction="column"
         style={{ height: "100%" }}
-        justifyContent="space-between"
+        alignItems="center"
       >
-        <Grid item xs={9} className="dashboard-sidebar-section">
-          <Grid container alignItems="center" style={{ height: "100%" }}>
+        <Grid item xs={12} className="dashboard-sidebar-section">
+          <Grid container alignItems="center">
             <div>
+              <span className="sidebar-logo logo">KLARFIN</span>
               {sidebarData.sections.map((section) => {
                 return (
                   <React.Fragment key={section.name}>
@@ -91,32 +90,6 @@ const SideBar = (props: sidebarUtils) => {
                 );
               })}
             </div>
-          </Grid>
-        </Grid>
-        <Grid item xs={2}>
-          <Grid container alignItems="center" className="sidebar-bottom-item">
-            <Grid item xs={3} textAlign="center">
-              <img
-                src={companyLogo}
-                alt="company-icon"
-                className="sidebar-bottom-icon"
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <span className="sidebar-bottom-text">Alister Corp</span>
-            </Grid>
-          </Grid>
-          <Grid container alignItems="center" className="sidebar-bottom-item">
-            <Grid item xs={3} textAlign="center">
-              <img
-                src={settings}
-                alt="settings-icon"
-                className="sidebar-bottom-icon"
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <span className="sidebar-bottom-text">Advanced Settings</span>
-            </Grid>
           </Grid>
         </Grid>
       </Grid>
