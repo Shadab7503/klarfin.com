@@ -33,8 +33,8 @@ import {
   Inflow,
   StringDict,
 } from "../../utils/interface";
-import axios from "axios";
-import { host } from "../../utils/variables";
+// import axios from "axios";
+// import { host } from "../../utils/variables";
 
 const utilButtons = [
   {

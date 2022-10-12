@@ -4,7 +4,7 @@ import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import CashFlows from "./CashFlows";
 import Insights from "./Insights";
-import Receivables from "./Receivables";
+// import Receivables from "./Receivables";
 import Settings from "./Settings";
 import Loading from "./Loading";
 import axios from "axios";
