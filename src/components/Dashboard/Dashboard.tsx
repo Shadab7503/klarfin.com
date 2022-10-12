@@ -3,55 +3,38 @@ import Grid from "@mui/material/Grid";
 import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import CashFlows from "./CashFlows";
+import Insights from "./Insights";
+import Receivables from "./Receivables";
 import Settings from "./Settings";
 import Loading from "./Loading";
 import axios from "axios";
 import { host } from "../../utils/variables";
 import { User } from "../../utils/interface";
 
-const selectedItemComponents: {
-  [key: string]: JSX.Element;
-} = {
-  "Cash Flows": <CashFlows />,
-  Settings: <Settings />,
-};
-
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<string>("Settings");
+  const [selectedItem, setSelectedItem] = useState<string>("Cash Flows");
   const [user, setUser] = useState<User>({} as User);
+
+  const selectedItemComponents: {
+    [key: string]: JSX.Element;
+  } = {
+    "Cash Flows": <CashFlows accessToken={accessToken} />,
+    Insights: <Insights />,
+    // Receivables: <Receivables />,
+    Settings: (
+      <Settings role={user.role} email={user.email} accessToken={accessToken} />
+    ),
+  };
 
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
     try {
       if (tokens) {
         const tokensObj = JSON.parse(tokens);
-        const acccess_expiry = new Date(tokensObj.access.expires);
-        const currentTime = new Date().getTime();
-        if (acccess_expiry.getTime() < currentTime) {
-          const refresh_expiry = new Date(tokensObj.refresh.expires);
-          if (refresh_expiry.getTime() < currentTime) {
-            localStorage.removeItem("tokens");
-            window.location.href = "/login";
-          } else {
-            axios
-              .post(host + "v1/admin/refresh-tokens", {
-                refreshToken: tokensObj.refresh.token,
-              })
-              .then((response) => {
-                localStorage.setItem("tokens", JSON.stringify(response.data));
-                setAccessToken(response.data.access.token);
-              })
-              .catch(() => {
-                localStorage.removeItem("tokens");
-                window.location.href = "/login";
-              });
-          }
-        } else {
-          setAccessToken(JSON.parse(tokens).access.token);
-        }
+        setAccessToken(tokensObj.accessToken);
       } else window.location.href = "/login";
     } catch (err) {
       localStorage.removeItem("tokens");
@@ -66,8 +49,13 @@ const Dashboard = () => {
           headers: { Authorization: `Bearer ${accessToken}` },
         })
         .then((response) => {
-          setUser(response.data);
-          setIsLoggedIn(true);
+          if ("role" in response.data) {
+            setUser(response.data);
+            setIsLoggedIn(true);
+          } else {
+            localStorage.removeItem("tokens");
+            window.location.href = "/login";
+          }
         })
         .catch((err) => {
           console.log(err);

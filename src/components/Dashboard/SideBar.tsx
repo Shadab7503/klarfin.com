@@ -11,6 +11,8 @@ import bills from "../../images/bills.png";
 import banking from "../../images/banking.png";
 import logout from "../../images/logout.png";
 import { sidebarUtils } from "../../utils/interface";
+import axios from "axios";
+import { host } from "../../utils/variables";
 
 const sidebarData = {
   sections: [
@@ -30,6 +32,12 @@ const sidebarData = {
 
 const SideBar = (props: sidebarUtils) => {
   const Logout = () => {
+    if (localStorage.getItem("tokens")) {
+      const tokensObj = JSON.parse(localStorage.getItem("tokens")!);
+      axios.post(host + "v1/admin/logout", {
+        refreshToken: tokensObj.refreshToken,
+      });
+    }
     localStorage.removeItem("tokens");
     window.location.href = "/login";
   };

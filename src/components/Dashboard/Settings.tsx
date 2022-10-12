@@ -1,22 +1,28 @@
 import { useState } from "react";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Categories from "./Categories";
 import CompanyManagement from "./Company_Management";
-import UserManagement from "./User_Management";
+import UserManagement from "./UserManagement";
 import Security from "./Security";
+import { SettingsProps } from "../../utils/interface";
 
-const tabs: { [key: string]: JSX.Element } = {
-  Categories: <Categories />,
-  "Company management": <CompanyManagement />,
-  "User management": <UserManagement />,
-  Security: <Security />,
-};
-
-const Settings = () => {
+const Settings = (props: SettingsProps) => {
   const [selectedTab, setSelectedTab] = useState<string>("User management");
+
+  const tabs: { [key: string]: JSX.Element } = {
+    Categories: <Categories />,
+    "Company management": <CompanyManagement />,
+    "User management": (
+      <UserManagement
+        role={props.role}
+        email={props.email}
+        accessToken={props.accessToken}
+      />
+    ),
+    Security: <Security />,
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setSelectedTab(newValue);
@@ -44,7 +50,7 @@ const Settings = () => {
                     value={tab}
                     style={{ textTransform: "none" }}
                     disableRipple={true}
-                    className="settings-tab"
+                    className="insights-tab settings-tab"
                     sx={{
                       "&.Mui-selected": {
                         color: "black",

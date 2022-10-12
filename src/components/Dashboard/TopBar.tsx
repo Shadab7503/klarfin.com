@@ -1,14 +1,14 @@
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import MenuIcon from "@mui/icons-material/Menu";
-import { dashboardAreaUtils } from "../../utils/interface";
+import { TopBarProps } from "../../utils/interface";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import company from "../../images/company-logo.png";
 import settings from "../../images/settings.png";
 
-const TopBar = (props: dashboardAreaUtils) => {
+const TopBar = (props: TopBarProps) => {
   return (
     <Grid
       container

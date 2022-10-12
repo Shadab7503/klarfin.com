@@ -18,7 +18,7 @@ import { Alert } from "../../utils/components";
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
-  const [loginStatus, setLoginStatus] = useState<string>("");
+  const [loginStatus, setLoginStatus] = useState<"error" | "success" | "">("");
   const [validating, setValidating] = useState<boolean>(false);
   const [loginInfo, setLoginInfo] = useState<loginDetails>({
     email: "",
@@ -29,33 +29,8 @@ const Login = () => {
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
     try {
-      if (tokens) {
-        const tokensObj = JSON.parse(tokens);
-        const acccess_expiry = new Date(tokensObj.access.expires);
-        const currentTime = new Date().getTime();
-        if (acccess_expiry.getTime() < currentTime) {
-          const refresh_expiry = new Date(tokensObj.refresh.expires);
-          if (refresh_expiry.getTime() < currentTime) {
-            localStorage.removeItem("tokens");
-            setIsLoggedIn(false);
-          } else {
-            axios
-              .post(host + "v1/admin/refresh-tokens", {
-                refreshToken: tokensObj.refresh.token,
-              })
-              .then((response) => {
-                localStorage.setItem("tokens", JSON.stringify(response.data));
-                window.location.href = "/dashboard";
-              })
-              .catch((err) => {
-                localStorage.removeItem("tokens");
-                setIsLoggedIn(false);
-              });
-          }
-        } else {
-          window.location.href = "/dashboard";
-        }
-      } else setIsLoggedIn(false);
+      if (tokens) window.location.href = "/dashboard";
+      else setIsLoggedIn(false);
     } catch (err) {
       localStorage.removeItem("tokens");
       setIsLoggedIn(false);
@@ -91,26 +66,27 @@ const Login = () => {
       })
       .then((response) => {
         setWaitingForResponse(false);
-        setLoginStatus("success");
-        setLoginInfo({
-          email: "",
-          password: "",
-          remember: true,
-        });
-        if (!user.remember) {
-          const hoursBeforeExpire = 6;
-          let expire = new Date();
-          expire.setTime(expire.getTime() + hoursBeforeExpire * 3600 * 1000);
-          response.data.detail.tokens.access.expires =
-            response.data.detail.tokens.refresh.expires = expire.toISOString();
+        if (response.data.success) {
+          setLoginStatus("success");
+          setLoginInfo({
+            email: "",
+            password: "",
+            remember: true,
+          });
+          localStorage.setItem(
+            "tokens",
+            JSON.stringify({
+              accessToken: response.data.detail.member.token.updateToken.token,
+              refreshToken:
+                response.data.detail.member.token.refreshToken.refresh,
+            })
+          );
+          setTimeout(function () {
+            window.location.href = "/dashboard";
+          }, 1000);
+        } else {
+          setLoginStatus("error");
         }
-        localStorage.setItem(
-          "tokens",
-          JSON.stringify(response.data.detail.tokens)
-        );
-        setTimeout(function () {
-          window.location.href = "/dashboard";
-        }, 1000);
       })
       .catch((err) => {
         console.log(err);
