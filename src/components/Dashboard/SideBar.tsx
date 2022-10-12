@@ -9,7 +9,7 @@ import insights from "../../images/insights.png";
 import receivables from "../../images/receivables.png";
 import bills from "../../images/bills.png";
 import banking from "../../images/banking.png";
-import categories from "../../images/categories.png";
+import logout from "../../images/logout.png";
 import { sidebarUtils } from "../../utils/interface";
 
 const sidebarData = {
@@ -22,7 +22,6 @@ const sidebarData = {
         { icon: receivables, text: "Receivables" },
         { icon: bills, text: "Bills to Pay" },
         { icon: banking, text: "Banking Transactions" },
-        { icon: categories, text: "Categories" },
       ],
     },
     { name: "Credit Management", items: [] },
@@ -30,15 +29,21 @@ const sidebarData = {
 };
 
 const SideBar = (props: sidebarUtils) => {
+  const Logout = () => {
+    localStorage.removeItem("tokens");
+    window.location.href = "/login";
+  };
+
   const sidebar = (
     <Grid item xs={12} className="dashboard-sidebar">
       <Grid
         container
         direction="column"
-        style={{ height: "100%" }}
         alignItems="center"
+        height="100%"
+        justifyContent="space-between"
       >
-        <Grid item xs={12} className="dashboard-sidebar-section">
+        <Grid item className="dashboard-sidebar-section">
           <Grid container alignItems="center">
             <div>
               <span className="sidebar-logo logo">KLARFIN</span>
@@ -54,7 +59,10 @@ const SideBar = (props: sidebarUtils) => {
                           <React.Fragment key={item.text}>
                             <ListItem
                               style={{ padding: "0rem", cursor: "pointer" }}
-                              onClick={() => props.setSelectedItem(item.text)}
+                              onClick={() => {
+                                props.setSelectedItem(item.text);
+                                props.setDrawerOpen(false);
+                              }}
                             >
                               <img
                                 src={item.icon}
@@ -92,6 +100,30 @@ const SideBar = (props: sidebarUtils) => {
             </div>
           </Grid>
         </Grid>
+        <Grid item width="100%">
+          <Grid
+            container
+            alignItems="center"
+            mb={3}
+            ml={1}
+            className="dashboard-sidebar-section"
+          >
+            <img
+              src={logout}
+              alt="logout"
+              height="100%"
+              style={{ cursor: "pointer" }}
+              onClick={() => Logout()}
+            />
+            <span
+              className="logout"
+              style={{ cursor: "pointer" }}
+              onClick={() => Logout()}
+            >
+              Logout
+            </span>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -115,7 +147,12 @@ const SideBar = (props: sidebarUtils) => {
       >
         {sidebar}
       </Drawer>
-      <Grid item xl={2} lg={2} md={2.5} className="show-sidebar">
+      <Grid
+        item
+        xs={12}
+        sx={{ display: { md: "flex", xs: "none" } }}
+        className="show-sidebar"
+      >
         {sidebar}
       </Grid>
     </>

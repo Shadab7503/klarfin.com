@@ -61,22 +61,7 @@ input[type="number"] {
   background: #1a1c20;
   padding-right: 0;
 }
-.cards-container {
-  padding: 0.5rem;
-}
-.MuiPaper-root.cards {
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  background: #1a1c20;
-  cursor: pointer;
-}
-.card-image {
-  margin-top: 2rem;
-  max-width: 100%;
-  width: 300px;
-  height: 250px;
-}
+
 .background,
 .landing,
 .login-container,
@@ -86,47 +71,11 @@ input[type="number"] {
 .main {
   height: 100%;
 }
-.MuiCardContent-root.card-content {
-  color: #fff;
-  text-align: center;
-}
 .MuiInputLabel-root.contact-form-field-label,
 .read-more {
   font-family: Montserrat;
   color: #1f4690;
 }
-.card-title {
-  font-family: "Montserrat";
-  font-size: 1.8rem;
-}
-.card-text {
-  font-family: Montserrat;
-  font-weight: 400;
-  font-size: 1.3rem;
-  margin: 0;
-}
-.cash-management {
-  padding: 3rem 0 4rem;
-}
-.cash-management-points {
-  margin: 0;
-  font-size: 1.5rem;
-  font-family: "Montserrat";
-}
-.cash-management-points2 {
-  margin: 1rem;
-  font-family: Montserrat;
-}
-.points-icon {
-  font-size: 2rem;
-  color: #0096ff;
-}
-.points-icon2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: green;
-}
-
 .contact-form {
   background: #fff;
   padding: 6rem 0;
@@ -236,18 +185,11 @@ a {
   /* font-weight: 600; */
 }
 
-.mission-text,
 .navItem {
   font-family: "Montserrat";
   font-weight: 600;
 }
-.mission-text {
-  font-size: 2rem;
-}
-.mission-points,
-.mission-points-icon {
-  font-size: 1.5rem;
-}
+
 .navBar {
   padding-top: 10px;
   z-index: 10;
@@ -507,7 +449,6 @@ a {
 
 .dashboard-sidebar-section {
   padding: 0rem 1.2rem;
-  overflow-y: auto;
 }
 
 .sidebar-logo {
@@ -522,7 +463,8 @@ a {
   padding: 0.8rem 0rem 0.8rem 0.5rem;
 }
 
-.dashboard-section-heading {
+.dashboard-section-heading,
+.logout {
   font-family: "Montserrat";
   font-size: 1.1rem;
   font-weight: bold;
@@ -531,6 +473,7 @@ a {
 
 .MuiGrid-root.show-sidebar {
   max-width: 16.5rem;
+  height: 100%;
 }
 
 .MuiPaper-root.section-item-text {
@@ -539,6 +482,13 @@ a {
   font-weight: 600;
   padding: 0.5rem;
   width: 100%;
+}
+
+.logout {
+  font-family: "Montserrat";
+  font-weight: 600;
+  color: white;
+  padding-left: 1rem;
 }
 
 .section-item-icon {
@@ -560,21 +510,7 @@ a {
 
 .cashflows {
   max-height: 100vh;
-}
-
-.MuiGrid-root.test-account {
-  background: #edf0f2;
-  color: black;
-  font-family: "Montserrat";
-  font-weight: 600;
-  text-align: center;
-  padding: 0.7rem 0rem;
-  margin: 1rem 1rem 0rem;
-}
-
-.MuiGrid-root.util-buttons {
   padding: 0rem 0.5rem;
-  margin-left: 0.4rem;
 }
 
 .util-button-paper {
@@ -588,10 +524,7 @@ a {
   font-family: "Montserrat";
   font-weight: bold;
   padding: 0.5rem;
-}
-
-.cash-display {
-  padding: 0rem 1rem;
+  padding-right: 0rem;
 }
 
 .cash-balance {
@@ -627,6 +560,118 @@ a {
   font-family: "Montserrat";
   color: #c33636;
   font-weight: 600;
+}
+
+.topbar {
+  padding: 1.2rem 1rem;
+  box-shadow: 2px 2px #e0e0e0;
+  border-bottom: 1px solid #3491d5;
+}
+
+.company-name {
+  font-family: "Montserrat";
+  font-weight: 600;
+  margin-left: 1rem;
+}
+
+.MuiGrid-root.settings-heading {
+  font-size: 2rem;
+  font-family: "Montserrat";
+  font-weight: 600;
+  margin-top: 3rem;
+}
+
+.MuiGrid-root.settings-padding {
+  padding-left: 2rem;
+}
+
+.MuiGrid-root.settings-tabs {
+  border-bottom: 1px solid #3491d5;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+.MuiTab-root.settings-tab {
+  font-size: 1rem;
+  font-family: "Montserrat";
+  font-weight: 600;
+  padding: 1rem 2rem 1rem;
+}
+
+.MuiGrid-root.settings-section-heading {
+  font-family: "Montserrat";
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.MuiGrid-root.user-management-top {
+  margin-top: 4rem;
+}
+
+.invite-user {
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+}
+
+.invite-user-text {
+  font-size: 1rem;
+  font-family: "Montserrat";
+  font-weight: 600;
+  margin-left: 1rem;
+}
+
+.user-count {
+  font-size: 1.2rem;
+  font-family: "Montserrat";
+  font-weight: 600;
+}
+
+.user-list {
+  margin-top: 3rem;
+}
+
+.MuiTableCell-root.user-list-heading {
+  font-size: 1.5rem;
+  font-family: "Montserrat";
+  font-weight: 600;
+  border-bottom: 1px solid #3491d5;
+  padding-left: 2rem;
+}
+
+.MuiTableCell-root.user-list-info {
+  font-family: "Montserrat";
+  font-size: 1rem;
+  font-weight: 600;
+  color: gray;
+  border-bottom: 1px solid #3491d5;
+  padding-left: 2rem;
+  overflow: auto;
+  max-width: 40vw;
+}
+
+.password,
+.edit-password,
+.change-password {
+  font-size: 1.2rem;
+  font-family: "Montserrat";
+  font-weight: bold;
+}
+
+.MuiGrid-root.password {
+  margin-top: 3rem;
+}
+.change-password {
+  font-weight: 600;
+  color: #b3b3b3;
+}
+.edit-password {
+  display: inline-block;
+  margin-top: 0.5rem;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
 }
 
 @media only screen and (max-width: 1400px) {
@@ -689,7 +734,8 @@ a {
   .dashboard-sidebar-section {
     padding: 0rem 0.5rem;
   }
-  .dashboard-section-heading {
+  .dashboard-section-heading,
+  .logout {
     font-size: 0.9rem;
   }
   .MuiPaper-root.section-item-text {
@@ -729,6 +775,9 @@ a {
   }
   .listItem {
     font-size: 1.1rem;
+  }
+  .sidebar-logo {
+    font-size: 2.2rem;
   }
 }
 @media only screen and (max-width: 900px) {
@@ -780,9 +829,6 @@ a {
   .working-image {
     width: 100%;
   }
-  .show-sidebar {
-    display: none;
-  }
   .util-button-text {
     font-size: 0.8rem;
   }
@@ -798,6 +844,12 @@ a {
   }
   .about-image {
     width: 45%;
+  }
+  .topbar {
+    padding: 0.5rem;
+  }
+  .MuiGrid-root.settings-heading {
+    margin-top: 1.5rem;
   }
 }
 
@@ -842,6 +894,18 @@ a {
   .about-image {
     width: 100%;
     padding: 2rem 0rem;
+  }
+  .company-name {
+    margin-left: 0.5rem;
+  }
+  .topbar-search {
+    max-width: 10rem;
+  }
+  .MuiGrid-root.user-management-top {
+    margin-top: 1.5rem;
+  }
+  .MuiTableCell-root.user-list-heading {
+    font-size: 1.3rem;
   }
 }
 @media only screen and (max-width: 500px) {

@@ -23,4 +23,20 @@ export interface sidebarUtils {
 
 export interface dashboardAreaUtils {
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  companyName: string;
+}
+
+export interface User {
+  role: string;
+  isEmailVerified: boolean;
+  isAdminApproved: boolean;
+  name: string;
+  companyName: string;
+  panNumber: string;
+  mobileNumber: number;
+  email: string;
+  industryName: string;
+  apiKey: string;
+  id: string;
 }
