@@ -66,6 +66,7 @@ const Login = () => {
       })
       .then((response) => {
         setWaitingForResponse(false);
+        console.log(response.data);
         if (response.data.success) {
           setLoginStatus("success");
           setLoginInfo({
