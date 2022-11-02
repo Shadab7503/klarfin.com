@@ -11,8 +11,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "../../utils/components";
 import axios from "axios";
 import { host } from "../../utils/variables";
-import { User, Admin, AdminColumn, StringDict } from "../../utils/interface";
-import { access } from "fs";
+import { Admin, AdminColumn, StringDict } from "../../utils/interface";
 
 const DashboardSuper = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -80,8 +79,6 @@ const DashboardSuper = () => {
 
   const approveAdmin = (id: string, email: string) => {
     setApproving("loading");
-    var data = "";
-
     var config = {
       method: "post",
       url: "https://klarfin.pics2art.xyz//v1/super/update/" + id,

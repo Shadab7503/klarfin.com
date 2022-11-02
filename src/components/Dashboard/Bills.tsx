@@ -910,7 +910,7 @@ const Bills = () => {
                         className="receivables-row-value"
                         align={column.field === "suppliers" ? "left" : "center"}
                       >
-                        {colIndex == 0 ? (
+                        {colIndex === 0 ? (
                           <Checkbox
                             checked={row["invoice number"] in invoiceSelected}
                             onChange={(event) => {

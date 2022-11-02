@@ -8,7 +8,7 @@ import Receivables from "./Receivables";
 import Bills from "./Bills";
 import Settings from "./Settings";
 import Loading from "./Loading";
-import CreditManagement from "./CreditManagement";
+// import CreditManagement from "./CreditManagement";
 import axios from "axios";
 import { host } from "../../utils/variables";
 import { User } from "../../utils/interface";

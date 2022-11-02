@@ -1,15 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import axios from "axios";
+// import axios from "axios";
 import { SetPassword } from "../../utils/interface";
 import { validatePassword } from "../../utils/validators";
-import { host } from "../../utils/variables";
+// import { host } from "../../utils/variables";
 import { Alert } from "../../utils/components";
 import { useSearchParams } from "react-router-dom";
 
@@ -18,7 +16,7 @@ const Verify = () => {
     "error" | "success" | ""
   >("");
   const [validating, setValidating] = useState<boolean>(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [password, setPassword] = useState<SetPassword>({
     password: "",
     confirmPassword: "",

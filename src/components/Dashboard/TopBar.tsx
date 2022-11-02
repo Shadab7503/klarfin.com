@@ -2,9 +2,6 @@ import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { TopBarProps } from "../../utils/interface";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
 import company from "../../images/company-logo.png";
 import settings from "../../images/settings.png";
 
