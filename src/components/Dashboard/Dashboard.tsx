@@ -4,9 +4,11 @@ import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import CashFlows from "./CashFlows";
 import Insights from "./Insights";
-// import Receivables from "./Receivables";
+import Receivables from "./Receivables";
+import Bills from "./Bills";
 import Settings from "./Settings";
 import Loading from "./Loading";
+import CreditManagement from "./CreditManagement";
 import axios from "axios";
 import { host } from "../../utils/variables";
 import { User } from "../../utils/interface";
@@ -23,10 +25,12 @@ const Dashboard = () => {
   } = {
     "Cash Flows": <CashFlows accessToken={accessToken} />,
     Insights: <Insights />,
-    // Receivables: <Receivables />,
+    Receivables: <Receivables name={user.name} />,
+    "Bills to Pay": <Bills />,
     Settings: (
       <Settings role={user.role} email={user.email} accessToken={accessToken} />
     ),
+    // "Credit Management": <CreditManagement />,
   };
 
   useEffect(() => {

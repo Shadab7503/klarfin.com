@@ -15,12 +15,16 @@ interface InsightsData {
 
 export interface History {
   date: string;
-  type: string;
+  updatedBy: string;
+  actionTaker: string;
+  recepient: string;
+  action: string;
   msg: string;
 }
 
 export interface HistoryData {
   company: string;
+  index: number;
   events: History[];
 }
 
@@ -48,6 +52,181 @@ export interface ReceivablesData {
   columns: RecivablesColumn[];
   rows: ReceivablesRow[];
 }
+
+export interface BillsRow {
+  suppliers: string;
+  date: string;
+  category: string;
+  "invoice number": number;
+  amount: number;
+  "balance amount": number;
+  "ageing days": number;
+}
+
+export interface BillsColumn {
+  field: keyof BillsRow;
+  headerName: string;
+}
+
+export interface BillsData {
+  columns: BillsColumn[];
+  rows: BillsRow[];
+}
+
+export interface CreditLine {
+  date: string;
+  days: number;
+  principal: number;
+  interest: number;
+  total: number;
+}
+
+export interface CreditLineColumn {
+  field: keyof CreditLine;
+  headerName: string;
+}
+
+export interface CreditHistory {
+  date: string;
+  particulars: string;
+  days: number;
+  rate: number;
+  expense: string;
+  supplier: string;
+  amount: number;
+}
+
+export interface CreditHistoryColumn {
+  field: keyof CreditHistory;
+  headerName: string;
+}
+
+export interface CreditLineData {
+  columns: CreditLineColumn[];
+  rows: CreditLine[];
+}
+export interface CreditHistoryData {
+  columns: CreditHistoryColumn[];
+  rows: CreditHistory[];
+}
+
+export interface CreditData {
+  creditLine: CreditLineData;
+  creditHistory: CreditHistoryData;
+}
+
+export const creditData: CreditData = {
+  creditLine: {
+    columns: [
+      {
+        field: "date",
+        headerName: "Date of Availing Credit",
+      },
+      {
+        field: "days",
+        headerName: "Days Outstanding",
+      },
+      {
+        field: "principal",
+        headerName: "Principal Due INR",
+      },
+      {
+        field: "interest",
+        headerName: "Interest Due INR",
+      },
+      {
+        field: "total",
+        headerName: "Total Due INR",
+      },
+    ],
+    rows: [
+      {
+        date: "06-Sep-22",
+        days: 6,
+        principal: 500000,
+        interest: 1151,
+        total: 501151,
+      },
+      {
+        date: "01-Sep-22",
+        days: 11,
+        principal: 80000,
+        interest: 3375,
+        total: 503375,
+      },
+      {
+        date: "25-Aug-22",
+        days: 11,
+        principal: 340000,
+        interest: 2347,
+        total: 342347,
+      },
+      {
+        date: "10-Aug-22",
+        days: 33,
+        principal: 980000,
+        interest: 12404,
+        total: 992404,
+      },
+      {
+        date: "31-Jul-22",
+        days: 43,
+        principal: 180000,
+        interest: 2969,
+        total: 182969,
+      },
+    ],
+  },
+  creditHistory: {
+    columns: [
+      { field: "date", headerName: "Date" },
+      { field: "particulars", headerName: "Particulars" },
+      { field: "days", headerName: "Duration Days" },
+      { field: "rate", headerName: "Interest Rate %" },
+      { field: "expense", headerName: "Expense Paid" },
+      { field: "supplier", headerName: "Supplier" },
+      { field: "amount", headerName: "Amount INR" },
+    ],
+    rows: [
+      {
+        date: "05-Jul-22",
+        particulars: "Credit Availed",
+        days: 45,
+        rate: 14,
+        expense: "Purchase",
+        supplier: "MCM Trading",
+        amount: 400000,
+      },
+      {
+        date: "19-Aug-22",
+        particulars: "Repaid",
+        days: 0,
+        rate: 0,
+        expense: "Purchase",
+        supplier: "MCM Trading",
+        amount: 406904,
+      },
+      {
+        date: "20-Jun-22",
+        particulars: "Credit Availed",
+        days: 40,
+        rate: 14,
+        expense: "Advertisement",
+        supplier: "Rise Digital Inc",
+        amount: 140000,
+      },
+      {
+        date: "30-Jul-22",
+        particulars: "Repaid",
+        days: 0,
+        rate: 0,
+        expense: "Advertisement",
+        supplier: "Rise Digital Inc",
+        amount: 142148,
+      },
+    ],
+  },
+};
 
 export const expenseBreakdown: ExpenseBreakdown = {
   Categories: [
@@ -159,19 +338,29 @@ export const receivablesData: ReceivablesData = {
       "ageing days": 253,
       history: [
         {
-          date: "04-Aug-22",
-          msg: "Called Robin who said these will be paid at the next pay run on Friday",
-          type: "call",
+          date: "01-Aug-22",
+          updatedBy: "John",
+          actionTaker: "Robin",
+          recepient: "Riley",
+          action: "messaged",
+          msg: "Reminder for the payment once",
         },
         {
           date: "02-Aug-22",
-          msg: "Chase email sent",
-          type: "email",
+          updatedBy: "John",
+          actionTaker: "Robin",
+          recepient: "Riley",
+          action: "emailed",
+          msg: "Reminder for the payment twice",
         },
+
         {
-          date: "05-Jun-22",
-          msg: "Robin called to let us know that payment was being delayed",
-          type: "call",
+          date: "04-Aug-22",
+          updatedBy: "John",
+          actionTaker: "Robin",
+          recepient: "Riley",
+          action: "called",
+          msg: "Reminder for the payment thrice",
         },
       ],
     },
@@ -228,6 +417,65 @@ export const receivablesData: ReceivablesData = {
       date: "17-Jun-22",
       "ageing days": 87,
       history: [],
+    },
+  ],
+};
+
+export const billsData: BillsData = {
+  columns: [
+    { field: "suppliers", headerName: "Suppliers" },
+    { field: "date", headerName: "Date" },
+    { field: "category", headerName: "Category" },
+    { field: "invoice number", headerName: "Invoice number" },
+    { field: "amount", headerName: "Amount INR" },
+    { field: "balance amount", headerName: "Balance amount" },
+    { field: "ageing days", headerName: "Ageing Days" },
+  ],
+  rows: [
+    {
+      suppliers: "MCM Trading",
+      category: "Purchase",
+      "invoice number": 12,
+      amount: 500000,
+      "balance amount": 350000,
+      date: "24-Jun-22",
+      "ageing days": 80,
+    },
+    {
+      suppliers: "Razor Inc",
+      category: "Purchase",
+      "invoice number": 20,
+      amount: 500000,
+      "balance amount": 350000,
+      date: "02-Jan-22",
+      "ageing days": 253,
+    },
+    {
+      suppliers: "Jezone Inc",
+      category: "Advertisement",
+      "invoice number": 22,
+      amount: 500000,
+      "balance amount": 350000,
+      date: "14-Mar-22",
+      "ageing days": 182,
+    },
+    {
+      suppliers: "MCM Trading",
+      category: "Professional fee",
+      "invoice number": 35,
+      amount: 500000,
+      "balance amount": 350000,
+      date: "01-Sep-22",
+      "ageing days": 11,
+    },
+    {
+      suppliers: "Breaing & Co",
+      category: "Rent",
+      "invoice number": 4,
+      amount: 500000,
+      "balance amount": 350000,
+      date: "18-Apr-22",
+      "ageing days": 147,
     },
   ],
 };

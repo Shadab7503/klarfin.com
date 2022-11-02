@@ -136,3 +136,34 @@ export interface ColumnTypeMap {
 export interface ColumnBoolean {
   [key: string]: boolean;
 }
+
+export interface Invoice {
+  "Invoice Date": string;
+  "Invoice No.": number;
+  "Invoice Amount (INR)": number;
+  "Amount Due (INR)": number;
+  Payment: string;
+}
+
+export interface InvoiceNumberMap {
+  [key: number]: Invoice;
+}
+
+export interface SetPassword {
+  password: string;
+  confirmPassword: string;
+}
+
+export interface Admin {
+  panNumber: string;
+  mobileNumber: number;
+  companyName: string;
+  id: string;
+  email: string;
+  apiKey: string;
+}
+
+export interface AdminColumn {
+  field: keyof Admin;
+  headerName: string;
+}

@@ -58,50 +58,82 @@ const SideBar = (props: sidebarUtils) => {
               {sidebarData.sections.map((section) => {
                 return (
                   <React.Fragment key={section.name}>
-                    <span className="dashboard-section-heading">
+                    <Grid
+                      container
+                      px={1}
+                      py={1}
+                      className="dashboard-section-heading"
+                      style={{
+                        cursor: "pointer",
+                        borderRadius: "4px",
+                        background:
+                          section.name === props.selectedItem
+                            ? "white"
+                            : "inherit",
+                        color:
+                          section.name === props.selectedItem
+                            ? "#3594d4"
+                            : "white",
+                        boxShadow:
+                          section.name === props.selectedItem
+                            ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                            : "0px 0px",
+                      }}
+                      onClick={() =>
+                        section.name === "Credit Management"
+                          ? (props.setSelectedItem(section.name),
+                            props.setDrawerOpen(false))
+                          : null
+                      }
+                    >
                       {section.name}
-                    </span>
-                    <List className="section-items">
-                      {section.items.map((item) => {
-                        return (
-                          <React.Fragment key={item.text}>
-                            <ListItem
-                              style={{ padding: "0rem", cursor: "pointer" }}
-                              onClick={() => {
-                                props.setSelectedItem(item.text);
-                                props.setDrawerOpen(false);
-                              }}
-                            >
-                              <img
-                                src={item.icon}
-                                alt={item.text}
-                                className="section-item-icon"
-                              />
-                              <Paper
-                                elevation={0}
-                                className="section-item-text"
+                    </Grid>
+                    <Grid container pl={1}>
+                      <List className="section-items">
+                        {section.items.map((item) => {
+                          return (
+                            <React.Fragment key={item.text}>
+                              <ListItem
                                 style={{
-                                  background:
-                                    item.text === props.selectedItem
-                                      ? "white"
-                                      : "inherit",
-                                  color:
-                                    item.text === props.selectedItem
-                                      ? "#3594d4"
-                                      : "white",
-                                  boxShadow:
-                                    item.text === props.selectedItem
-                                      ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
-                                      : "0px 0px",
+                                  padding: "0rem",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => {
+                                  props.setSelectedItem(item.text);
+                                  props.setDrawerOpen(false);
                                 }}
                               >
-                                {item.text}
-                              </Paper>
-                            </ListItem>
-                          </React.Fragment>
-                        );
-                      })}
-                    </List>
+                                <img
+                                  src={item.icon}
+                                  alt={item.text}
+                                  className="section-item-icon"
+                                />
+                                <Paper
+                                  elevation={0}
+                                  className="section-item-text"
+                                  style={{
+                                    background:
+                                      item.text === props.selectedItem
+                                        ? "white"
+                                        : "inherit",
+                                    color:
+                                      item.text === props.selectedItem
+                                        ? "#3594d4"
+                                        : "white",
+                                    boxShadow:
+                                      item.text === props.selectedItem
+                                        ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                                        : "0px 0px",
+                                  }}
+                                >
+                                  {item.text}
+                                </Paper>
+                              </ListItem>
+                            </React.Fragment>
+                          );
+                        })}
+                      </List>
+                    </Grid>
                   </React.Fragment>
                 );
               })}

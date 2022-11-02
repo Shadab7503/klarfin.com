@@ -27,27 +27,8 @@ const TopBar = (props: TopBarProps) => {
           </IconButton>
         </Grid>
       </Grid>
-      <Grid item xl={5} lg={6} md={9} sm={10} xs={12}>
+      <Grid item xl={2} lg={3} sm={4} xs={6}>
         <Grid container alignItems="center" justifyContent="space-evenly">
-          <Grid item>
-            <TextField
-              inputProps={{
-                style: {
-                  padding: 5,
-                },
-              }}
-              className="topbar-search"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              placeholder="Search"
-            />
-          </Grid>
           <Grid item>
             <Grid container alignItems="center">
               <img src={company} alt="company-logo" width="25px" />

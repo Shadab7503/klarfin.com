@@ -67,6 +67,25 @@ const SignUp = () => {
         setWaitingForResponse(false);
         if (response.data.success) {
           setRegisterStatus("success");
+          if ("token" in response.data.detail.member.token)
+            localStorage.setItem(
+              "tokens",
+              JSON.stringify({
+                accessToken: response.data.detail.member.token.token,
+                refreshToken:
+                  response.data.detail.member.token.refreshToken.refresh,
+              })
+            );
+          else
+            localStorage.setItem(
+              "tokens",
+              JSON.stringify({
+                accessToken:
+                  response.data.detail.member.token.updateToken.token,
+                refreshToken:
+                  response.data.detail.member.token.refreshToken.refresh,
+              })
+            );
           setNewUser({
             name: "",
             companyName: "",
@@ -76,14 +95,6 @@ const SignUp = () => {
             industryName: "",
             password: "",
           });
-          localStorage.setItem(
-            "tokens",
-            JSON.stringify({
-              accessToken: response.data.detail.member.token.updateToken.token,
-              refreshToken:
-                response.data.detail.member.token.refreshToken.refresh,
-            })
-          );
           setTimeout(function () {
             window.location.href = "/dashboard";
           }, 1000);
