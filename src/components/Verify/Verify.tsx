@@ -16,7 +16,7 @@ const Verify = () => {
     "error" | "success" | ""
   >("");
   const [validating, setValidating] = useState<boolean>(false);
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [password, setPassword] = useState<SetPassword>({
     password: "",
     confirmPassword: "",
