@@ -12,7 +12,6 @@ import loginImage from "../../images/login-image.png";
 import axios from "axios";
 import { loginDetails } from "../../utils/interface";
 import { validateEmail, validatePassword } from "../../utils/validators";
-import { host } from "../../utils/variables";
 import { Alert } from "../../utils/components";
 
 const Login = () => {
@@ -60,7 +59,7 @@ const Login = () => {
     setValidating(false);
     setWaitingForResponse(true);
     axios
-      .post(host + "v1/admin/login", {
+      .post(`${process.env.REACT_APP_BACKEND_HOST}v1/admin/login`, {
         email: user.email,
         password: user.password,
       })

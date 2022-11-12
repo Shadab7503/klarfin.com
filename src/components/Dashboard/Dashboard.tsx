@@ -10,7 +10,6 @@ import Settings from "./Settings";
 import Loading from "./Loading";
 // import CreditManagement from "./CreditManagement";
 import axios from "axios";
-import { host } from "../../utils/variables";
 import { User } from "../../utils/interface";
 
 const Dashboard = () => {
@@ -49,7 +48,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (accessToken) {
       axios
-        .get(host + "v1/admin/getAllDetails", {
+        .get(process.env.REACT_APP_BACKEND_HOST + "v1/admin/getAllDetails", {
           headers: { Authorization: `Bearer ${accessToken}` },
         })
         .then((response) => {
