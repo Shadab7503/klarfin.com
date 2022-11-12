@@ -33,33 +33,8 @@ const SignUp = () => {
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
     try {
-      if (tokens) {
-        const tokensObj = JSON.parse(tokens);
-        const acccess_expiry = new Date(tokensObj.access.expires);
-        const currentTime = new Date().getTime();
-        if (acccess_expiry.getTime() < currentTime) {
-          const refresh_expiry = new Date(tokensObj.refresh.expires);
-          if (refresh_expiry.getTime() < currentTime) {
-            localStorage.removeItem("tokens");
-            setIsLoggedIn(false);
-          } else {
-            axios
-              .post(host + "v1/admin/refresh-tokens", {
-                refreshToken: tokensObj.refresh.token,
-              })
-              .then((response) => {
-                localStorage.setItem("tokens", JSON.stringify(response.data));
-                window.location.href = "/dashboard";
-              })
-              .catch((err) => {
-                localStorage.removeItem("tokens");
-                setIsLoggedIn(false);
-              });
-          }
-        } else {
-          window.location.href = "/dashboard";
-        }
-      } else setIsLoggedIn(false);
+      if (tokens) window.location.href = "/dashboard";
+      else setIsLoggedIn(false);
     } catch (err) {
       localStorage.removeItem("tokens");
       setIsLoggedIn(false);
@@ -90,23 +65,43 @@ const SignUp = () => {
       .post(host + "v1/admin/register", user)
       .then((response) => {
         setWaitingForResponse(false);
-        setRegisterStatus("success");
-        setNewUser({
-          name: "",
-          companyName: "",
-          panNumber: "",
-          mobileNumber: "",
-          email: "",
-          industryName: "",
-          password: "",
-        });
-        localStorage.setItem(
-          "tokens",
-          JSON.stringify(response.data.detail.tokens)
-        );
-        setTimeout(function () {
-          window.location.href = "/dashboard";
-        }, 1000);
+        if (response.data.success) {
+          setRegisterStatus("success");
+          if ("token" in response.data.detail.member.token)
+            localStorage.setItem(
+              "tokens",
+              JSON.stringify({
+                accessToken: response.data.detail.member.token.token,
+                refreshToken:
+                  response.data.detail.member.token.refreshToken.refresh,
+              })
+            );
+          else
+            localStorage.setItem(
+              "tokens",
+              JSON.stringify({
+                accessToken:
+                  response.data.detail.member.token.updateToken.token,
+                refreshToken:
+                  response.data.detail.member.token.refreshToken.refresh,
+              })
+            );
+          setNewUser({
+            name: "",
+            companyName: "",
+            panNumber: "",
+            mobileNumber: "",
+            email: "",
+            industryName: "",
+            password: "",
+          });
+          setTimeout(function () {
+            window.location.href = "/dashboard";
+          }, 1000);
+        } else {
+          setRegisterStatus("error");
+          setErrorMsg(response.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);

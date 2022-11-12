@@ -15,7 +15,7 @@ import { validateEmail, validatePassword } from "../../utils/validators";
 import { host } from "../../utils/variables";
 import { Alert } from "../../utils/components";
 
-const Login = () => {
+const LoginSuper = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
   const [loginStatus, setLoginStatus] = useState<"error" | "success" | "">("");
@@ -27,12 +27,12 @@ const Login = () => {
   });
 
   useEffect(() => {
-    let tokens = localStorage.getItem("tokens");
+    let tokens = localStorage.getItem("superTokens");
     try {
-      if (tokens) window.location.href = "/dashboard";
+      if (tokens) window.location.href = "/dashboardSuper";
       else setIsLoggedIn(false);
     } catch (err) {
-      localStorage.removeItem("tokens");
+      localStorage.removeItem("superTokens");
       setIsLoggedIn(false);
     }
   }, []);
@@ -60,7 +60,7 @@ const Login = () => {
     setValidating(false);
     setWaitingForResponse(true);
     axios
-      .post(host + "v1/admin/login", {
+      .post(host + "v1/super/login", {
         email: user.email,
         password: user.password,
       })
@@ -69,9 +69,14 @@ const Login = () => {
         console.log(response.data);
         if (response.data.success) {
           setLoginStatus("success");
+          setLoginInfo({
+            email: "",
+            password: "",
+            remember: true,
+          });
           if ("token" in response.data.detail.member.token)
             localStorage.setItem(
-              "tokens",
+              "superTokens",
               JSON.stringify({
                 accessToken: response.data.detail.member.token.token,
                 refreshToken:
@@ -80,7 +85,7 @@ const Login = () => {
             );
           else
             localStorage.setItem(
-              "tokens",
+              "superTokens",
               JSON.stringify({
                 accessToken:
                   response.data.detail.member.token.updateToken.token,
@@ -88,13 +93,8 @@ const Login = () => {
                   response.data.detail.member.token.refreshToken.refresh,
               })
             );
-          setLoginInfo({
-            email: "",
-            password: "",
-            remember: true,
-          });
           setTimeout(function () {
-            window.location.href = "/dashboard";
+            window.location.href = "/dashboardSuper";
           }, 1000);
         } else {
           setLoginStatus("error");
@@ -292,4 +292,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginSuper;

@@ -9,10 +9,10 @@ import insights from "../../images/insights.png";
 import receivables from "../../images/receivables.png";
 import bills from "../../images/bills.png";
 import banking from "../../images/banking.png";
-import categories from "../../images/categories.png";
-import companyLogo from "../../images/company-logo.png";
-import settings from "../../images/settings.png";
+import logout from "../../images/logout.png";
 import { sidebarUtils } from "../../utils/interface";
+import axios from "axios";
+import { host } from "../../utils/variables";
 
 const sidebarData = {
   sections: [
@@ -24,7 +24,6 @@ const sidebarData = {
         { icon: receivables, text: "Receivables" },
         { icon: bills, text: "Bills to Pay" },
         { icon: banking, text: "Banking Transactions" },
-        { icon: categories, text: "Categories" },
       ],
     },
     { name: "Credit Management", items: [] },
@@ -32,91 +31,137 @@ const sidebarData = {
 };
 
 const SideBar = (props: sidebarUtils) => {
+  const Logout = () => {
+    if (localStorage.getItem("tokens")) {
+      const tokensObj = JSON.parse(localStorage.getItem("tokens")!);
+      axios.post(host + "v1/admin/logout", {
+        refreshToken: tokensObj.refreshToken,
+      });
+    }
+    localStorage.removeItem("tokens");
+    window.location.href = "/login";
+  };
+
   const sidebar = (
     <Grid item xs={12} className="dashboard-sidebar">
       <Grid
         container
         direction="column"
-        style={{ height: "100%" }}
+        alignItems="center"
+        height="100%"
         justifyContent="space-between"
       >
-        <Grid item xs={9} className="dashboard-sidebar-section">
-          <Grid container alignItems="center" style={{ height: "100%" }}>
+        <Grid item className="dashboard-sidebar-section">
+          <Grid container alignItems="center">
             <div>
+              <span className="sidebar-logo logo">KLARFIN</span>
               {sidebarData.sections.map((section) => {
                 return (
                   <React.Fragment key={section.name}>
-                    <span className="dashboard-section-heading">
+                    <Grid
+                      container
+                      px={1}
+                      py={1}
+                      className="dashboard-section-heading"
+                      style={{
+                        cursor: "pointer",
+                        borderRadius: "4px",
+                        background:
+                          section.name === props.selectedItem
+                            ? "white"
+                            : "inherit",
+                        color:
+                          section.name === props.selectedItem
+                            ? "#3594d4"
+                            : "white",
+                        boxShadow:
+                          section.name === props.selectedItem
+                            ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                            : "0px 0px",
+                      }}
+                      onClick={() =>
+                        section.name === "Credit Management"
+                          ? (props.setSelectedItem(section.name),
+                            props.setDrawerOpen(false))
+                          : null
+                      }
+                    >
                       {section.name}
-                    </span>
-                    <List className="section-items">
-                      {section.items.map((item) => {
-                        return (
-                          <React.Fragment key={item.text}>
-                            <ListItem
-                              style={{ padding: "0rem", cursor: "pointer" }}
-                              onClick={() => props.setSelectedItem(item.text)}
-                            >
-                              <img
-                                src={item.icon}
-                                alt={item.text}
-                                className="section-item-icon"
-                              />
-                              <Paper
-                                elevation={0}
-                                className="section-item-text"
+                    </Grid>
+                    <Grid container pl={1}>
+                      <List className="section-items">
+                        {section.items.map((item) => {
+                          return (
+                            <React.Fragment key={item.text}>
+                              <ListItem
                                 style={{
-                                  background:
-                                    item.text === props.selectedItem
-                                      ? "white"
-                                      : "inherit",
-                                  color:
-                                    item.text === props.selectedItem
-                                      ? "#3594d4"
-                                      : "white",
-                                  boxShadow:
-                                    item.text === props.selectedItem
-                                      ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
-                                      : "0px 0px",
+                                  padding: "0rem",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => {
+                                  props.setSelectedItem(item.text);
+                                  props.setDrawerOpen(false);
                                 }}
                               >
-                                {item.text}
-                              </Paper>
-                            </ListItem>
-                          </React.Fragment>
-                        );
-                      })}
-                    </List>
+                                <img
+                                  src={item.icon}
+                                  alt={item.text}
+                                  className="section-item-icon"
+                                />
+                                <Paper
+                                  elevation={0}
+                                  className="section-item-text"
+                                  style={{
+                                    background:
+                                      item.text === props.selectedItem
+                                        ? "white"
+                                        : "inherit",
+                                    color:
+                                      item.text === props.selectedItem
+                                        ? "#3594d4"
+                                        : "white",
+                                    boxShadow:
+                                      item.text === props.selectedItem
+                                        ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                                        : "0px 0px",
+                                  }}
+                                >
+                                  {item.text}
+                                </Paper>
+                              </ListItem>
+                            </React.Fragment>
+                          );
+                        })}
+                      </List>
+                    </Grid>
                   </React.Fragment>
                 );
               })}
             </div>
           </Grid>
         </Grid>
-        <Grid item xs={2}>
-          <Grid container alignItems="center" className="sidebar-bottom-item">
-            <Grid item xs={3} textAlign="center">
-              <img
-                src={companyLogo}
-                alt="company-icon"
-                className="sidebar-bottom-icon"
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <span className="sidebar-bottom-text">Alister Corp</span>
-            </Grid>
-          </Grid>
-          <Grid container alignItems="center" className="sidebar-bottom-item">
-            <Grid item xs={3} textAlign="center">
-              <img
-                src={settings}
-                alt="settings-icon"
-                className="sidebar-bottom-icon"
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <span className="sidebar-bottom-text">Advanced Settings</span>
-            </Grid>
+        <Grid item width="100%">
+          <Grid
+            container
+            alignItems="center"
+            mb={3}
+            ml={1}
+            className="dashboard-sidebar-section"
+          >
+            <img
+              src={logout}
+              alt="logout"
+              height="100%"
+              style={{ cursor: "pointer" }}
+              onClick={() => Logout()}
+            />
+            <span
+              className="logout"
+              style={{ cursor: "pointer" }}
+              onClick={() => Logout()}
+            >
+              Logout
+            </span>
           </Grid>
         </Grid>
       </Grid>
@@ -142,7 +187,12 @@ const SideBar = (props: sidebarUtils) => {
       >
         {sidebar}
       </Drawer>
-      <Grid item xl={2} lg={2} md={2.5} className="show-sidebar">
+      <Grid
+        item
+        xs={12}
+        sx={{ display: { md: "flex", xs: "none" } }}
+        className="show-sidebar"
+      >
         {sidebar}
       </Grid>
     </>

@@ -1,6 +1,6 @@
 import NavBar from "../NavBar";
 import Footer from "../Footer";
-import Mission from "../Home/Mission";
+import Mission from "./Mission";
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
