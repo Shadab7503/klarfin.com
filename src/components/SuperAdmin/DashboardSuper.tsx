@@ -10,7 +10,6 @@ import Loading from "../Dashboard/Loading";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "../../utils/components";
 import axios from "axios";
-import { host } from "../../utils/variables";
 import { Admin, AdminColumn, StringDict } from "../../utils/interface";
 
 const DashboardSuper = () => {
@@ -44,9 +43,12 @@ const DashboardSuper = () => {
   useEffect(() => {
     if (accessToken) {
       axios
-        .get(host + "v1/super/get-all-un-approved", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        })
+        .get(
+          process.env.REACT_APP_BACKEND_HOST + "v1/super/get-all-un-approved",
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        )
         .then((response) => {
           if (
             "message" in response.data &&

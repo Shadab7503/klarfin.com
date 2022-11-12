@@ -12,7 +12,6 @@ import banking from "../../images/banking.png";
 import logout from "../../images/logout.png";
 import { sidebarUtils } from "../../utils/interface";
 import axios from "axios";
-import { host } from "../../utils/variables";
 
 const sidebarData = {
   sections: [
@@ -34,7 +33,7 @@ const SideBar = (props: sidebarUtils) => {
   const Logout = () => {
     if (localStorage.getItem("tokens")) {
       const tokensObj = JSON.parse(localStorage.getItem("tokens")!);
-      axios.post(host + "v1/admin/logout", {
+      axios.post(process.env.REACT_APP_BACKEND_HOST + "v1/admin/logout", {
         refreshToken: tokensObj.refreshToken,
       });
     }

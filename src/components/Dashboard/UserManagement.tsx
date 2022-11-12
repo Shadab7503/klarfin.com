@@ -13,7 +13,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Loading from "./Loading";
 import email from "../../images/email.png";
-import { host } from "../../utils/variables";
 import { UserManagementProps, Invite, Member } from "../../utils/interface";
 import { validateEmail, validateNotEmpty } from "../../utils/validators";
 import axios from "axios";
@@ -46,7 +45,7 @@ const UserManagement = (props: UserManagementProps) => {
   useEffect(() => {
     setIsLoaded(true);
     axios
-      .get(host + "v1/admin/memberCheck", {
+      .get(process.env.REACT_APP_BACKEND_HOST + "v1/admin/memberCheck", {
         headers: { Authorization: `Bearer ${props.accessToken}` },
       })
       .then((response) => {
@@ -71,7 +70,7 @@ const UserManagement = (props: UserManagementProps) => {
     if (!validateNotEmpty(invite.name) || !validateEmail(invite.email)) return;
 
     axios
-      .post(host + "v1/admin/addMember", invite, {
+      .post(process.env.REACT_APP_BACKEND_HOST + "v1/admin/addMember", invite, {
         headers: {
           Authorization: `Bearer ${props.accessToken}`,
         },

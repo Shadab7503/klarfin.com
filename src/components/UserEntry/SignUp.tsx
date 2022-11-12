@@ -11,7 +11,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { user } from "../../utils/interface";
-import { host, industries } from "../../utils/variables";
+import { industries } from "../../utils/variables";
 import { Alert } from "../../utils/components";
 
 const SignUp = () => {
@@ -62,7 +62,7 @@ const SignUp = () => {
     setValidating(false);
     setWaitingForResponse(true);
     axios
-      .post(host + "v1/admin/register", user)
+      .post(process.env.REACT_APP_BACKEND_HOST + "v1/admin/register", user)
       .then((response) => {
         setWaitingForResponse(false);
         if (response.data.success) {

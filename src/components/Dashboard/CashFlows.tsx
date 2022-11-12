@@ -34,7 +34,6 @@ import {
   StringDict,
 } from "../../utils/interface";
 // import axios from "axios";
-// import { host } from "../../utils/variables";
 
 const utilButtons = [
   {
@@ -74,7 +73,7 @@ const CashFlows = (props: { accessToken: string }) => {
 
   useEffect(() => {
     // axios
-    //   .get(host + "v1/user/cashinflow/cash", {
+    //   .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
     //     headers: { Authorization: `Bearer ${props.accessToken}` },
     //   })
     //   .then((response) => {
