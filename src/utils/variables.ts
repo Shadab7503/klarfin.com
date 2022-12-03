@@ -1,4 +1,4 @@
-export const host = "https://klarfin.pics2art.xyz/";
+export const host = "https://api.klarfin.com/";
 
 export const industries = [
   "Hospitality",

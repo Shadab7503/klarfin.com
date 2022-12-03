@@ -42,7 +42,7 @@ const NavBar = () => {
         </Link>
       </Grid>
       <Grid item xs={12} className="drawerItem">
-        <a href="/login">Login</a>
+        <Link to="/login">Login</Link>
       </Grid>
       <Grid item xs={12} style={{ textAlign: "center" }}>
         <a href="/register">

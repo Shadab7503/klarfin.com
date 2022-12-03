@@ -83,7 +83,7 @@ const DashboardSuper = () => {
     setApproving("loading");
     var config = {
       method: "post",
-      url: "https://klarfin.pics2art.xyz//v1/super/update/" + id,
+      url: `${process.env.REACT_APP_BACKEND_HOST}v1/super/update/${id}`,
       headers: {
         Authorization: "Bearer " + accessToken,
       },
