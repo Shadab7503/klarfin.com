@@ -33,6 +33,7 @@ import {
   Inflow,
   StringDict,
 } from "../../utils/interface";
+import axios from "axios";
 // import axios from "axios";
 
 const utilButtons = [
@@ -72,15 +73,17 @@ const CashFlows = (props: { accessToken: string }) => {
   const [inflowCategories, setInflowCategories] = useState<StringDict>({});
 
   useEffect(() => {
-    // axios
-    //   .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
-    //     headers: { Authorization: `Bearer ${props.accessToken}` },
-    //   })
-    //   .then((response) => {
-    //     // setupInflow(response.data);
-    //     setupInflow(inflow);
-    //   });
-    setupInflow(inflow);
+    axios
+      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
+        headers: { Authorization: `Bearer ${props.accessToken}` },
+      })
+      .then((response) => {
+        // setupInflow(response.data);
+        setupInflow(response.data);
+        // console.log(response.data);
+      });
+ 
+    // setupInflow(inflow);
   }, [props]);
 
   const setupInflow = (inflow: Inflow) => {
@@ -124,6 +127,9 @@ const CashFlows = (props: { accessToken: string }) => {
     cashinflow_data.forEach((cashinflow) => {
       cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
         const voucherDate = dayjs(receipt.voucherdate).format("MMM YYYY");
+        if(!inflowDataTemp[voucherDate]) {
+          return;
+        }
         inflowDataTemp[voucherDate].Total += receipt.amount;
         inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
           receipt.amount;

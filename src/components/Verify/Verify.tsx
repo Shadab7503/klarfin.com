@@ -10,6 +10,7 @@ import { validatePassword } from "../../utils/validators";
 // import { host } from "../../utils/variables";
 import { Alert } from "../../utils/components";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
 const Verify = () => {
   const [passwordStatus, setPasswordStatus] = useState<
@@ -44,10 +45,28 @@ const Verify = () => {
       password.confirmPassword !== password.password
     )
       return;
-    setValidating(false);
-    const email = searchParams.get("email");
-    console.log(email);
-    setPasswordStatus("error");
+
+    var config = {
+      method: "post",
+      url: `${process.env.REACT_APP_BACKEND_HOST}v1/member/setPassword`,
+      data: {
+        password:password.password,
+       token:searchParams.get("token"),
+       email:searchParams.get("email")
+      },
+    };
+    axios(config)
+      .then((response) => {
+        window.location.href = "/";
+        setValidating(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      
+ 
+   
+   
   };
 
   return (

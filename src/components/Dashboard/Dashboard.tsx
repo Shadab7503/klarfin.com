@@ -38,10 +38,10 @@ const Dashboard = () => {
       if (tokens) {
         const tokensObj = JSON.parse(tokens);
         setAccessToken(tokensObj.accessToken);
-      } else window.location.href = "/login";
+      } else window.location.href = "/";
     } catch (err) {
       localStorage.removeItem("tokens");
-      window.location.href = "/login";
+      window.location.href = "/";
     }
   }, []);
 
@@ -57,13 +57,13 @@ const Dashboard = () => {
             setIsLoggedIn(true);
           } else {
             localStorage.removeItem("tokens");
-            window.location.href = "/login";
+            window.location.href = "/";
           }
         })
         .catch((err) => {
           console.log(err);
           localStorage.removeItem("tokens");
-          window.location.href = "/login";
+          window.location.href = "/";
         });
     }
   }, [accessToken]);

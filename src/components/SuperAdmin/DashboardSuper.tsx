@@ -23,8 +23,10 @@ const DashboardSuper = () => {
     { field: "apiKey", headerName: "API Key" },
     { field: "companyName", headerName: "Company Name" },
     { field: "email", headerName: "Email" },
+    { field: "isEmailVerified", headerName: "Email Verification" },
     { field: "mobileNumber", headerName: "Mobile Number" },
     { field: "panNumber", headerName: "PAN Number" },
+    { field: "isAdminApproved", headerName: "Approval" },
   ];
 
   useEffect(() => {
@@ -40,7 +42,9 @@ const DashboardSuper = () => {
     }
   }, []);
 
-  useEffect(() => {
+
+
+  const getAdmins = ()=>{
     if (accessToken) {
       axios
         .get(
@@ -54,19 +58,25 @@ const DashboardSuper = () => {
             "message" in response.data &&
             response.data.message === "UnApproved Admin"
           ) {
-            setUnApprovedAdmins(response.data.admin);
+            setUnApprovedAdmins([...response.data.admin]);
             setIsLoggedIn(true);
           } else {
             localStorage.removeItem("superTokens");
             window.location.href = "/loginSuper";
           }
+          setApproving("");
+
         })
         .catch((err) => {
           console.log(err);
           localStorage.removeItem("superTokens");
           window.location.href = "/loginSuper";
         });
-    }
+    } 
+  }
+
+  useEffect(() => {
+    getAdmins();
   }, [accessToken]);
 
   const handleSnackClose = (
@@ -79,7 +89,7 @@ const DashboardSuper = () => {
     setApproving("");
   };
 
-  const approveAdmin = (id: string, email: string) => {
+  const approveAdmin = (id: string, email: string,approve:boolean=true) => {
     setApproving("loading");
     var config = {
       method: "post",
@@ -88,7 +98,7 @@ const DashboardSuper = () => {
         Authorization: "Bearer " + accessToken,
       },
       data: {
-        isAdminApproved: true,
+        isAdminApproved: approve,
       },
     };
     axios(config)
@@ -97,8 +107,9 @@ const DashboardSuper = () => {
           "message" in response.data &&
           response.data.message === "Admin successfully approved"
         ) {
-          setApproving("");
-          setApprovedEmails({ ...approvedEmails, [email]: 1 });
+          // setApprovedEmails({ ...approvedEmails, [email]: 1 });
+          getAdmins();
+
         } else if (
           "success" in response.data &&
           response.data.success === false
@@ -158,11 +169,30 @@ const DashboardSuper = () => {
                         className="receivables-row-value"
                         align="center"
                       >
-                        {row[column.field]}
+                        { column.field == 'isEmailVerified' ? (row[column.field] ? 'Verified' : 'Unverified') : row[column.field] }
+                        { column.field == 'isAdminApproved' ? (row[column.field] ? 'Approved' : 'UnApproved') : null }
                       </TableCell>
                     ))}
                     <TableCell align="center">
-                      <Grid container justifyContent="center">
+
+                      {
+
+                      row['isAdminApproved']  ? 
+
+                            <Grid
+                              item
+                              className="bills-pay"
+                              py={1}
+                              px={2}
+                              onClick={() => approveAdmin(row["id"], row["email"],false)}
+                              style={{
+                                background:'#e93447'
+                              }}
+                            >
+                              UnApprove
+                            </Grid>
+
+                          : <Grid container justifyContent="center">
                         <Grid
                           item
                           className="bills-pay"
@@ -180,7 +210,10 @@ const DashboardSuper = () => {
                             ? "Approved"
                             : "Approve"}
                         </Grid>
+
                       </Grid>
+                      }
+                
                     </TableCell>
                   </TableRow>
                 ))}
