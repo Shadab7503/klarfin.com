@@ -161,6 +161,8 @@ export interface Admin {
   id: string;
   email: string;
   apiKey: string;
+  isEmailVerified: boolean;
+  isAdminApproved:boolean;
 }
 
 export interface AdminColumn {

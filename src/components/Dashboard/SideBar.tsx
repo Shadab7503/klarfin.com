@@ -38,7 +38,7 @@ const SideBar = (props: sidebarUtils) => {
       });
     }
     localStorage.removeItem("tokens");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   const sidebar = (

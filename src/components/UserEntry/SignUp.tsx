@@ -13,6 +13,7 @@ import axios from "axios";
 import { user } from "../../utils/interface";
 import { industries } from "../../utils/variables";
 import { Alert } from "../../utils/components";
+import { useSearchParams } from "react-router-dom";
 
 const SignUp = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
@@ -30,7 +31,23 @@ const SignUp = () => {
     password: "",
   });
 
+
+  const [searchParams, setSearchParams] = useSearchParams();
+ 
+
+  const isDisabled = (type:string)=>{
+    if(searchParams.get(type)) {
+      return true;
+    }
+    return false;
+  }
+
   useEffect(() => {
+  
+    setNewUser({...newUser,email:`${searchParams.get("email") ? searchParams.get("email") : ''}`,name:`${searchParams.get("name") ? searchParams.get("name") : ''}`,companyName:`${searchParams.get("org") ? searchParams.get("org") : '' }`,panNumber:`${searchParams.get("pan") ? searchParams.get("pan") : ''}`,industryName:`${searchParams.get("industry") ? searchParams.get("industry") : ''}`});
+    // for (const [key, value] of urlParams) {
+    //     console.log(`${key}:${value}`);
+    // }
     let tokens = localStorage.getItem("tokens");
     try {
       if (tokens) window.location.href = "/dashboard";
@@ -48,6 +65,11 @@ const SignUp = () => {
   };
 
   const signUpUser = (user: user) => {
+    let url = "v1/admin/register";
+
+    if(searchParams.get('memberLogin')) {
+      url = "v1/member/setPassword";
+    }
     setValidating(true);
     if (
       !validators.validateNotEmpty(user.name) ||
@@ -62,7 +84,7 @@ const SignUp = () => {
     setValidating(false);
     setWaitingForResponse(true);
     axios
-      .post(process.env.REACT_APP_BACKEND_HOST + "v1/admin/register", user)
+      .post(process.env.REACT_APP_BACKEND_HOST + url, {...user,token:`${searchParams.get('token')}`})
       .then((response) => {
         setWaitingForResponse(false);
         if (response.data.success) {
@@ -139,8 +161,9 @@ const SignUp = () => {
                     <div className="signup-heading">Sign Up</div>
                   </Grid>
                   <Grid item xs={12}>
-                    <InputLabel className="form-label">Name</InputLabel>
+                    <InputLabel className="form-label">Name*</InputLabel>
                     <TextField
+                    disabled={isDisabled('name')}
                       className="form-label"
                       placeholder="Name"
                       error={
@@ -172,9 +195,10 @@ const SignUp = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <InputLabel className="form-label">
-                      Company/ Organisation Name
+                      Company/ Organisation Name*
                     </InputLabel>
                     <TextField
+                     disabled={isDisabled('org')}
                       className="form-label"
                       placeholder="example@gmail.com"
                       error={
@@ -207,8 +231,10 @@ const SignUp = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <InputLabel className="form-label">PAN</InputLabel>
+                    <InputLabel className="form-label">PAN*</InputLabel>
                     <TextField
+                     disabled={isDisabled('pan')}
+
                       className="form-label"
                       placeholder="XXXXXXXXXX"
                       error={
@@ -241,7 +267,7 @@ const SignUp = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <InputLabel className="form-label">
-                      Mobile Number
+                      Mobile Number*
                     </InputLabel>
                     <TextField
                       className="form-label"
@@ -278,9 +304,11 @@ const SignUp = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <InputLabel className="form-label">
-                      Work Email ID
+                      Work Email ID*
                     </InputLabel>
                     <TextField
+                    disabled={isDisabled('email')}
+
                       className="form-label"
                       placeholder="example@gmail.com"
                       error={
@@ -311,8 +339,9 @@ const SignUp = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <InputLabel className="form-label">Industry</InputLabel>
+                    <InputLabel className="form-label">Industry*</InputLabel>
                     <TextField
+                    disabled={isDisabled('industry')}
                       select
                       className="form-label"
                       variant="outlined"
@@ -351,7 +380,7 @@ const SignUp = () => {
                     </TextField>
                   </Grid>
                   <Grid item xs={12}>
-                    <InputLabel className="form-label">Password</InputLabel>
+                    <InputLabel className="form-label">Password*</InputLabel>
                     <TextField
                       className="form-label"
                       placeholder="Set Password"
@@ -402,7 +431,7 @@ const SignUp = () => {
                   </Grid>
                   <Grid item xs={12} className="not-registered">
                     Already have an account?{" "}
-                    <a href="/login" style={{ color: "#30a8d8" }}>
+                    <a href="/" style={{ color: "#30a8d8" }}>
                       Login here!
                     </a>
                   </Grid>
