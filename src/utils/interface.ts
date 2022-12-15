@@ -81,8 +81,61 @@ export interface CashinFlow {
   cashinflow_ledger: Ledger[];
 }
 
+export interface JournalType {
+  journal_type:string;
+  payment_amount:number;
+  payment_date:string;
+}
+
+export interface Journal {
+  amount_Journal: number;
+  ledgername: string;
+  type: JournalType[];
+  voucherdate: string;
+  vouchertype: string;
+}
+
+export interface PurchaseType {
+  purchase_type:string;
+  payment_amount:number;
+  payment_voucherdate:string;
+}
+
+export interface Purchase{
+  amount_Purchase: number;
+  ledgername: string;
+  type: PurchaseType[];
+  voucherdate: string;
+  vouchertype: string;
+  referencedate:string;
+  referenceno:string;
+
+}
+
+export interface PaymentsType {
+  payment_type:string;
+  payment_amount:number;
+}
+
+export interface Payments {
+  billdetail: any;
+  type: PaymentsType;
+  voucherdate: string;
+  vouchertype: string;
+}
+
+export interface CashoutFlow {
+  cashoutflow_journal: Journal[];
+  cashoutflow_payments: Payments[];
+  cashoutflow_purchase: Purchase[];
+}
+
 export interface Inflow {
   cashinflow: CashinFlow[];
+}
+
+export interface Outflow {
+  cashoutflow: CashoutFlow[];
 }
 
 export interface InflowData {
@@ -91,9 +144,15 @@ export interface InflowData {
   };
 }
 
+export interface OutflowData {
+  [key: string]: {
+    [key: string]: number;
+  };
+}
+
 export interface CashflowTable {
   [key: string]: {
-    "Cash inflow": {
+    [key: string]: {
       [key: string]: number;
     };
   };
@@ -111,6 +170,11 @@ export interface Member {
 export interface Inflow {
   success: boolean;
   cashinflow: CashinFlow[];
+}
+
+export interface Outflow {
+  success: boolean;
+  cashoutflow: CashoutFlow[];
 }
 
 export interface StringDict {
