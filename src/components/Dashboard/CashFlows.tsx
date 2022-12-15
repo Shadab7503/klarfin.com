@@ -10,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import InputAdornment from "@mui/material/InputAdornment";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
+import SouthEastIcon from '@mui/icons-material/SouthEast';
 import TextField from "@mui/material/TextField";
 import Loading from "./Loading";
 import SearchIcon from "@mui/icons-material/Search";
@@ -32,6 +33,14 @@ import {
   CashflowTable,
   Inflow,
   StringDict,
+  CashoutFlow,
+  Outflow,
+  OutflowData,
+  Journal,
+  JournalType,
+  Payments,
+  Purchase,
+  PurchaseType,
 } from "../../utils/interface";
 import axios from "axios";
 // import axios from "axios";
@@ -69,33 +78,53 @@ const CashFlows = (props: { accessToken: string }) => {
   const [toOpen, setToOpen] = useState<boolean>(false);
   const [minDate, setMinDate] = useState<Dayjs>();
   const [maxDate, setMaxDate] = useState<Dayjs>();
+  
   const [inFlowData, setInFlowData] = useState<InflowData>({} as InflowData);
+  const [outFlowData, setOutFlowData] = useState<InflowData>({} as InflowData);
   const [inflowCategories, setInflowCategories] = useState<StringDict>({});
+  const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
 
   useEffect(() => {
+
     axios
       .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
         headers: { Authorization: `Bearer ${props.accessToken}` },
       })
       .then((response) => {
-        // setupInflow(response.data);
         setupInflow(response.data);
+      });
+
+      axios
+      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", {
+        headers: { Authorization: `Bearer ${props.accessToken}` },
+      })
+      .then((response) => {
+        // setupInflow(response.data);
+        setupOutflow(response.data);
         // console.log(response.data);
       });
- 
-    // setupInflow(inflow);
-  }, [props]);
 
+     
+ 
+  }, [props]);
+  
   const setupInflow = (inflow: Inflow) => {
     const cashinflow_data = inflow.cashinflow;
 
+    // const minimum_date = dayjs(
+    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
+    // );
+    // const maximum_date = dayjs(
+    //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
+    //     "voucherdate"
+    //   ],'DD-MM-YYYY'
+    // );
+
     const minimum_date = dayjs(
-      cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"]
+      '01-01-2016','DD-MM-YYYY'
     );
-    const maximum_date = dayjs(
-      cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
-        "voucherdate"
-      ]
+    const maximum_date =  dayjs(
+      dayjs().format('DD-MM-YYYY'),'DD-MM-YYYY'
     );
     setGlobalMinDate(minimum_date);
     setGlobalMaxDate(maximum_date);
@@ -103,7 +132,7 @@ const CashFlows = (props: { accessToken: string }) => {
     setToValue(maximum_date);
     setMinDate(minimum_date);
     setMaxDate(maximum_date);
-
+    
     let inflowCategories: StringDict = { Total: 1 };
     let baseInflowData: StringDict = { Total: 0 };
     cashinflow_data.forEach((cashinflow: CashinFlow) => {
@@ -114,6 +143,8 @@ const CashFlows = (props: { accessToken: string }) => {
     });
 
     const inflowDataTemp: InflowData = {};
+
+    
     for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
       let min_month = 0;
       let max_month = 11;
@@ -126,10 +157,8 @@ const CashFlows = (props: { accessToken: string }) => {
     }
     cashinflow_data.forEach((cashinflow) => {
       cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
-        const voucherDate = dayjs(receipt.voucherdate).format("MMM YYYY");
-        if(!inflowDataTemp[voucherDate]) {
-          return;
-        }
+        const voucherDate = dayjs(receipt.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
+
         inflowDataTemp[voucherDate].Total += receipt.amount;
         inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
           receipt.amount;
@@ -138,6 +167,94 @@ const CashFlows = (props: { accessToken: string }) => {
 
     setInflowCategories(inflowCategories);
     setInFlowData(inflowDataTemp);
+    // setLoadedPage(true);
+  };
+
+  
+  const setupOutflow = (outflow : Outflow) => {
+    let cashoutflow_data = outflow.cashoutflow;
+
+
+    let outflowCategories: StringDict = {Total: 1 };
+    let baseInflowData: StringDict = {Total: 0 };
+    cashoutflow_data.forEach((cashoutflow: CashoutFlow) => {
+      cashoutflow.cashoutflow_journal.forEach((ledger:any) => {
+        outflowCategories[ledger.type[0].journal_type] = 1;
+        baseInflowData[ledger.type[0].journal_type] = 0;
+      });
+      cashoutflow.cashoutflow_payments.forEach((ledger:any) => {
+        outflowCategories[ledger.type.payment_type] = 1;
+        baseInflowData[ledger.type.payment_type] = 0;
+      });
+      cashoutflow.cashoutflow_purchase.forEach((ledger:any) => {
+        outflowCategories[ledger.type[0].purchase_type] = 1;
+        baseInflowData[ledger.type[0].purchase_type] = 0;
+      });
+    });
+    
+    const minimum_date = dayjs(
+      '01-01-2016','DD-MM-YYYY'
+    );
+    const maximum_date =  dayjs(
+      dayjs().format('DD-MM-YYYY'),'DD-MM-YYYY'
+    );
+
+    const outflowDataTemp: OutflowData = {};
+    if(minimum_date && maximum_date) {
+      for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
+        let min_month = 0;
+        let max_month = 11;
+        if (year === minimum_date.year()) min_month = minimum_date.month();
+        if (year === maximum_date.year()) max_month = maximum_date.month();
+        for (let month = min_month; month <= max_month; month++) {
+          const tempDate = dayjs().month(month).year(year);
+          outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
+        }
+      }
+
+    }
+
+    cashoutflow_data.forEach((cashoutflow:CashoutFlow) => {
+      cashoutflow.cashoutflow_journal.forEach((journal : Journal, index: number) => {
+        journal.type.forEach((each:JournalType)=>{
+          const voucherDate = dayjs(each.payment_date, 'DD-MM-YYYY').format("MMM YYYY");
+          // console.log('voucherDate',voucherDate)
+          if(outflowDataTemp[voucherDate]) {
+            outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
+            outflowDataTemp[voucherDate][each.journal_type] +=
+              each.payment_amount*-1;
+          }
+
+        })
+      });
+
+      cashoutflow.cashoutflow_payments.forEach((payments:Payments, index: number) => {
+
+        const voucherDate = dayjs(payments.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
+          if(outflowDataTemp[voucherDate]) {
+            outflowDataTemp[voucherDate].Total += payments.type.payment_amount*-1;
+            outflowDataTemp[voucherDate][payments.type.payment_type] +=
+              payments.type.payment_amount*-1;
+
+          }
+      });
+
+      cashoutflow.cashoutflow_purchase.forEach((purchase:Purchase, index: number) => {
+        purchase.type.forEach((each:PurchaseType)=>{
+          const voucherDate = dayjs(each.payment_voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
+          if(outflowDataTemp[voucherDate]) {
+            outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
+            outflowDataTemp[voucherDate][each.purchase_type] +=
+              each.payment_amount*-1;
+          }
+
+        })
+      });
+    });
+
+ 
+    setOutflowCategories(outflowCategories);
+    setOutFlowData(outflowDataTemp);
     setLoadedPage(true);
   };
 
@@ -213,6 +330,7 @@ const CashFlows = (props: { accessToken: string }) => {
   };
 
   const getSelectedData = () => {
+    
     let minimum_date = dayjs(
       Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
     );
@@ -223,6 +341,7 @@ const CashFlows = (props: { accessToken: string }) => {
     );
     const quarterMap = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
     const categories = [...Object.keys(inflowCategories)];
+    const outFlowCategories = [...Object.keys(outflowCategories)];
 
     let selectedData: CashflowTable = {};
 
@@ -230,6 +349,14 @@ const CashFlows = (props: { accessToken: string }) => {
     categories.forEach((category) => {
       baseInflowData[category] = 0;
     });
+
+
+    let baseOutflowData: StringDict = {};
+    outFlowCategories.forEach((category) => {
+      baseOutflowData[category] = 0;
+    });
+
+    let outFlowSelectedData: CashflowTable = {};
 
     for (
       let year = minimum_date!.year();
@@ -247,7 +374,14 @@ const CashFlows = (props: { accessToken: string }) => {
           selectedData[tempDate.format("MMM YYYY")] = {
             "Cash inflow": inFlowData[tempDate.format("MMM YYYY")],
           };
-        } else if (period === "Quarterly") {
+
+          outFlowSelectedData[tempDate.format("MMM YYYY")] = {
+            "Cash outflow": outFlowData[tempDate.format("MMM YYYY")],
+          };
+
+        } 
+        
+        else if (period === "Quarterly") {
           const quarterNo = Math.floor(tempDate.month() / 3);
           const quarterLabel: string = `${
             quarterMap[quarterNo]
@@ -257,6 +391,10 @@ const CashFlows = (props: { accessToken: string }) => {
             selectedData[quarterLabel] = {
               "Cash inflow": { ...baseInflowData },
             };
+
+            outFlowSelectedData[quarterLabel] = {
+              "Cash outflow": {...baseOutflowData},
+            };
           }
 
           categories.forEach((type) => {
@@ -265,6 +403,14 @@ const CashFlows = (props: { accessToken: string }) => {
               inFlowData[tempDate.format("MMM YYYY")][type];
             selectedData[quarterLabel]["Cash inflow"][type] +=
               inFlowData[tempDate.format("MMM YYYY")][type];
+          });
+
+          outFlowCategories.forEach((type) => {
+            if (type === "Total") return;
+            outFlowSelectedData[quarterLabel]["Cash outflow"].Total +=
+              inFlowData[tempDate.format("MMM YYYY")][type];
+            outFlowSelectedData[quarterLabel]["Cash outflow"][type] +=
+            outFlowData[tempDate.format("MMM YYYY")][type];
           });
         } else {
           let annualLabel: string = `FY ${tempDate.year()}-${
@@ -277,6 +423,10 @@ const CashFlows = (props: { accessToken: string }) => {
             selectedData[annualLabel] = {
               "Cash inflow": { ...baseInflowData },
             };
+
+            outFlowSelectedData[annualLabel] = {
+              "Cash outflow": { ...baseOutflowData },
+            };
           }
 
           categories.forEach((type) => {
@@ -286,9 +436,19 @@ const CashFlows = (props: { accessToken: string }) => {
             selectedData[annualLabel]["Cash inflow"][type] +=
               inFlowData[tempDate.format("MMM YYYY")][type];
           });
+
+          outFlowCategories.forEach((type) => {
+            if (type === "Total") return;
+            outFlowSelectedData[annualLabel]["Cash outflow"].Total +=
+              inFlowData[tempDate.format("MMM YYYY")][type];
+            outFlowSelectedData[annualLabel]["Cash outflow"][type] +=
+              inFlowData[tempDate.format("MMM YYYY")][type];
+          });
+
         }
       }
     }
+
 
     return (
       <TableContainer className="custom-scrollbar">
@@ -346,7 +506,8 @@ const CashFlows = (props: { accessToken: string }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
+
+          <TableRow>
               <TableCell
                 sx={{ position: "sticky", left: 0 }}
                 className="cashflows-table-category"
@@ -377,6 +538,7 @@ const CashFlows = (props: { accessToken: string }) => {
                 );
               })}
             </TableRow>
+           
             {categories.map((category) => {
               if (category === "Total")
                 return <React.Fragment key={category}></React.Fragment>;
@@ -416,6 +578,86 @@ const CashFlows = (props: { accessToken: string }) => {
                 </TableRow>
               );
             })}
+
+      <TableRow>
+              <TableCell
+                sx={{ position: "sticky", left: 0 }}
+                className="cashflows-table-category"
+              >
+                <SouthEastIcon
+                  sx={{
+                    fontSize: "1rem",
+                    color: "#eb0014",
+                    marginRight: "0.2rem",
+                  }}
+                />{" "}
+                Cash outflow
+              </TableCell>
+              {Object.keys(outFlowSelectedData).map((month: string) => {
+            
+                return (
+                  <TableCell
+                    key={month + "_2"}
+                    align="center"
+                    className="cashflows-table-column" 
+                    sx={{ borderBottom: "1px solid #d3d3d3" }}
+                  >
+                    {outFlowSelectedData[month]["Cash outflow"].Total >= 1
+                      ? Math.floor(
+                          outFlowSelectedData[month]["Cash outflow"].Total
+                        ).toLocaleString("en-IN")
+                      : "-"}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+
+{outFlowCategories.map((category) => {
+              if (category === "Total")
+                return <React.Fragment key={category}></React.Fragment>;
+              return (
+                <TableRow key={category}>
+                  <TableCell
+                    className="cashflows-table-subcategory"
+                    sx={{
+                      borderBottom: "1px solid #d3d3d3",
+                      minWidth: { xs: "80px", sm: "150px" },
+                      position: "sticky",
+                      left: 0,
+                      background: "white",
+                    }}
+                  >
+                    {category}
+                  </TableCell>
+                  {Object.keys(outFlowSelectedData).map((month: string) => {
+                    //  if(outFlowSelectedData[month]) {
+                    //   // console.log('not',month)
+                    // }
+                   
+                    return (
+                      <TableCell
+                        key={month + "_3"}
+                        align="center"
+                        sx={{
+                          borderBottom: "1px solid #d3d3d3",
+                          fontFamily: "Montserrat",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {outFlowSelectedData[month]["Cash outflow"][category] >= 1
+                          ? Math.floor(
+                              outFlowSelectedData[month]["Cash outflow"][category]
+                            ).toLocaleString("en-IN")
+                          : "-"}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+            
+
+   
           </TableBody>
         </Table>
       </TableContainer>
