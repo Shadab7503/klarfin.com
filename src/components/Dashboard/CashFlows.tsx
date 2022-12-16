@@ -43,6 +43,9 @@ import {
   PurchaseType,
 } from "../../utils/interface";
 import axios from "axios";
+import moment from "moment";
+import { Bar } from "react-chartjs-2";
+
 // import axios from "axios";
 
 const utilButtons = [
@@ -84,6 +87,62 @@ const CashFlows = (props: { accessToken: string }) => {
   const [inflowCategories, setInflowCategories] = useState<StringDict>({});
   const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
 
+  const [barData,setBarData]= useState<any>({
+    labels:[],
+    datasets: []
+  });
+  
+  
+const optionsBar = {
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+     
+    },
+    datalabels: {
+      anchor: "end" as const,
+      align: "bottom" as const,
+      color: "white",
+      font: {
+        family: "Montserrat",
+      },
+    },
+  },
+  scales: {
+    x: {
+      offset: true,
+      ticks: {
+        font: {
+          family: "Montserrat",
+        },
+        
+      },
+      grid: {
+        display: false,
+      },
+      font: {
+        family: "Montserrat",
+      },
+    },
+    y: {
+      ticks: {
+        font: {
+          family: "Montserrat",
+        },
+        maxTicksLimit: 5,
+      },
+      title: {
+        display: true,
+        text: "",
+      },
+      grid: {
+        display: false,
+      },
+    },
+  },
+};
+
   useEffect(() => {
 
     axios
@@ -107,32 +166,75 @@ const CashFlows = (props: { accessToken: string }) => {
      
  
   }, [props]);
+
+  const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
+
+   
+    if(minDate && (minDate.diff(min) < 0)) {
+      setGlobalMinDate(min);
+      setFromValue(min);
+      setMinDate(min);
+    }
+
+    if(maxDate) console.log('maxDate.diff(max)',maxDate.diff(max))
+
+    if(maxDate && (maxDate.diff(max) < 0)) {
+      setGlobalMaxDate(max);
+      setToValue(max);
+      setMaxDate(max);
+    }
+
+    if(!maxDate || !minDate) {
+      
+    setGlobalMinDate(min);
+    setFromValue(min);
+    setMinDate(min);
+
+    setGlobalMaxDate(max);
+      setToValue(max);
+      setMaxDate(max);
+    }
+
+  }
   
   const setupInflow = (inflow: Inflow) => {
     const cashinflow_data = inflow.cashinflow;
 
-    // const minimum_date = dayjs(
-    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
-    // );
-    // const maximum_date = dayjs(
-    //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
-    //     "voucherdate"
-    //   ],'DD-MM-YYYY'
-    // );
-
     const minimum_date = dayjs(
-      '01-01-2016','DD-MM-YYYY'
+      cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
     );
-    const maximum_date =  dayjs(
-      dayjs().format('DD-MM-YYYY'),'DD-MM-YYYY'
+    const maximum_date = dayjs(
+      cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
+        "voucherdate"
+      ],'DD-MM-YYYY'
     );
-    setGlobalMinDate(minimum_date);
-    setGlobalMaxDate(maximum_date);
-    setFromValue(minimum_date);
-    setToValue(maximum_date);
-    setMinDate(minimum_date);
-    setMaxDate(maximum_date);
-    
+
+    // const dates:string[] = [
+    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],
+
+    //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
+    //     "voucherdate"]
+
+    // ];
+
+    // const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+
+   
+    // const min_date = moment.min(moments).toDate();
+    // const max_date =  moment.max(moments).toDate();
+
+    // const minimum_date = dayjs(min_date,'DD-MM-YYYY');
+    // const maximum_date =  dayjs(max_date,'DD-MM-YYYY');
+    // console.log('minimum_date', moment.max(moments).toDate())
+    // setGlobalMinDate(minimum_date);
+    // setGlobalMaxDate(maximum_date);
+    // setFromValue(minimum_date);
+    // setToValue(maximum_date);
+    // setMinDate(minimum_date);
+    // setMaxDate(maximum_date);
+
+
+    handleMinMaxDates(dayjs(minimum_date),dayjs(maximum_date));
     let inflowCategories: StringDict = { Total: 1 };
     let baseInflowData: StringDict = { Total: 0 };
     cashinflow_data.forEach((cashinflow: CashinFlow) => {
@@ -173,46 +275,57 @@ const CashFlows = (props: { accessToken: string }) => {
   
   const setupOutflow = (outflow : Outflow) => {
     let cashoutflow_data = outflow.cashoutflow;
-
+    const dates:string[] = [];
 
     let outflowCategories: StringDict = {Total: 1 };
     let baseInflowData: StringDict = {Total: 0 };
     cashoutflow_data.forEach((cashoutflow: CashoutFlow) => {
-      cashoutflow.cashoutflow_journal.forEach((ledger:any) => {
-        outflowCategories[ledger.type[0].journal_type] = 1;
-        baseInflowData[ledger.type[0].journal_type] = 0;
+      cashoutflow.cashoutflow_journal.forEach((journal:any) => {
+        outflowCategories[journal.type[0].journal_type] = 1;
+        baseInflowData[journal.type[0].journal_type] = 0;
+        journal.type.forEach((each:JournalType)=>{
+          dates.push(each.payment_date);
+        })
       });
-      cashoutflow.cashoutflow_payments.forEach((ledger:any) => {
-        outflowCategories[ledger.type.payment_type] = 1;
-        baseInflowData[ledger.type.payment_type] = 0;
+
+      cashoutflow.cashoutflow_payments.forEach((payments:any) => {
+        outflowCategories[payments.type.payment_type] = 1;
+        baseInflowData[payments.type.payment_type] = 0;
+        dates.push(payments.voucherdate);
       });
-      cashoutflow.cashoutflow_purchase.forEach((ledger:any) => {
-        outflowCategories[ledger.type[0].purchase_type] = 1;
-        baseInflowData[ledger.type[0].purchase_type] = 0;
+      cashoutflow.cashoutflow_purchase.forEach((purchase:any) => {
+        outflowCategories[purchase.type[0].purchase_type] = 1;
+        baseInflowData[purchase.type[0].purchase_type] = 0;
+
+        purchase.type.forEach((each:PurchaseType)=>{
+          dates.push(each.payment_voucherdate);
+        })
       });
     });
     
-    const minimum_date = dayjs(
-      '01-01-2016','DD-MM-YYYY'
-    );
-    const maximum_date =  dayjs(
-      dayjs().format('DD-MM-YYYY'),'DD-MM-YYYY'
-    );
+
+    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+
+    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    // const minimum_date = dayjs(min_date);
+    // const maximum_date =  dayjs(max_date);
+
+    handleMinMaxDates(minimum_date,maximum_date);
+// console.log('maximum_date',maximum_date)
 
     const outflowDataTemp: OutflowData = {};
-    if(minimum_date && maximum_date) {
-      for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
-        let min_month = 0;
-        let max_month = 11;
-        if (year === minimum_date.year()) min_month = minimum_date.month();
-        if (year === maximum_date.year()) max_month = maximum_date.month();
-        for (let month = min_month; month <= max_month; month++) {
-          const tempDate = dayjs().month(month).year(year);
-          outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
-        }
+    for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
+      let min_month = 0;
+      let max_month = 11;
+      if (year === minimum_date.year()) min_month = minimum_date.month();
+      if (year === maximum_date.year()) max_month = maximum_date.month();
+      for (let month = min_month; month <= max_month; month++) {
+        const tempDate = dayjs().month(month).year(year);
+        outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
       }
-
     }
+
 
     cashoutflow_data.forEach((cashoutflow:CashoutFlow) => {
       cashoutflow.cashoutflow_journal.forEach((journal : Journal, index: number) => {
@@ -229,7 +342,6 @@ const CashFlows = (props: { accessToken: string }) => {
       });
 
       cashoutflow.cashoutflow_payments.forEach((payments:Payments, index: number) => {
-
         const voucherDate = dayjs(payments.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
           if(outflowDataTemp[voucherDate]) {
             outflowDataTemp[voucherDate].Total += payments.type.payment_amount*-1;
@@ -251,11 +363,10 @@ const CashFlows = (props: { accessToken: string }) => {
         })
       });
     });
-
- 
     setOutflowCategories(outflowCategories);
     setOutFlowData(outflowDataTemp);
     setLoadedPage(true);
+    console.log('outflowDataTemp',outflowDataTemp)
   };
 
   const getYearStart = (date: Dayjs) => {
@@ -357,7 +468,7 @@ const CashFlows = (props: { accessToken: string }) => {
     });
 
     let outFlowSelectedData: CashflowTable = {};
-
+   
     for (
       let year = minimum_date!.year();
       year <= maximum_date!.year();
@@ -372,11 +483,11 @@ const CashFlows = (props: { accessToken: string }) => {
 
         if (period === "Monthly") {
           selectedData[tempDate.format("MMM YYYY")] = {
-            "Cash inflow": inFlowData[tempDate.format("MMM YYYY")],
+            "Cash inflow": inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]  : baseInflowData,
           };
 
           outFlowSelectedData[tempDate.format("MMM YYYY")] = {
-            "Cash outflow": outFlowData[tempDate.format("MMM YYYY")],
+            "Cash outflow": outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")] : baseOutflowData,
           };
 
         } 
@@ -449,6 +560,51 @@ const CashFlows = (props: { accessToken: string }) => {
       }
     }
 
+    let months = Object.keys(selectedData);
+    if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
+      months = Object.keys(outFlowSelectedData);
+    }
+
+    const cashinflowGraph:any = [];
+    const cashoutflowGraph:any = [];
+
+    Object.keys(selectedData).map((month: string) => {
+      selectedData[month]["Cash inflow"].Total >= 1
+      ? cashinflowGraph.push(selectedData[month]["Cash inflow"].Total)
+      : cashinflowGraph.push(0)
+
+    })
+    Object.keys(outFlowSelectedData).map((month: string) => {
+      console.log(outFlowSelectedData[month]);
+      outFlowSelectedData[month]["Cash outflow"].Total >= 1
+      ? cashoutflowGraph.push(outFlowSelectedData[month]["Cash outflow"].Total)
+      : cashoutflowGraph.push(0)
+
+    })
+
+    if(barData.labels.length == 0) {
+      setBarData({...barData,labels:months})
+    }
+
+    if(barData.datasets.length == 0) {
+      setBarData({...barData,datasets:[
+        {
+          categoryPercentage: 0.9,
+          barPercentage: 0.9,
+          data: cashinflowGraph,
+          backgroundColor: "rgb(7,136,31)",
+        },
+        {
+          categoryPercentage: 0.9,
+          barPercentage: 0.9,
+          data: cashoutflowGraph,
+          backgroundColor: "rgb(188,7,7)",
+        }
+      ]})
+    }
+
+// console.log('graphData',months)
+    
 
     return (
       <TableContainer className="custom-scrollbar">
@@ -491,7 +647,7 @@ const CashFlows = (props: { accessToken: string }) => {
                   placeholder="Search"
                 />
               </TableCell>
-              {Object.keys(selectedData).map((month: string) => {
+              {months.map((month: string) => {
                 return (
                   <TableCell
                     key={month}
@@ -725,6 +881,18 @@ const CashFlows = (props: { accessToken: string }) => {
             </div>
           </Grid>
         </Grid>
+
+        <Grid container justifyContent="center" mt={5} >
+                <Grid
+                  container
+                  sx={{
+                    aspectRatio: "16/ 12",
+                    width: { sm: "70%"   , md: "90%" , xs: "100%"  },
+                  }}
+                >
+                  <Bar  options={optionsBar} data={barData} />
+                </Grid>
+              </Grid>
       </Grid>
       <Modal open={openPeriod} onClose={() => setOpenPeriod(false)}>
         <Grid container className="modal-box" style={{ width: "400px" }} p={3}>
