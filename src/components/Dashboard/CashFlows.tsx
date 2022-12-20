@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import InputAdornment from "@mui/material/InputAdornment";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import SouthEastIcon from '@mui/icons-material/SouthEast';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import TextField from "@mui/material/TextField";
 import Loading from "./Loading";
 import SearchIcon from "@mui/icons-material/Search";
@@ -43,8 +44,38 @@ import {
   PurchaseType,
 } from "../../utils/interface";
 import axios from "axios";
-import moment from "moment";
-import { Bar } from "react-chartjs-2";
+import moment, { months } from "moment";
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+} from 'chart.js';
+import { Chart } from 'react-chartjs-2';
+
+
+
+
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+
+);
+
+
 
 // import axios from "axios";
 
@@ -68,7 +99,6 @@ const utilButtons = [
 ];
 
 const CashFlows = (props: { accessToken: string }) => {
-  const cashBalance: number = 235000;
 
   const [loadedPage, setLoadedPage] = useState<boolean>(false);
   const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
@@ -86,37 +116,57 @@ const CashFlows = (props: { accessToken: string }) => {
   const [outFlowData, setOutFlowData] = useState<InflowData>({} as InflowData);
   const [inflowCategories, setInflowCategories] = useState<StringDict>({});
   const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
+  const [openingBalance, setOpeningBalance] = useState<number>(0);
+  const [cashBalance,setBalance] =  useState<number>(0);
 
-  const [barData,setBarData]= useState<any>({
-    labels:[],
-    datasets: []
-  });
+  const [barData,setBarData]= useState<any>();
   
-  
-const optionsBar = {
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false,
-     
-    },
-    datalabels: {
-      anchor: "end" as const,
-      align: "bottom" as const,
-      color: "white",
-      font: {
-        family: "Montserrat",
-      },
-    },
+ 
+const options = { elements: {
+  layout:{
+    padding:0
   },
+  point:{
+      radius: 2
+  }
+},
+
+maintainAspectRatio: false,
+  responsive: true,
+  plugins: {
+    legend: {     
+      display : false,
+      positon : "top" as const
+    },
+    title: {
+      display: false,
+      text: 'Cash Inflow Outflow Chart',
+    },
+    datalabels : {
+      display : false
+    },
+    customCanvasBackgroundColor: {
+      color: '#F5F5F5',
+    }
+  },
+  
   scales: {
-    x: {
+    xAxes: {
       offset: true,
       ticks: {
+        beginAtZero: true,
+        display : false ,
         font: {
           family: "Montserrat",
+          weight:'600',
+          size:15
         },
-        
+        categoryPercentage: 1.0,
+          barPercentage: 1.0,
+      },
+      title: {
+        display: false,
+        text: "Months",
       },
       grid: {
         display: false,
@@ -127,21 +177,49 @@ const optionsBar = {
     },
     y: {
       ticks: {
+       
         font: {
           family: "Montserrat",
+          weight:'600',
+          size:15
         },
+        categoryPercentage: 1.0,
+        barPercentage: 0.1,
         maxTicksLimit: 5,
+        stepSize: 0.1,
+        callback:function(value:number) {
+         
+            return 'INR '+value;
+      }
       },
       title: {
-        display: true,
-        text: "",
+        display: false,
+        text: "INR" ,
       },
       grid: {
-        display: false,
+        borderDash: [2, 4],
+        color: "#00000099",
+        display: true,
+        padding:49
       },
     },
   },
+
+}
+
+const plugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart :ChartJS, args:any, options:any) => {
+    const {ctx} = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = options.color || '#f5f6f7';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  }
 };
+  
+
 
   useEffect(() => {
 
@@ -151,6 +229,7 @@ const optionsBar = {
       })
       .then((response) => {
         setupInflow(response.data);
+        setOpeningBalance(response.data.openingBal);
       });
 
       axios
@@ -167,6 +246,7 @@ const optionsBar = {
  
   }, [props]);
 
+
   const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
 
    
@@ -175,8 +255,6 @@ const optionsBar = {
       setFromValue(min);
       setMinDate(min);
     }
-
-    if(maxDate) console.log('maxDate.diff(max)',maxDate.diff(max))
 
     if(maxDate && (maxDate.diff(max) < 0)) {
       setGlobalMaxDate(max);
@@ -200,38 +278,28 @@ const optionsBar = {
   const setupInflow = (inflow: Inflow) => {
     const cashinflow_data = inflow.cashinflow;
 
-    const minimum_date = dayjs(
-      cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
-    );
-    const maximum_date = dayjs(
-      cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
-        "voucherdate"
-      ],'DD-MM-YYYY'
-    );
-
-    // const dates:string[] = [
-    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],
-
+    // const minimum_date = dayjs(
+    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
+    // );
+    // const maximum_date = dayjs(
     //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
-    //     "voucherdate"]
+    //     "voucherdate"
+    //   ],'DD-MM-YYYY'
+    // );
 
-    // ];
+    const dates:string[] = [];
 
-    // const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+    cashinflow_data.forEach((cashinflow) => {
+      cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
+        dates.push(receipt.voucherdate);
+      });
+    });
+    
+    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
 
-   
-    // const min_date = moment.min(moments).toDate();
-    // const max_date =  moment.max(moments).toDate();
-
-    // const minimum_date = dayjs(min_date,'DD-MM-YYYY');
-    // const maximum_date =  dayjs(max_date,'DD-MM-YYYY');
-    // console.log('minimum_date', moment.max(moments).toDate())
-    // setGlobalMinDate(minimum_date);
-    // setGlobalMaxDate(maximum_date);
-    // setFromValue(minimum_date);
-    // setToValue(maximum_date);
-    // setMinDate(minimum_date);
-    // setMaxDate(maximum_date);
+    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    
 
 
     handleMinMaxDates(dayjs(minimum_date),dayjs(maximum_date));
@@ -257,10 +325,12 @@ const optionsBar = {
         inflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
       }
     }
+
+    console.log('voucherDatesdf',minimum_date.year(),maximum_date.year());
+
     cashinflow_data.forEach((cashinflow) => {
       cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
         const voucherDate = dayjs(receipt.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-
         inflowDataTemp[voucherDate].Total += receipt.amount;
         inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
           receipt.amount;
@@ -308,6 +378,7 @@ const optionsBar = {
 
     const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
     const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+
     // const minimum_date = dayjs(min_date);
     // const maximum_date =  dayjs(max_date);
 
@@ -365,9 +436,8 @@ const optionsBar = {
     });
     setOutflowCategories(outflowCategories);
     setOutFlowData(outflowDataTemp);
-    setLoadedPage(true);
-    console.log('outflowDataTemp',outflowDataTemp)
   };
+  
 
   const getYearStart = (date: Dayjs) => {
     const month = date.month();
@@ -440,7 +510,14 @@ const optionsBar = {
     );
   };
 
-  const getSelectedData = () => {
+  const [inflowSelectedData,setInflowSelectedData] = useState<CashflowTable>();
+  const [inflowSelectedCategories,setInflowSelectedCategories] = useState<string[]>();
+  const [outflowSelectedData,setOutflowSelectedData] = useState<CashflowTable>();
+  const [outflowSelectedCategories,setOutflowSelectedCategories] = useState<string[]>();
+  const [selectedMonths,setSelectedMonths] = useState<string[]>();
+  const [openingBal,setOpeningBal] = useState<number[]>();
+  const [closingBal,setClosingBal] = useState<number[]>();
+  useEffect(()=>{
     
     let minimum_date = dayjs(
       Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
@@ -452,7 +529,10 @@ const optionsBar = {
     );
     const quarterMap = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
     const categories = [...Object.keys(inflowCategories)];
-    const outFlowCategories = [...Object.keys(outflowCategories)];
+    const outCategories = [...Object.keys(outflowCategories)];
+
+    if(!categories.length || !outCategories.length) return;
+
 
     let selectedData: CashflowTable = {};
 
@@ -463,7 +543,7 @@ const optionsBar = {
 
 
     let baseOutflowData: StringDict = {};
-    outFlowCategories.forEach((category) => {
+    outCategories.forEach((category) => {
       baseOutflowData[category] = 0;
     });
 
@@ -516,7 +596,7 @@ const optionsBar = {
               inFlowData[tempDate.format("MMM YYYY")][type];
           });
 
-          outFlowCategories.forEach((type) => {
+          outCategories.forEach((type) => {
             if (type === "Total") return;
             outFlowSelectedData[quarterLabel]["Cash outflow"].Total +=
               inFlowData[tempDate.format("MMM YYYY")][type];
@@ -548,7 +628,7 @@ const optionsBar = {
               inFlowData[tempDate.format("MMM YYYY")][type];
           });
 
-          outFlowCategories.forEach((type) => {
+          outCategories.forEach((type) => {
             if (type === "Total") return;
             outFlowSelectedData[annualLabel]["Cash outflow"].Total +=
               inFlowData[tempDate.format("MMM YYYY")][type];
@@ -568,43 +648,87 @@ const optionsBar = {
     const cashinflowGraph:any = [];
     const cashoutflowGraph:any = [];
 
-    Object.keys(selectedData).map((month: string) => {
+    let openingAmt = openingBalance; 
+    const openingBalArr:number[] = [];
+    const closeingBal:number[] = [];
+    openingBalArr.push(openingAmt);
+
+    Object.keys(selectedData).map((month: string,idx:number,arr:string[]) => {
       selectedData[month]["Cash inflow"].Total >= 1
       ? cashinflowGraph.push(selectedData[month]["Cash inflow"].Total)
       : cashinflowGraph.push(0)
+    
+      const cashinflowTotal = selectedData[month]["Cash inflow"].Total
+      const cashOutFlowTotal = outFlowSelectedData[month]["Cash outflow"].Total 
+      console.log('cashinflowTotal',cashinflowTotal);
+      const closingBal = openingAmt + (cashinflowTotal -  cashOutFlowTotal);
+      
+      if(idx !== arr.length-1) {
+        openingBalArr.push(closingBal);
+        setBalance(closingBal);
+      }
+     
+      closeingBal.push(closingBal);
 
+      openingAmt = closingBal;
+ 
     })
+
     Object.keys(outFlowSelectedData).map((month: string) => {
-      console.log(outFlowSelectedData[month]);
+      // console.log(outFlowSelectedData[month]);
       outFlowSelectedData[month]["Cash outflow"].Total >= 1
       ? cashoutflowGraph.push(outFlowSelectedData[month]["Cash outflow"].Total)
       : cashoutflowGraph.push(0)
 
     })
 
-    if(barData.labels.length == 0) {
-      setBarData({...barData,labels:months})
-    }
 
-    if(barData.datasets.length == 0) {
-      setBarData({...barData,datasets:[
+      setBarData({labels:months,datasets:[
+      
         {
-          categoryPercentage: 0.9,
-          barPercentage: 0.9,
-          data: cashinflowGraph,
-          backgroundColor: "rgb(7,136,31)",
+          type: 'line' as const,
+          label: 'Closing Balance',
+          borderColor: '#186090',
+          borderWidth: 1,
+          fill: false,
+          data:[...closeingBal],
         },
         {
-          categoryPercentage: 0.9,
-          barPercentage: 0.9,
-          data: cashoutflowGraph,
-          backgroundColor: "rgb(188,7,7)",
-        }
+          type: 'bar' as const,
+          label: 'Cash Inflow',
+          backgroundColor: '#338455',
+          data: cashinflowGraph,
+          borderColor: 'white',
+          barPercentage: 1,
+          categoryPercentage: 0.3,
+          borderWidth: 0,     
+        },
+        {
+          type: 'bar' as const,
+          label: 'Cash Outflow',
+          backgroundColor: '#C5221F',
+          barPercentage: 1,
+          categoryPercentage: 0.3,
+          data:  cashoutflowGraph,
+          borderWidth: 0, 
+        },
       ]})
-    }
 
-// console.log('graphData',months)
+    setInflowSelectedData(selectedData);
+    setOutflowSelectedData(outFlowSelectedData);
+    setSelectedMonths(months);
+    setOpeningBal(openingBalArr);
+    setClosingBal(closeingBal);
+    setInflowSelectedCategories(categories)
+    setOutflowSelectedCategories(outCategories);
+    setLoadedPage(true);
     
+  },[globalMaxDate,globalMinDate,fromValue,toValue,openingBalance])
+
+  const getSelectedData = () => {
+
+    if(!selectedMonths || !openingBal || !inflowSelectedData || !outflowSelectedData || !closingBal
+       || !inflowSelectedCategories || !outflowSelectedCategories) return null;
 
     return (
       <TableContainer className="custom-scrollbar">
@@ -615,6 +739,25 @@ const optionsBar = {
           }}
         >
           <TableHead>
+            <TableRow >
+             <TableCell  style={{
+                  padding: 0,
+                  paddingLeft: "1rem",
+                  border: "none",
+                  position: "sticky",
+                  left: 0,
+                 
+                }}></TableCell>
+            <TableCell colSpan={selectedMonths.length+5} >
+              {/* <Chart type='bar'  options={options} data={barData} plugins={[plugin]} /> */}
+               {/* @ts-ignore */}
+              <div style={{height: '22rem','margin-left': '-7.5rem'}}>
+               {/* @ts-ignore */}
+               <Chart type='bar'  options={options} data={barData}  />
+
+              </div>
+              </TableCell>
+            </TableRow>
             <TableRow>
               <TableCell
                 style={{
@@ -647,7 +790,8 @@ const optionsBar = {
                   placeholder="Search"
                 />
               </TableCell>
-              {months.map((month: string) => {
+             
+              {selectedMonths.map((month: string) => {
                 return (
                   <TableCell
                     key={month}
@@ -662,7 +806,37 @@ const optionsBar = {
             </TableRow>
           </TableHead>
           <TableBody>
+              <TableRow>
+              <TableCell
+                sx={{ position: "sticky", left: 0 }}
+                className="cashflows-table-category"
+              >
+                <div style={{display:'flex',alignItems:'center'}}>
+                  <ShowChartIcon  sx={{
+                  fontSize: "1rem",
+                  color: "#3492D4",
+                  marginRight: "0.3rem",
+                  
+                }} />
+                  {" "}
+                  <p>Cash balance at beginning of the month</p>
 
+                </div>
+                
+              </TableCell>
+              {openingBal.map((bal) => {
+                return (
+                  <TableCell
+                    key={bal}
+                    align="center"
+                    className="cashflows-table-column"
+                    sx={{ borderBottom: "1px solid #d3d3d3" }}
+                  >
+                   {Math.floor(bal).toLocaleString("en-IN")}
+                  </TableCell>
+                );
+              })}
+              </TableRow>
           <TableRow>
               <TableCell
                 sx={{ position: "sticky", left: 0 }}
@@ -677,7 +851,7 @@ const optionsBar = {
                 />{" "}
                 Cash inflow
               </TableCell>
-              {Object.keys(selectedData).map((month: string) => {
+              {Object.keys(inflowSelectedData).map((month: string) => {
                 return (
                   <TableCell
                     key={month + "_2"}
@@ -685,9 +859,9 @@ const optionsBar = {
                     className="cashflows-table-column"
                     sx={{ borderBottom: "1px solid #d3d3d3" }}
                   >
-                    {selectedData[month]["Cash inflow"].Total >= 1
+                    {inflowSelectedData[month]["Cash inflow"].Total >= 1
                       ? Math.floor(
-                          selectedData[month]["Cash inflow"].Total
+                          inflowSelectedData[month]["Cash inflow"].Total
                         ).toLocaleString("en-IN")
                       : "-"}
                   </TableCell>
@@ -695,7 +869,7 @@ const optionsBar = {
               })}
             </TableRow>
            
-            {categories.map((category) => {
+            {inflowSelectedCategories.map((category) => {
               if (category === "Total")
                 return <React.Fragment key={category}></React.Fragment>;
               return (
@@ -712,7 +886,7 @@ const optionsBar = {
                   >
                     {category}
                   </TableCell>
-                  {Object.keys(selectedData).map((month: string) => {
+                  {Object.keys(inflowSelectedData).map((month: string) => {
                     return (
                       <TableCell
                         key={month + "_3"}
@@ -723,9 +897,9 @@ const optionsBar = {
                           fontWeight: 600,
                         }}
                       >
-                        {selectedData[month]["Cash inflow"][category] >= 1
+                        {inflowSelectedData[month]["Cash inflow"][category] >= 1
                           ? Math.floor(
-                              selectedData[month]["Cash inflow"][category]
+                              inflowSelectedData[month]["Cash inflow"][category]
                             ).toLocaleString("en-IN")
                           : "-"}
                       </TableCell>
@@ -749,7 +923,7 @@ const optionsBar = {
                 />{" "}
                 Cash outflow
               </TableCell>
-              {Object.keys(outFlowSelectedData).map((month: string) => {
+              {Object.keys(outflowSelectedData).map((month: string) => {
             
                 return (
                   <TableCell
@@ -758,9 +932,9 @@ const optionsBar = {
                     className="cashflows-table-column" 
                     sx={{ borderBottom: "1px solid #d3d3d3" }}
                   >
-                    {outFlowSelectedData[month]["Cash outflow"].Total >= 1
+                    {outflowSelectedData[month]["Cash outflow"].Total >= 1
                       ? Math.floor(
-                          outFlowSelectedData[month]["Cash outflow"].Total
+                          outflowSelectedData[month]["Cash outflow"].Total
                         ).toLocaleString("en-IN")
                       : "-"}
                   </TableCell>
@@ -768,7 +942,7 @@ const optionsBar = {
               })}
             </TableRow>
 
-{outFlowCategories.map((category) => {
+{outflowSelectedCategories.map((category:string) => {
               if (category === "Total")
                 return <React.Fragment key={category}></React.Fragment>;
               return (
@@ -785,7 +959,7 @@ const optionsBar = {
                   >
                     {category}
                   </TableCell>
-                  {Object.keys(outFlowSelectedData).map((month: string) => {
+                  {Object.keys(outflowSelectedData).map((month: string) => {
                     //  if(outFlowSelectedData[month]) {
                     //   // console.log('not',month)
                     // }
@@ -800,9 +974,9 @@ const optionsBar = {
                           fontWeight: 600,
                         }}
                       >
-                        {outFlowSelectedData[month]["Cash outflow"][category] >= 1
+                        {outflowSelectedData[month]["Cash outflow"][category] >= 1
                           ? Math.floor(
-                              outFlowSelectedData[month]["Cash outflow"][category]
+                              outflowSelectedData[month]["Cash outflow"][category]
                             ).toLocaleString("en-IN")
                           : "-"}
                       </TableCell>
@@ -811,7 +985,36 @@ const optionsBar = {
                 </TableRow>
               );
             })}
-            
+            <TableRow>
+              <TableCell
+                sx={{ position: "sticky", left: 0 }}
+                className="cashflows-table-category"
+              >
+                 <div style={{display:'flex',alignItems:'center'}}>
+                  <ShowChartIcon  sx={{
+                  fontSize: "1rem",
+                  color: "#3492D4",
+                  marginRight: "0.3rem",
+                  
+                }} />
+                  {" "}
+                  <p>Cash balance at end of the month</p>
+
+                </div>
+              </TableCell>
+              {closingBal.map((bal) => {
+                return (
+                  <TableCell
+                    key={bal}
+                    align="center"
+                    className="cashflows-table-column"
+                    sx={{ borderBottom: "1px solid #d3d3d3" }}
+                  >
+                      {Math.floor(bal).toLocaleString("en-IN")}
+                  </TableCell>
+                );
+              })}
+              </TableRow>
 
    
           </TableBody>
@@ -882,17 +1085,7 @@ const optionsBar = {
           </Grid>
         </Grid>
 
-        <Grid container justifyContent="center" mt={5} >
-                <Grid
-                  container
-                  sx={{
-                    aspectRatio: "16/ 12",
-                    width: { sm: "70%"   , md: "90%" , xs: "100%"  },
-                  }}
-                >
-                  <Bar  options={optionsBar} data={barData} />
-                </Grid>
-              </Grid>
+      
       </Grid>
       <Modal open={openPeriod} onClose={() => setOpenPeriod(false)}>
         <Grid container className="modal-box" style={{ width: "400px" }} p={3}>
