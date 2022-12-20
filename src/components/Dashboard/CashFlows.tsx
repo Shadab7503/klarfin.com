@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import InputAdornment from "@mui/material/InputAdornment";
 import NorthEastIcon from "@mui/icons-material/NorthEast";
 import SouthEastIcon from '@mui/icons-material/SouthEast';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import TextField from "@mui/material/TextField";
 import Loading from "./Loading";
 import SearchIcon from "@mui/icons-material/Search";
@@ -43,6 +44,39 @@ import {
   PurchaseType,
 } from "../../utils/interface";
 import axios from "axios";
+import moment, { months } from "moment";
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+} from 'chart.js';
+import { Chart } from 'react-chartjs-2';
+
+
+
+
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+
+);
+
+
+
 // import axios from "axios";
 
 const utilButtons = [
@@ -65,7 +99,6 @@ const utilButtons = [
 ];
 
 const CashFlows = (props: { accessToken: string }) => {
-  const cashBalance: number = 235000;
 
   const [loadedPage, setLoadedPage] = useState<boolean>(false);
   const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
@@ -83,6 +116,110 @@ const CashFlows = (props: { accessToken: string }) => {
   const [outFlowData, setOutFlowData] = useState<InflowData>({} as InflowData);
   const [inflowCategories, setInflowCategories] = useState<StringDict>({});
   const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
+  const [openingBalance, setOpeningBalance] = useState<number>(0);
+  const [cashBalance,setBalance] =  useState<number>(0);
+
+  const [barData,setBarData]= useState<any>();
+  
+ 
+const options = { elements: {
+  layout:{
+    padding:0
+  },
+  point:{
+      radius: 2
+  }
+},
+
+maintainAspectRatio: false,
+  responsive: true,
+  plugins: {
+    legend: {     
+      display : false,
+      positon : "top" as const
+    },
+    title: {
+      display: false,
+      text: 'Cash Inflow Outflow Chart',
+    },
+    datalabels : {
+      display : false
+    },
+    customCanvasBackgroundColor: {
+      color: '#F5F5F5',
+    }
+  },
+  
+  scales: {
+    xAxes: {
+      offset: true,
+      ticks: {
+        beginAtZero: true,
+        display : false ,
+        font: {
+          family: "Montserrat",
+          weight:'600',
+          size:15
+        },
+        categoryPercentage: 1.0,
+          barPercentage: 1.0,
+      },
+      title: {
+        display: false,
+        text: "Months",
+      },
+      grid: {
+        display: false,
+      },
+      font: {
+        family: "Montserrat",
+      },
+    },
+    y: {
+      ticks: {
+       
+        font: {
+          family: "Montserrat",
+          weight:'600',
+          size:15
+        },
+        categoryPercentage: 1.0,
+        barPercentage: 0.1,
+        maxTicksLimit: 5,
+        stepSize: 0.1,
+        callback:function(value:number) {
+         
+            return 'INR '+value;
+      }
+      },
+      title: {
+        display: false,
+        text: "INR" ,
+      },
+      grid: {
+        borderDash: [2, 4],
+        color: "#00000099",
+        display: true,
+        padding:49
+      },
+    },
+  },
+
+}
+
+const plugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart :ChartJS, args:any, options:any) => {
+    const {ctx} = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = options.color || '#f5f6f7';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  }
+};
+  
+
 
   useEffect(() => {
 
@@ -92,6 +229,7 @@ const CashFlows = (props: { accessToken: string }) => {
       })
       .then((response) => {
         setupInflow(response.data);
+        setOpeningBalance(response.data.openingBal);
       });
 
       axios
@@ -107,6 +245,35 @@ const CashFlows = (props: { accessToken: string }) => {
      
  
   }, [props]);
+
+
+  const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
+
+   
+    if(minDate && (minDate.diff(min) < 0)) {
+      setGlobalMinDate(min);
+      setFromValue(min);
+      setMinDate(min);
+    }
+
+    if(maxDate && (maxDate.diff(max) < 0)) {
+      setGlobalMaxDate(max);
+      setToValue(max);
+      setMaxDate(max);
+    }
+
+    if(!maxDate || !minDate) {
+      
+    setGlobalMinDate(min);
+    setFromValue(min);
+    setMinDate(min);
+
+    setGlobalMaxDate(max);
+      setToValue(max);
+      setMaxDate(max);
+    }
+
+  }
   
   const setupInflow = (inflow: Inflow) => {
     const cashinflow_data = inflow.cashinflow;
@@ -120,19 +287,22 @@ const CashFlows = (props: { accessToken: string }) => {
     //   ],'DD-MM-YYYY'
     // );
 
-    const minimum_date = dayjs(
-      '01-01-2016','DD-MM-YYYY'
-    );
-    const maximum_date =  dayjs(
-      dayjs().format('DD-MM-YYYY'),'DD-MM-YYYY'
-    );
-    setGlobalMinDate(minimum_date);
-    setGlobalMaxDate(maximum_date);
-    setFromValue(minimum_date);
-    setToValue(maximum_date);
-    setMinDate(minimum_date);
-    setMaxDate(maximum_date);
+    const dates:string[] = [];
+
+    cashinflow_data.forEach((cashinflow) => {
+      cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
+        dates.push(receipt.voucherdate);
+      });
+    });
     
+    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+
+    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    
+
+
+    handleMinMaxDates(dayjs(minimum_date),dayjs(maximum_date));
     let inflowCategories: StringDict = { Total: 1 };
     let baseInflowData: StringDict = { Total: 0 };
     cashinflow_data.forEach((cashinflow: CashinFlow) => {
@@ -155,10 +325,12 @@ const CashFlows = (props: { accessToken: string }) => {
         inflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
       }
     }
+
+    console.log('voucherDatesdf',minimum_date.year(),maximum_date.year());
+
     cashinflow_data.forEach((cashinflow) => {
       cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
         const voucherDate = dayjs(receipt.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-
         inflowDataTemp[voucherDate].Total += receipt.amount;
         inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
           receipt.amount;
@@ -173,46 +345,58 @@ const CashFlows = (props: { accessToken: string }) => {
   
   const setupOutflow = (outflow : Outflow) => {
     let cashoutflow_data = outflow.cashoutflow;
-
+    const dates:string[] = [];
 
     let outflowCategories: StringDict = {Total: 1 };
     let baseInflowData: StringDict = {Total: 0 };
     cashoutflow_data.forEach((cashoutflow: CashoutFlow) => {
-      cashoutflow.cashoutflow_journal.forEach((ledger:any) => {
-        outflowCategories[ledger.type[0].journal_type] = 1;
-        baseInflowData[ledger.type[0].journal_type] = 0;
+      cashoutflow.cashoutflow_journal.forEach((journal:any) => {
+        outflowCategories[journal.type[0].journal_type] = 1;
+        baseInflowData[journal.type[0].journal_type] = 0;
+        journal.type.forEach((each:JournalType)=>{
+          dates.push(each.payment_date);
+        })
       });
-      cashoutflow.cashoutflow_payments.forEach((ledger:any) => {
-        outflowCategories[ledger.type.payment_type] = 1;
-        baseInflowData[ledger.type.payment_type] = 0;
+
+      cashoutflow.cashoutflow_payments.forEach((payments:any) => {
+        outflowCategories[payments.type.payment_type] = 1;
+        baseInflowData[payments.type.payment_type] = 0;
+        dates.push(payments.voucherdate);
       });
-      cashoutflow.cashoutflow_purchase.forEach((ledger:any) => {
-        outflowCategories[ledger.type[0].purchase_type] = 1;
-        baseInflowData[ledger.type[0].purchase_type] = 0;
+      cashoutflow.cashoutflow_purchase.forEach((purchase:any) => {
+        outflowCategories[purchase.type[0].purchase_type] = 1;
+        baseInflowData[purchase.type[0].purchase_type] = 0;
+
+        purchase.type.forEach((each:PurchaseType)=>{
+          dates.push(each.payment_voucherdate);
+        })
       });
     });
     
-    const minimum_date = dayjs(
-      '01-01-2016','DD-MM-YYYY'
-    );
-    const maximum_date =  dayjs(
-      dayjs().format('DD-MM-YYYY'),'DD-MM-YYYY'
-    );
+
+    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+
+    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+
+    // const minimum_date = dayjs(min_date);
+    // const maximum_date =  dayjs(max_date);
+
+    handleMinMaxDates(minimum_date,maximum_date);
+// console.log('maximum_date',maximum_date)
 
     const outflowDataTemp: OutflowData = {};
-    if(minimum_date && maximum_date) {
-      for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
-        let min_month = 0;
-        let max_month = 11;
-        if (year === minimum_date.year()) min_month = minimum_date.month();
-        if (year === maximum_date.year()) max_month = maximum_date.month();
-        for (let month = min_month; month <= max_month; month++) {
-          const tempDate = dayjs().month(month).year(year);
-          outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
-        }
+    for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
+      let min_month = 0;
+      let max_month = 11;
+      if (year === minimum_date.year()) min_month = minimum_date.month();
+      if (year === maximum_date.year()) max_month = maximum_date.month();
+      for (let month = min_month; month <= max_month; month++) {
+        const tempDate = dayjs().month(month).year(year);
+        outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
       }
-
     }
+
 
     cashoutflow_data.forEach((cashoutflow:CashoutFlow) => {
       cashoutflow.cashoutflow_journal.forEach((journal : Journal, index: number) => {
@@ -229,7 +413,6 @@ const CashFlows = (props: { accessToken: string }) => {
       });
 
       cashoutflow.cashoutflow_payments.forEach((payments:Payments, index: number) => {
-
         const voucherDate = dayjs(payments.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
           if(outflowDataTemp[voucherDate]) {
             outflowDataTemp[voucherDate].Total += payments.type.payment_amount*-1;
@@ -251,12 +434,10 @@ const CashFlows = (props: { accessToken: string }) => {
         })
       });
     });
-
- 
     setOutflowCategories(outflowCategories);
     setOutFlowData(outflowDataTemp);
-    setLoadedPage(true);
   };
+  
 
   const getYearStart = (date: Dayjs) => {
     const month = date.month();
@@ -329,7 +510,14 @@ const CashFlows = (props: { accessToken: string }) => {
     );
   };
 
-  const getSelectedData = () => {
+  const [inflowSelectedData,setInflowSelectedData] = useState<CashflowTable>();
+  const [inflowSelectedCategories,setInflowSelectedCategories] = useState<string[]>();
+  const [outflowSelectedData,setOutflowSelectedData] = useState<CashflowTable>();
+  const [outflowSelectedCategories,setOutflowSelectedCategories] = useState<string[]>();
+  const [selectedMonths,setSelectedMonths] = useState<string[]>();
+  const [openingBal,setOpeningBal] = useState<number[]>();
+  const [closingBal,setClosingBal] = useState<number[]>();
+  useEffect(()=>{
     
     let minimum_date = dayjs(
       Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
@@ -341,7 +529,10 @@ const CashFlows = (props: { accessToken: string }) => {
     );
     const quarterMap = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
     const categories = [...Object.keys(inflowCategories)];
-    const outFlowCategories = [...Object.keys(outflowCategories)];
+    const outCategories = [...Object.keys(outflowCategories)];
+
+    if(!categories.length || !outCategories.length) return;
+
 
     let selectedData: CashflowTable = {};
 
@@ -352,12 +543,12 @@ const CashFlows = (props: { accessToken: string }) => {
 
 
     let baseOutflowData: StringDict = {};
-    outFlowCategories.forEach((category) => {
+    outCategories.forEach((category) => {
       baseOutflowData[category] = 0;
     });
 
     let outFlowSelectedData: CashflowTable = {};
-
+   
     for (
       let year = minimum_date!.year();
       year <= maximum_date!.year();
@@ -372,11 +563,11 @@ const CashFlows = (props: { accessToken: string }) => {
 
         if (period === "Monthly") {
           selectedData[tempDate.format("MMM YYYY")] = {
-            "Cash inflow": inFlowData[tempDate.format("MMM YYYY")],
+            "Cash inflow": inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]  : baseInflowData,
           };
 
           outFlowSelectedData[tempDate.format("MMM YYYY")] = {
-            "Cash outflow": outFlowData[tempDate.format("MMM YYYY")],
+            "Cash outflow": outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")] : baseOutflowData,
           };
 
         } 
@@ -405,7 +596,7 @@ const CashFlows = (props: { accessToken: string }) => {
               inFlowData[tempDate.format("MMM YYYY")][type];
           });
 
-          outFlowCategories.forEach((type) => {
+          outCategories.forEach((type) => {
             if (type === "Total") return;
             outFlowSelectedData[quarterLabel]["Cash outflow"].Total +=
               inFlowData[tempDate.format("MMM YYYY")][type];
@@ -437,7 +628,7 @@ const CashFlows = (props: { accessToken: string }) => {
               inFlowData[tempDate.format("MMM YYYY")][type];
           });
 
-          outFlowCategories.forEach((type) => {
+          outCategories.forEach((type) => {
             if (type === "Total") return;
             outFlowSelectedData[annualLabel]["Cash outflow"].Total +=
               inFlowData[tempDate.format("MMM YYYY")][type];
@@ -449,6 +640,95 @@ const CashFlows = (props: { accessToken: string }) => {
       }
     }
 
+    let months = Object.keys(selectedData);
+    if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
+      months = Object.keys(outFlowSelectedData);
+    }
+
+    const cashinflowGraph:any = [];
+    const cashoutflowGraph:any = [];
+
+    let openingAmt = openingBalance; 
+    const openingBalArr:number[] = [];
+    const closeingBal:number[] = [];
+    openingBalArr.push(openingAmt);
+
+    Object.keys(selectedData).map((month: string,idx:number,arr:string[]) => {
+      selectedData[month]["Cash inflow"].Total >= 1
+      ? cashinflowGraph.push(selectedData[month]["Cash inflow"].Total)
+      : cashinflowGraph.push(0)
+    
+      const cashinflowTotal = selectedData[month]["Cash inflow"].Total
+      const cashOutFlowTotal = outFlowSelectedData[month]["Cash outflow"].Total 
+      console.log('cashinflowTotal',cashinflowTotal);
+      const closingBal = openingAmt + (cashinflowTotal -  cashOutFlowTotal);
+      
+      if(idx !== arr.length-1) {
+        openingBalArr.push(closingBal);
+        setBalance(closingBal);
+      }
+     
+      closeingBal.push(closingBal);
+
+      openingAmt = closingBal;
+ 
+    })
+
+    Object.keys(outFlowSelectedData).map((month: string) => {
+      // console.log(outFlowSelectedData[month]);
+      outFlowSelectedData[month]["Cash outflow"].Total >= 1
+      ? cashoutflowGraph.push(outFlowSelectedData[month]["Cash outflow"].Total)
+      : cashoutflowGraph.push(0)
+
+    })
+
+
+      setBarData({labels:months,datasets:[
+      
+        {
+          type: 'line' as const,
+          label: 'Closing Balance',
+          borderColor: '#186090',
+          borderWidth: 1,
+          fill: false,
+          data:[...closeingBal],
+        },
+        {
+          type: 'bar' as const,
+          label: 'Cash Inflow',
+          backgroundColor: '#338455',
+          data: cashinflowGraph,
+          borderColor: 'white',
+          barPercentage: 1,
+          categoryPercentage: 0.3,
+          borderWidth: 0,     
+        },
+        {
+          type: 'bar' as const,
+          label: 'Cash Outflow',
+          backgroundColor: '#C5221F',
+          barPercentage: 1,
+          categoryPercentage: 0.3,
+          data:  cashoutflowGraph,
+          borderWidth: 0, 
+        },
+      ]})
+
+    setInflowSelectedData(selectedData);
+    setOutflowSelectedData(outFlowSelectedData);
+    setSelectedMonths(months);
+    setOpeningBal(openingBalArr);
+    setClosingBal(closeingBal);
+    setInflowSelectedCategories(categories)
+    setOutflowSelectedCategories(outCategories);
+    setLoadedPage(true);
+    
+  },[globalMaxDate,globalMinDate,fromValue,toValue,openingBalance])
+
+  const getSelectedData = () => {
+
+    if(!selectedMonths || !openingBal || !inflowSelectedData || !outflowSelectedData || !closingBal
+       || !inflowSelectedCategories || !outflowSelectedCategories) return null;
 
     return (
       <TableContainer className="custom-scrollbar">
@@ -459,6 +739,25 @@ const CashFlows = (props: { accessToken: string }) => {
           }}
         >
           <TableHead>
+            <TableRow >
+             <TableCell  style={{
+                  padding: 0,
+                  paddingLeft: "1rem",
+                  border: "none",
+                  position: "sticky",
+                  left: 0,
+                 
+                }}></TableCell>
+            <TableCell colSpan={selectedMonths.length+5} >
+              {/* <Chart type='bar'  options={options} data={barData} plugins={[plugin]} /> */}
+               {/* @ts-ignore */}
+              <div style={{height: '22rem','margin-left': '-7.5rem'}}>
+               {/* @ts-ignore */}
+               <Chart type='bar'  options={options} data={barData}  />
+
+              </div>
+              </TableCell>
+            </TableRow>
             <TableRow>
               <TableCell
                 style={{
@@ -491,7 +790,8 @@ const CashFlows = (props: { accessToken: string }) => {
                   placeholder="Search"
                 />
               </TableCell>
-              {Object.keys(selectedData).map((month: string) => {
+             
+              {selectedMonths.map((month: string) => {
                 return (
                   <TableCell
                     key={month}
@@ -506,7 +806,37 @@ const CashFlows = (props: { accessToken: string }) => {
             </TableRow>
           </TableHead>
           <TableBody>
+              <TableRow>
+              <TableCell
+                sx={{ position: "sticky", left: 0 }}
+                className="cashflows-table-category"
+              >
+                <div style={{display:'flex',alignItems:'center'}}>
+                  <ShowChartIcon  sx={{
+                  fontSize: "1rem",
+                  color: "#3492D4",
+                  marginRight: "0.3rem",
+                  
+                }} />
+                  {" "}
+                  <p>Cash balance at beginning of the month</p>
 
+                </div>
+                
+              </TableCell>
+              {openingBal.map((bal) => {
+                return (
+                  <TableCell
+                    key={bal}
+                    align="center"
+                    className="cashflows-table-column"
+                    sx={{ borderBottom: "1px solid #d3d3d3" }}
+                  >
+                   {Math.floor(bal).toLocaleString("en-IN")}
+                  </TableCell>
+                );
+              })}
+              </TableRow>
           <TableRow>
               <TableCell
                 sx={{ position: "sticky", left: 0 }}
@@ -521,7 +851,7 @@ const CashFlows = (props: { accessToken: string }) => {
                 />{" "}
                 Cash inflow
               </TableCell>
-              {Object.keys(selectedData).map((month: string) => {
+              {Object.keys(inflowSelectedData).map((month: string) => {
                 return (
                   <TableCell
                     key={month + "_2"}
@@ -529,9 +859,9 @@ const CashFlows = (props: { accessToken: string }) => {
                     className="cashflows-table-column"
                     sx={{ borderBottom: "1px solid #d3d3d3" }}
                   >
-                    {selectedData[month]["Cash inflow"].Total >= 1
+                    {inflowSelectedData[month]["Cash inflow"].Total >= 1
                       ? Math.floor(
-                          selectedData[month]["Cash inflow"].Total
+                          inflowSelectedData[month]["Cash inflow"].Total
                         ).toLocaleString("en-IN")
                       : "-"}
                   </TableCell>
@@ -539,7 +869,7 @@ const CashFlows = (props: { accessToken: string }) => {
               })}
             </TableRow>
            
-            {categories.map((category) => {
+            {inflowSelectedCategories.map((category) => {
               if (category === "Total")
                 return <React.Fragment key={category}></React.Fragment>;
               return (
@@ -556,7 +886,7 @@ const CashFlows = (props: { accessToken: string }) => {
                   >
                     {category}
                   </TableCell>
-                  {Object.keys(selectedData).map((month: string) => {
+                  {Object.keys(inflowSelectedData).map((month: string) => {
                     return (
                       <TableCell
                         key={month + "_3"}
@@ -567,9 +897,9 @@ const CashFlows = (props: { accessToken: string }) => {
                           fontWeight: 600,
                         }}
                       >
-                        {selectedData[month]["Cash inflow"][category] >= 1
+                        {inflowSelectedData[month]["Cash inflow"][category] >= 1
                           ? Math.floor(
-                              selectedData[month]["Cash inflow"][category]
+                              inflowSelectedData[month]["Cash inflow"][category]
                             ).toLocaleString("en-IN")
                           : "-"}
                       </TableCell>
@@ -593,7 +923,7 @@ const CashFlows = (props: { accessToken: string }) => {
                 />{" "}
                 Cash outflow
               </TableCell>
-              {Object.keys(outFlowSelectedData).map((month: string) => {
+              {Object.keys(outflowSelectedData).map((month: string) => {
             
                 return (
                   <TableCell
@@ -602,9 +932,9 @@ const CashFlows = (props: { accessToken: string }) => {
                     className="cashflows-table-column" 
                     sx={{ borderBottom: "1px solid #d3d3d3" }}
                   >
-                    {outFlowSelectedData[month]["Cash outflow"].Total >= 1
+                    {outflowSelectedData[month]["Cash outflow"].Total >= 1
                       ? Math.floor(
-                          outFlowSelectedData[month]["Cash outflow"].Total
+                          outflowSelectedData[month]["Cash outflow"].Total
                         ).toLocaleString("en-IN")
                       : "-"}
                   </TableCell>
@@ -612,7 +942,7 @@ const CashFlows = (props: { accessToken: string }) => {
               })}
             </TableRow>
 
-{outFlowCategories.map((category) => {
+{outflowSelectedCategories.map((category:string) => {
               if (category === "Total")
                 return <React.Fragment key={category}></React.Fragment>;
               return (
@@ -629,7 +959,7 @@ const CashFlows = (props: { accessToken: string }) => {
                   >
                     {category}
                   </TableCell>
-                  {Object.keys(outFlowSelectedData).map((month: string) => {
+                  {Object.keys(outflowSelectedData).map((month: string) => {
                     //  if(outFlowSelectedData[month]) {
                     //   // console.log('not',month)
                     // }
@@ -644,9 +974,9 @@ const CashFlows = (props: { accessToken: string }) => {
                           fontWeight: 600,
                         }}
                       >
-                        {outFlowSelectedData[month]["Cash outflow"][category] >= 1
+                        {outflowSelectedData[month]["Cash outflow"][category] >= 1
                           ? Math.floor(
-                              outFlowSelectedData[month]["Cash outflow"][category]
+                              outflowSelectedData[month]["Cash outflow"][category]
                             ).toLocaleString("en-IN")
                           : "-"}
                       </TableCell>
@@ -655,7 +985,36 @@ const CashFlows = (props: { accessToken: string }) => {
                 </TableRow>
               );
             })}
-            
+            <TableRow>
+              <TableCell
+                sx={{ position: "sticky", left: 0 }}
+                className="cashflows-table-category"
+              >
+                 <div style={{display:'flex',alignItems:'center'}}>
+                  <ShowChartIcon  sx={{
+                  fontSize: "1rem",
+                  color: "#3492D4",
+                  marginRight: "0.3rem",
+                  
+                }} />
+                  {" "}
+                  <p>Cash balance at end of the month</p>
+
+                </div>
+              </TableCell>
+              {closingBal.map((bal) => {
+                return (
+                  <TableCell
+                    key={bal}
+                    align="center"
+                    className="cashflows-table-column"
+                    sx={{ borderBottom: "1px solid #d3d3d3" }}
+                  >
+                      {Math.floor(bal).toLocaleString("en-IN")}
+                  </TableCell>
+                );
+              })}
+              </TableRow>
 
    
           </TableBody>
@@ -725,6 +1084,8 @@ const CashFlows = (props: { accessToken: string }) => {
             </div>
           </Grid>
         </Grid>
+
+      
       </Grid>
       <Modal open={openPeriod} onClose={() => setOpenPeriod(false)}>
         <Grid container className="modal-box" style={{ width: "400px" }} p={3}>

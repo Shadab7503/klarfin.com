@@ -83,8 +83,14 @@ const SignUp = () => {
       return;
     setValidating(false);
     setWaitingForResponse(true);
+    const payload: any = {
+      ...user
+    }
+    if(searchParams.get('token')) {
+      payload.token = `${searchParams.get('token')}`
+    }
     axios
-      .post(process.env.REACT_APP_BACKEND_HOST + url, {...user,token:`${searchParams.get('token')}`})
+      .post(process.env.REACT_APP_BACKEND_HOST + url, {...payload})
       .then((response) => {
         setWaitingForResponse(false);
         if (response.data.success) {
