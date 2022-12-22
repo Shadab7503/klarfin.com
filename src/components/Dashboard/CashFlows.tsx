@@ -57,7 +57,8 @@ import {
   LineController,
   BarController,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
+
+import CashflowChart from "../Chart/Cashflow";
 
 
 
@@ -120,106 +121,6 @@ const CashFlows = (props: { accessToken: string }) => {
   const [cashBalance,setBalance] =  useState<number>(0);
 
   const [barData,setBarData]= useState<any>();
-  
- 
-const options = { elements: {
-  layout:{
-    padding:0
-  },
-  point:{
-      radius: 2
-  }
-},
-
-maintainAspectRatio: false,
-  responsive: true,
-  plugins: {
-    legend: {     
-      display : false,
-      positon : "top" as const
-    },
-    title: {
-      display: false,
-      text: 'Cash Inflow Outflow Chart',
-    },
-    datalabels : {
-      display : false
-    },
-    customCanvasBackgroundColor: {
-      color: '#F5F5F5',
-    }
-  },
-  
-  scales: {
-    xAxes: {
-      offset: true,
-      ticks: {
-        beginAtZero: true,
-        display : false ,
-        font: {
-          family: "Montserrat",
-          weight:'600',
-          size:15
-        },
-        categoryPercentage: 1.0,
-          barPercentage: 1.0,
-      },
-      title: {
-        display: false,
-        text: "Months",
-      },
-      grid: {
-        display: false,
-      },
-      font: {
-        family: "Montserrat",
-      },
-    },
-    y: {
-      ticks: {
-       
-        font: {
-          family: "Montserrat",
-          weight:'600',
-          size:15
-        },
-        categoryPercentage: 1.0,
-        barPercentage: 0.1,
-        maxTicksLimit: 5,
-        stepSize: 0.1,
-        callback:function(value:number) {
-         
-            return 'INR '+value;
-      }
-      },
-      title: {
-        display: false,
-        text: "INR" ,
-      },
-      grid: {
-        borderDash: [2, 4],
-        color: "#00000099",
-        display: true,
-        padding:49
-      },
-    },
-  },
-
-}
-
-const plugin = {
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart :ChartJS, args:any, options:any) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = options.color || '#f5f6f7';
-    ctx.fillRect(0, 0, chart.width, chart.height);
-    ctx.restore();
-  }
-};
-  
-
 
   useEffect(() => {
 
@@ -244,7 +145,7 @@ const plugin = {
 
      
  
-  }, [props]);
+  }, []);
 
 
   const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
@@ -474,9 +375,10 @@ const plugin = {
       setMaxDate(globalMaxDate);
       setToValue(globalMaxDate);
       if (newValue === "Quarterly") {
-        const year = globalMaxDate!.year();
-        setFromValue(dayjs(`${year}-01-01`));
-        setToValue(dayjs(`${year}-01-01`));
+        const maxYear = globalMaxDate!.year();
+        const minYear = globalMinDate!.year();
+        setFromValue(dayjs(`${minYear}-01-01`));
+        setToValue(dayjs(`${maxYear}-01-01`));
       }
     }
     setPeriod(newValue);
@@ -517,6 +419,16 @@ const plugin = {
   const [selectedMonths,setSelectedMonths] = useState<string[]>();
   const [openingBal,setOpeningBal] = useState<number[]>();
   const [closingBal,setClosingBal] = useState<number[]>();
+  const [cellWidth,setCellWidth] = useState<number>(126);
+
+  useEffect(()=>{
+    const wid = document.querySelector('.check-width');
+    if(wid) {
+    
+      setCellWidth(wid.clientWidth); 
+    }
+  },[globalMaxDate,globalMinDate,fromValue,toValue])
+
   useEffect(()=>{
     
     let minimum_date = dayjs(
@@ -582,26 +494,36 @@ const plugin = {
             selectedData[quarterLabel] = {
               "Cash inflow": { ...baseInflowData },
             };
+          }
+
+          console.log('outFlowSelectedData',selectedData,quarterLabel);
+
+          if (!(quarterLabel in outFlowSelectedData)) {
 
             outFlowSelectedData[quarterLabel] = {
               "Cash outflow": {...baseOutflowData},
             };
           }
 
+
           categories.forEach((type) => {
             if (type === "Total") return;
             selectedData[quarterLabel]["Cash inflow"].Total +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
+            inFlowData[tempDate.format("MMM YYYY")] ? 
+              inFlowData[tempDate.format("MMM YYYY")][type] : 0;
             selectedData[quarterLabel]["Cash inflow"][type] +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
+            inFlowData[tempDate.format("MMM YYYY")] ?
+              inFlowData[tempDate.format("MMM YYYY")][type] : 0;
           });
 
           outCategories.forEach((type) => {
             if (type === "Total") return;
             outFlowSelectedData[quarterLabel]["Cash outflow"].Total +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
+            outFlowData[tempDate.format("MMM YYYY")] ?
+            outFlowData[tempDate.format("MMM YYYY")][type] : 0;
             outFlowSelectedData[quarterLabel]["Cash outflow"][type] +=
-            outFlowData[tempDate.format("MMM YYYY")][type];
+            outFlowData[tempDate.format("MMM YYYY")] ? 
+            outFlowData[tempDate.format("MMM YYYY")][type] : 0;
           });
         } else {
           let annualLabel: string = `FY ${tempDate.year()}-${
@@ -641,14 +563,14 @@ const plugin = {
     }
 
     let months = Object.keys(selectedData);
-    if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
-      months = Object.keys(outFlowSelectedData);
-    }
+    // if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
+    //   months = Object.keys(outFlowSelectedData);
+    // }
 
     const cashinflowGraph:any = [];
     const cashoutflowGraph:any = [];
 
-    let openingAmt = openingBalance; 
+    let openingAmt = openingBalance*-1 == -0 ? 0 : openingBalance*-1; 
     const openingBalArr:number[] = [];
     const closeingBal:number[] = [];
     openingBalArr.push(openingAmt);
@@ -748,16 +670,13 @@ const plugin = {
                   left: 0,
                  
                 }}></TableCell>
-            <TableCell colSpan={selectedMonths.length+5} >
-              {/* <Chart type='bar'  options={options} data={barData} plugins={[plugin]} /> */}
-               {/* @ts-ignore */}
-              <div style={{height: '22rem','margin-left': '-7.5rem'}}>
-               {/* @ts-ignore */}
-               <Chart type='bar'  options={options} data={barData}  />
 
-              </div>
+                <TableCell colSpan={selectedMonths.length} >
+                <CashflowChart barData={barData} width={selectedMonths.length*cellWidth} />
               </TableCell>
+         
             </TableRow>
+            
             <TableRow>
               <TableCell
                 style={{
@@ -796,8 +715,8 @@ const plugin = {
                   <TableCell
                     key={month}
                     align="center"
-                    className="cashflows-table-column"
-                    sx={{ minWidth: "110px" }}
+                    className="cashflows-table-column check-width"
+                    sx={{ minWidth: "110px", maxWidth:"110px" }}
                   >
                     {month}
                   </TableCell>
@@ -1231,11 +1150,11 @@ const plugin = {
                       <span style={{ fontSize: "0.8rem" }}>Quarterly</span>
                     }
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="Annually"
                     control={<Radio />}
                     label={<span style={{ fontSize: "0.8rem" }}>Annually</span>}
-                  />
+                  /> */}
                 </RadioGroup>
               </FormControl>
             </Grid>
