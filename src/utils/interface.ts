@@ -8,6 +8,16 @@ export interface user {
   password: string;
 }
 
+export interface ExpenseBreakdown {
+  Categories: {
+    Name: string;
+    spendAmount: number;
+    Spend: number;
+    Change: number;
+  }[];
+  Merchants: [];
+}
+
 export interface loginDetails {
   email: string;
   password: string;

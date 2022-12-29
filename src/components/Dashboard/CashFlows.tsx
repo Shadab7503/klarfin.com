@@ -99,245 +99,257 @@ const utilButtons = [
   },
 ];
 
-const CashFlows = (props: { accessToken: string }) => {
+const CashFlows = (props:any) => {
 
-  const [loadedPage, setLoadedPage] = useState<boolean>(false);
-  const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
-  const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
+  const {inflowCategories,
+    outflowCategories,outFlowData,inFlowData,
+    globalMinDate,
+    globalMaxDate,
+    fromValue,
+    toValue,
+    setFromValue,
+    setToValue,
+    loadedPage,
+    setLoadedPage
+  } = props;
+   
+
+  // const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
+  // const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
   const [openPeriod, setOpenPeriod] = useState<boolean>(false);
-  const [fromValue, setFromValue] = useState<Dayjs | null>();
-  const [toValue, setToValue] = useState<Dayjs | null>();
+  // const [fromValue, setFromValue] = useState<Dayjs | null>();
+  // const [toValue, setToValue] = useState<Dayjs | null>();
   const [period, setPeriod] = useState<string>("Monthly");
   const [fromOpen, setFromOpen] = useState<boolean>(false);
   const [toOpen, setToOpen] = useState<boolean>(false);
   const [minDate, setMinDate] = useState<Dayjs>();
   const [maxDate, setMaxDate] = useState<Dayjs>();
   
-  const [inFlowData, setInFlowData] = useState<InflowData>({} as InflowData);
-  const [outFlowData, setOutFlowData] = useState<InflowData>({} as InflowData);
-  const [inflowCategories, setInflowCategories] = useState<StringDict>({});
-  const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
+  // const [inFlowData, setInFlowData] = useState<InflowData>({} as InflowData);
+  // const [outFlowData, setOutFlowData] = useState<InflowData>({} as InflowData);
+  // const [inflowCategories, setInflowCategories] = useState<StringDict>({});
+  // const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
   const [openingBalance, setOpeningBalance] = useState<number>(0);
   const [cashBalance,setBalance] =  useState<number>(0);
 
   const [barData,setBarData]= useState<any>();
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    axios
-      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
-        headers: { Authorization: `Bearer ${props.accessToken}` },
-      })
-      .then((response) => {
-        setupInflow(response.data);
-        setOpeningBalance(response.data.openingBal);
-      });
+  //   // axios
+  //   //   .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
+  //   //     headers: { Authorization: `Bearer ${props.accessToken}` },
+  //   //   })
+  //   //   .then((response) => {
+  //   //     setupInflow(response.data);
+  //   //     setOpeningBalance(response.data.openingBal);
+  //   //   });
 
-      axios
-      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", {
-        headers: { Authorization: `Bearer ${props.accessToken}` },
-      })
-      .then((response) => {
-        // setupInflow(response.data);
-        setupOutflow(response.data);
-        // console.log(response.data);
-      });
+  //   //   axios
+  //   //   .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", {
+  //   //     headers: { Authorization: `Bearer ${props.accessToken}` },
+  //   //   })
+  //   //   .then((response) => {
+  //   //     // setupInflow(response.data);
+  //   //     setupOutflow(response.data);
+  //   //     // console.log(response.data);
+  //   //   });
 
      
  
-  }, []);
+  // }, []);
 
 
-  const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
+//   const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
 
    
-    if(minDate && (minDate.diff(min) < 0)) {
-      setGlobalMinDate(min);
-      setFromValue(min);
-      setMinDate(min);
-    }
+//     if(minDate && (minDate.diff(min) < 0)) {
+//       setGlobalMinDate(min);
+//       setFromValue(min);
+//       setMinDate(min);
+//     }
 
-    if(maxDate && (maxDate.diff(max) < 0)) {
-      setGlobalMaxDate(max);
-      setToValue(max);
-      setMaxDate(max);
-    }
+//     if(maxDate && (maxDate.diff(max) < 0)) {
+//       setGlobalMaxDate(max);
+//       setToValue(max);
+//       setMaxDate(max);
+//     }
 
-    if(!maxDate || !minDate) {
+//     if(!maxDate || !minDate) {
       
-    setGlobalMinDate(min);
-    setFromValue(min);
-    setMinDate(min);
+//     setGlobalMinDate(min);
+//     setFromValue(min);
+//     setMinDate(min);
 
-    setGlobalMaxDate(max);
-      setToValue(max);
-      setMaxDate(max);
-    }
+//     setGlobalMaxDate(max);
+//       setToValue(max);
+//       setMaxDate(max);
+//     }
 
-  }
+//   }
   
-  const setupInflow = (inflow: Inflow) => {
-    const cashinflow_data = inflow.cashinflow;
+//   const setupInflow = (inflow: Inflow) => {
+//     const cashinflow_data = inflow.cashinflow;
 
-    // const minimum_date = dayjs(
-    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
-    // );
-    // const maximum_date = dayjs(
-    //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
-    //     "voucherdate"
-    //   ],'DD-MM-YYYY'
-    // );
+//     // const minimum_date = dayjs(
+//     //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
+//     // );
+//     // const maximum_date = dayjs(
+//     //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
+//     //     "voucherdate"
+//     //   ],'DD-MM-YYYY'
+//     // );
 
-    const dates:string[] = [];
+//     const dates:string[] = [];
 
-    cashinflow_data.forEach((cashinflow) => {
-      cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
-        dates.push(receipt.voucherdate);
-      });
-    });
+//     cashinflow_data.forEach((cashinflow) => {
+//       cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
+//         dates.push(receipt.voucherdate);
+//       });
+//     });
     
-    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+//     const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
 
-    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
-    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+//     const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+//     const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
     
 
 
-    handleMinMaxDates(dayjs(minimum_date),dayjs(maximum_date));
-    let inflowCategories: StringDict = { Total: 1 };
-    let baseInflowData: StringDict = { Total: 0 };
-    cashinflow_data.forEach((cashinflow: CashinFlow) => {
-      cashinflow.cashinflow_ledger.forEach((ledger) => {
-        inflowCategories[ledger.type] = 1;
-        baseInflowData[ledger.type] = 0;
-      });
-    });
+//     handleMinMaxDates(dayjs(minimum_date),dayjs(maximum_date));
+//     let inflowCategories: StringDict = { Total: 1 };
+//     let baseInflowData: StringDict = { Total: 0 };
+//     cashinflow_data.forEach((cashinflow: CashinFlow) => {
+//       cashinflow.cashinflow_ledger.forEach((ledger) => {
+//         inflowCategories[ledger.type] = 1;
+//         baseInflowData[ledger.type] = 0;
+//       });
+//     });
 
-    const inflowDataTemp: InflowData = {};
+//     const inflowDataTemp: InflowData = {};
 
     
-    for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
-      let min_month = 0;
-      let max_month = 11;
-      if (year === minimum_date.year()) min_month = minimum_date.month();
-      if (year === maximum_date.year()) max_month = maximum_date.month();
-      for (let month = min_month; month <= max_month; month++) {
-        const tempDate = dayjs().month(month).year(year);
-        inflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
-      }
-    }
+//     for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
+//       let min_month = 0;
+//       let max_month = 11;
+//       if (year === minimum_date.year()) min_month = minimum_date.month();
+//       if (year === maximum_date.year()) max_month = maximum_date.month();
+//       for (let month = min_month; month <= max_month; month++) {
+//         const tempDate = dayjs().month(month).year(year);
+//         inflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
+//       }
+//     }
 
-    console.log('voucherDatesdf',minimum_date.year(),maximum_date.year());
+//     console.log('voucherDatesdf',minimum_date.year(),maximum_date.year());
 
-    cashinflow_data.forEach((cashinflow) => {
-      cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
-        const voucherDate = dayjs(receipt.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-        inflowDataTemp[voucherDate].Total += receipt.amount;
-        inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
-          receipt.amount;
-      });
-    });
+//     cashinflow_data.forEach((cashinflow) => {
+//       cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
+//         const voucherDate = dayjs(receipt.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
+//         inflowDataTemp[voucherDate].Total += receipt.amount;
+//         inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
+//           receipt.amount;
+//       });
+//     });
 
-    setInflowCategories(inflowCategories);
-    setInFlowData(inflowDataTemp);
-    // setLoadedPage(true);
-  };
+//     setInflowCategories(inflowCategories);
+//     setInFlowData(inflowDataTemp);
+//     // setLoadedPage(true);
+//   };
 
   
-  const setupOutflow = (outflow : Outflow) => {
-    let cashoutflow_data = outflow.cashoutflow;
-    const dates:string[] = [];
+//   const setupOutflow = (outflow : Outflow) => {
+//     let cashoutflow_data = outflow.cashoutflow;
+//     const dates:string[] = [];
 
-    let outflowCategories: StringDict = {Total: 1 };
-    let baseInflowData: StringDict = {Total: 0 };
-    cashoutflow_data.forEach((cashoutflow: CashoutFlow) => {
-      cashoutflow.cashoutflow_journal.forEach((journal:any) => {
-        outflowCategories[journal.type[0].journal_type] = 1;
-        baseInflowData[journal.type[0].journal_type] = 0;
-        journal.type.forEach((each:JournalType)=>{
-          dates.push(each.payment_date);
-        })
-      });
+//     let outflowCategories: StringDict = {Total: 1 };
+//     let baseInflowData: StringDict = {Total: 0 };
+//     cashoutflow_data.forEach((cashoutflow: CashoutFlow) => {
+//       cashoutflow.cashoutflow_journal.forEach((journal:any) => {
+//         outflowCategories[journal.type[0].journal_type] = 1;
+//         baseInflowData[journal.type[0].journal_type] = 0;
+//         journal.type.forEach((each:JournalType)=>{
+//           dates.push(each.payment_date);
+//         })
+//       });
 
-      cashoutflow.cashoutflow_payments.forEach((payments:any) => {
-        outflowCategories[payments.type.payment_type] = 1;
-        baseInflowData[payments.type.payment_type] = 0;
-        dates.push(payments.voucherdate);
-      });
-      cashoutflow.cashoutflow_purchase.forEach((purchase:any) => {
-        outflowCategories[purchase.type[0].purchase_type] = 1;
-        baseInflowData[purchase.type[0].purchase_type] = 0;
+//       cashoutflow.cashoutflow_payments.forEach((payments:any) => {
+//         outflowCategories[payments.type.payment_type] = 1;
+//         baseInflowData[payments.type.payment_type] = 0;
+//         dates.push(payments.voucherdate);
+//       });
+//       cashoutflow.cashoutflow_purchase.forEach((purchase:any) => {
+//         outflowCategories[purchase.type[0].purchase_type] = 1;
+//         baseInflowData[purchase.type[0].purchase_type] = 0;
 
-        purchase.type.forEach((each:PurchaseType)=>{
-          dates.push(each.payment_voucherdate);
-        })
-      });
-    });
+//         purchase.type.forEach((each:PurchaseType)=>{
+//           dates.push(each.payment_voucherdate);
+//         })
+//       });
+//     });
     
 
-    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
+//     const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
 
-    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
-    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+//     const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
+//     const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
 
-    // const minimum_date = dayjs(min_date);
-    // const maximum_date =  dayjs(max_date);
+//     // const minimum_date = dayjs(min_date);
+//     // const maximum_date =  dayjs(max_date);
 
-    handleMinMaxDates(minimum_date,maximum_date);
-// console.log('maximum_date',maximum_date)
+//     handleMinMaxDates(minimum_date,maximum_date);
+// // console.log('maximum_date',maximum_date)
 
-    const outflowDataTemp: OutflowData = {};
-    for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
-      let min_month = 0;
-      let max_month = 11;
-      if (year === minimum_date.year()) min_month = minimum_date.month();
-      if (year === maximum_date.year()) max_month = maximum_date.month();
-      for (let month = min_month; month <= max_month; month++) {
-        const tempDate = dayjs().month(month).year(year);
-        outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
-      }
-    }
+//     const outflowDataTemp: OutflowData = {};
+//     for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
+//       let min_month = 0;
+//       let max_month = 11;
+//       if (year === minimum_date.year()) min_month = minimum_date.month();
+//       if (year === maximum_date.year()) max_month = maximum_date.month();
+//       for (let month = min_month; month <= max_month; month++) {
+//         const tempDate = dayjs().month(month).year(year);
+//         outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
+//       }
+//     }
 
 
-    cashoutflow_data.forEach((cashoutflow:CashoutFlow) => {
-      cashoutflow.cashoutflow_journal.forEach((journal : Journal, index: number) => {
-        journal.type.forEach((each:JournalType)=>{
-          const voucherDate = dayjs(each.payment_date, 'DD-MM-YYYY').format("MMM YYYY");
-          // console.log('voucherDate',voucherDate)
-          if(outflowDataTemp[voucherDate]) {
-            outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
-            outflowDataTemp[voucherDate][each.journal_type] +=
-              each.payment_amount*-1;
-          }
+//     cashoutflow_data.forEach((cashoutflow:CashoutFlow) => {
+//       cashoutflow.cashoutflow_journal.forEach((journal : Journal, index: number) => {
+//         journal.type.forEach((each:JournalType)=>{
+//           const voucherDate = dayjs(each.payment_date, 'DD-MM-YYYY').format("MMM YYYY");
+//           // console.log('voucherDate',voucherDate)
+//           if(outflowDataTemp[voucherDate]) {
+//             outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
+//             outflowDataTemp[voucherDate][each.journal_type] +=
+//               each.payment_amount*-1;
+//           }
 
-        })
-      });
+//         })
+//       });
 
-      cashoutflow.cashoutflow_payments.forEach((payments:Payments, index: number) => {
-        const voucherDate = dayjs(payments.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-          if(outflowDataTemp[voucherDate]) {
-            outflowDataTemp[voucherDate].Total += payments.type.payment_amount*-1;
-            outflowDataTemp[voucherDate][payments.type.payment_type] +=
-              payments.type.payment_amount*-1;
+//       cashoutflow.cashoutflow_payments.forEach((payments:Payments, index: number) => {
+//         const voucherDate = dayjs(payments.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
+//           if(outflowDataTemp[voucherDate]) {
+//             outflowDataTemp[voucherDate].Total += payments.type.payment_amount*-1;
+//             outflowDataTemp[voucherDate][payments.type.payment_type] +=
+//               payments.type.payment_amount*-1;
 
-          }
-      });
+//           }
+//       });
 
-      cashoutflow.cashoutflow_purchase.forEach((purchase:Purchase, index: number) => {
-        purchase.type.forEach((each:PurchaseType)=>{
-          const voucherDate = dayjs(each.payment_voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-          if(outflowDataTemp[voucherDate]) {
-            outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
-            outflowDataTemp[voucherDate][each.purchase_type] +=
-              each.payment_amount*-1;
-          }
+//       cashoutflow.cashoutflow_purchase.forEach((purchase:Purchase, index: number) => {
+//         purchase.type.forEach((each:PurchaseType)=>{
+//           const voucherDate = dayjs(each.payment_voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
+//           if(outflowDataTemp[voucherDate]) {
+//             outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
+//             outflowDataTemp[voucherDate][each.purchase_type] +=
+//               each.payment_amount*-1;
+//           }
 
-        })
-      });
-    });
-    setOutflowCategories(outflowCategories);
-    setOutFlowData(outflowDataTemp);
-  };
+//         })
+//       });
+//     });
+//     setOutflowCategories(outflowCategories);
+//     setOutFlowData(outflowDataTemp);
+//   };
   
 
   const getYearStart = (date: Dayjs) => {
@@ -433,7 +445,9 @@ const CashFlows = (props: { accessToken: string }) => {
     
     let minimum_date = dayjs(
       Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
-    );
+      );
+      console.log('minimum_date',minimum_date,toValue);
+
     let maximum_date = toValue;
     if (period === "Quarterly") maximum_date = maximum_date!.add(2, "month");
     maximum_date = dayjs(
@@ -460,7 +474,15 @@ const CashFlows = (props: { accessToken: string }) => {
     });
 
     let outFlowSelectedData: CashflowTable = {};
+
+    const cashinflowGraph:any = [];
+    const cashoutflowGraph:any = [];
+
+    const cashInflowRowData:number[] = [];
+    const cashOutflowRowData:number[] = [];
    
+    // console.log('inFlowData',inFlowData)
+    console.log('minimum_date!.year()',minimum_date!.year())
     for (
       let year = minimum_date!.year();
       year <= maximum_date!.year();
@@ -478,9 +500,13 @@ const CashFlows = (props: { accessToken: string }) => {
             "Cash inflow": inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]  : baseInflowData,
           };
 
+          cashInflowRowData.push(inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")].Total  : baseInflowData.Total);
+          
           outFlowSelectedData[tempDate.format("MMM YYYY")] = {
             "Cash outflow": outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")] : baseOutflowData,
           };
+
+          cashOutflowRowData.push(outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")].Total  : baseOutflowData.Total);
 
         } 
         
@@ -496,7 +522,7 @@ const CashFlows = (props: { accessToken: string }) => {
             };
           }
 
-          console.log('outFlowSelectedData',selectedData,quarterLabel);
+          // console.log('outFlowSelectedData',selectedData,quarterLabel);
 
           if (!(quarterLabel in outFlowSelectedData)) {
 
@@ -511,6 +537,7 @@ const CashFlows = (props: { accessToken: string }) => {
             selectedData[quarterLabel]["Cash inflow"].Total +=
             inFlowData[tempDate.format("MMM YYYY")] ? 
               inFlowData[tempDate.format("MMM YYYY")][type] : 0;
+
             selectedData[quarterLabel]["Cash inflow"][type] +=
             inFlowData[tempDate.format("MMM YYYY")] ?
               inFlowData[tempDate.format("MMM YYYY")][type] : 0;
@@ -562,35 +589,58 @@ const CashFlows = (props: { accessToken: string }) => {
       }
     }
 
+    console.log('selectedData',selectedData)
     let months = Object.keys(selectedData);
-    // if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
-    //   months = Object.keys(outFlowSelectedData);
-    // }
+    if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
+      months = Object.keys(outFlowSelectedData);
+    }
 
-    const cashinflowGraph:any = [];
-    const cashoutflowGraph:any = [];
+    let closing = 0;
 
     let openingAmt = openingBalance*-1 == -0 ? 0 : openingBalance*-1; 
+
+
+    if (period === "Quarterly") {
+        for(let i =3;i<5;i++) {
+          const tempDate = dayjs().month(i).year(2020);
+    // console.log('tempDate.format("MMM YYYY")',tempDate.format("MMM YYYY"))
+        let  data1 = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")].Total  : 0;
+        let  data2 = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")].Total  : 0;
+    
+          closing = openingAmt + (data1 -  data2);
+          
+          openingAmt = closing; 
+        }
+      
+    }
+
+
+    if(closing) {
+      openingAmt = closing;
+    }
+
+
+
     const openingBalArr:number[] = [];
-    const closeingBal:number[] = [];
+    const closeingBalArr:number[] = [];
     openingBalArr.push(openingAmt);
 
-    Object.keys(selectedData).map((month: string,idx:number,arr:string[]) => {
+    months.map((month: string,idx:number,arr:string[]) => {
       selectedData[month]["Cash inflow"].Total >= 1
       ? cashinflowGraph.push(selectedData[month]["Cash inflow"].Total)
       : cashinflowGraph.push(0)
     
       const cashinflowTotal = selectedData[month]["Cash inflow"].Total
       const cashOutFlowTotal = outFlowSelectedData[month]["Cash outflow"].Total 
-      console.log('cashinflowTotal',cashinflowTotal);
+
       const closingBal = openingAmt + (cashinflowTotal -  cashOutFlowTotal);
       
       if(idx !== arr.length-1) {
         openingBalArr.push(closingBal);
-        setBalance(closingBal);
+        setBalance(openingAmt);
       }
      
-      closeingBal.push(closingBal);
+      closeingBalArr.push(closingBal);
 
       openingAmt = closingBal;
  
@@ -604,7 +654,6 @@ const CashFlows = (props: { accessToken: string }) => {
 
     })
 
-
       setBarData({labels:months,datasets:[
       
         {
@@ -613,7 +662,7 @@ const CashFlows = (props: { accessToken: string }) => {
           borderColor: '#186090',
           borderWidth: 1,
           fill: false,
-          data:[...closeingBal],
+          data:[...closeingBalArr],
         },
         {
           type: 'bar' as const,
@@ -639,8 +688,8 @@ const CashFlows = (props: { accessToken: string }) => {
     setInflowSelectedData(selectedData);
     setOutflowSelectedData(outFlowSelectedData);
     setSelectedMonths(months);
-    setOpeningBal(openingBalArr);
-    setClosingBal(closeingBal);
+    setOpeningBal([...openingBalArr]);
+    setClosingBal([...closeingBalArr]);
     setInflowSelectedCategories(categories)
     setOutflowSelectedCategories(outCategories);
     setLoadedPage(true);
@@ -648,9 +697,9 @@ const CashFlows = (props: { accessToken: string }) => {
   },[globalMaxDate,globalMinDate,fromValue,toValue,openingBalance])
 
   const getSelectedData = () => {
-
+// return <div>sldkfj</div>
     if(!selectedMonths || !openingBal || !inflowSelectedData || !outflowSelectedData || !closingBal
-       || !inflowSelectedCategories || !outflowSelectedCategories) return null;
+       || !inflowSelectedCategories || !outflowSelectedCategories) return <div>Loading...</div>
 
     return (
       <TableContainer className="custom-scrollbar">
@@ -738,15 +787,15 @@ const CashFlows = (props: { accessToken: string }) => {
                   
                 }} />
                   {" "}
-                  <p>Cash balance at beginning of the month</p>
+                  <p>Cash balance at beginning of the {period}</p>
 
                 </div>
                 
               </TableCell>
-              {openingBal.map((bal) => {
+              {openingBal.map((bal,idx) => {
                 return (
                   <TableCell
-                    key={bal}
+                    key={bal+idx}
                     align="center"
                     className="cashflows-table-column"
                     sx={{ borderBottom: "1px solid #d3d3d3" }}
@@ -917,14 +966,14 @@ const CashFlows = (props: { accessToken: string }) => {
                   
                 }} />
                   {" "}
-                  <p>Cash balance at end of the month</p>
+                  <p>Cash balance at end of the {period}</p>
 
                 </div>
               </TableCell>
-              {closingBal.map((bal) => {
+              {closingBal.map((bal,idx) => {
                 return (
                   <TableCell
-                    key={bal}
+                    key={bal+idx}
                     align="center"
                     className="cashflows-table-column"
                     sx={{ borderBottom: "1px solid #d3d3d3" }}

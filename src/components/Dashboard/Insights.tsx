@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
@@ -36,6 +36,8 @@ import {
   pnl,
   cashflows,
 } from "../../dummy_data/data";
+import axios from "axios";
+import { CashflowTable, ExpenseBreakdown } from "../../utils/interface";
 
 ChartJS.register(
   CategoryScale,
@@ -60,6 +62,8 @@ const numFormatter = (num: number) => {
   }
   return "";
 };
+
+const labels = ["Jan22", "Feb22", "Mar22", "Apr22", "May22", "Jun22"];
 
 const optionsLine = {
   maintainAspectRatio: false,
@@ -181,46 +185,7 @@ const optionsPie = {
   },
 };
 
-const labels = ["Jan22", "Feb22", "Mar22", "Apr22", "May22", "Jun22"];
-const data1 = {
-  labels,
-  datasets: [
-    {
-      label: "Revenue",
-      data: [150000, 350000, 400000, 400000, 600000, 800000],
-      backgroundColor: "#2960EC",
-      borderColor: "#2960EC",
-      pointRadius: 0,
-    },
-    {
-      label: "Collections",
-      data: [100000, 250000, 280000, 250000, 500000, 770000],
-      backgroundColor: "#39B6D2",
-      borderColor: "#39B6D2",
-      pointRadius: 0,
-    },
-  ],
-};
 
-const data2 = {
-  labels,
-  datasets: [
-    {
-      label: "Gross",
-      data: [250000, 450000, 300000, 500000, 600000, 800000],
-      backgroundColor: "#2960EC",
-      borderColor: "#2960EC",
-      pointRadius: 0,
-    },
-    {
-      label: "Net",
-      data: [200000, 350000, 180000, 350000, 300000, 570000],
-      backgroundColor: "#39B6D2",
-      borderColor: "#39B6D2",
-      pointRadius: 0,
-    },
-  ],
-};
 
 const data3 = {
   labels,
@@ -245,19 +210,198 @@ const data4 = {
   ],
 };
 
-const Insights = () => {
-  const globalMinDate: Dayjs = dayjs("2012-03-01");
-  const globalMaxDate: Dayjs = dayjs("2023-06-01");
+const Insights = (props:any) => {
+ const {insightsData,
+  outFlowData,
+  inFlowData,
+  globalMinDate,
+  globalMaxDate,
+  fromValue,
+  toValue,
+  setFromValue,
+  setToValue,
+} = props;
+
+  // const globalMinDate: Dayjs = dayjs("2012-03-01");
+  // const globalMaxDate: Dayjs = dayjs("2023-06-01");
 
   const [openPeriod, setOpenPeriod] = useState<boolean>(false);
-  const [fromValue, setFromValue] = useState<Dayjs | null>(globalMinDate);
-  const [toValue, setToValue] = useState<Dayjs | null>(globalMaxDate);
+  // const [fromValue, setFromValue] = useState<Dayjs | null>(globalMinDate);
+  // const [toValue, setToValue] = useState<Dayjs | null>(globalMaxDate);
   const [period, setPeriod] = useState<string>("Monthly");
   const [fromOpen, setFromOpen] = useState<boolean>(false);
   const [toOpen, setToOpen] = useState<boolean>(false);
   const [minDate, setMinDate] = useState<Dayjs>(globalMinDate);
   const [maxDate, setMaxDate] = useState<Dayjs>(globalMaxDate);
   const [selectedTab, setSelectedTab] = useState<string>("Categories");
+  const [labels,setLabels] = useState<string[]>([]);
+  const [revenue,setRevenue] = useState<number[]>([]);
+  const [collections,setCollections] = useState<number[]>([]);
+  const [expenseBreakdown,setExpenseBreakdown] = useState<ExpenseBreakdown>({
+    Categories: [],
+    Merchants: [],
+  });
+  const [netCashBurnData,setNetCashBurnData] = useState<number[]>([]);
+  const [grossCashBurnData,setGrossCashBurnData] = useState<number[]>([]);
+
+  
+const data1 = {
+  labels,
+  datasets: [
+    {
+      label: "Revenue",
+      data: revenue,
+      backgroundColor: "#2960EC",
+      borderColor: "#2960EC",
+      pointRadius: 0,
+    },
+    {
+      label: "Collections",
+      data: collections,
+      backgroundColor: "#39B6D2",
+      borderColor: "#39B6D2",
+      pointRadius: 0,
+    },
+  ],
+};
+
+
+const data2 = {
+  labels,
+  datasets: [
+    {
+      label: "Gross",
+      data: grossCashBurnData,
+      backgroundColor: "#2960EC",
+      borderColor: "#2960EC",
+      pointRadius: 0,
+    },
+    {
+      label: "Net",
+      data: netCashBurnData,
+      backgroundColor: "#39B6D2",
+      borderColor: "#39B6D2",
+      pointRadius: 0,
+    },
+  ],
+};
+
+  
+useEffect(() => {
+
+  if(!insightsData) return;
+ 
+  setLabels(Object.keys(insightsData.collection))
+  setCollections(insightsData.collection)
+  setRevenue(insightsData.revenue)
+
+  let categories: {
+    Name: string;
+    spendAmount: number;
+    Spend: number;
+    Change: number;
+  }[] = [
+    {
+      Name: "Purchase",
+      spendAmount: insightsData.breakedData.purchaseAmt,
+      Spend: (insightsData.breakedData.purchaseAmt/insightsData.breakedData.total)*100,
+      Change: 0,
+  }
+  ];
+
+
+  Object.keys(insightsData.breakedData.breakdowns).forEach(key=>{
+
+    const obj = {
+      Name: key,
+      spendAmount: insightsData.breakedData.breakdowns[key],
+      Spend: (insightsData.breakedData.breakdowns[key]/insightsData.breakedData.total)*100,
+      Change: 0,
+    }
+
+
+    categories.push(obj);
+
+  })
+  
+  categories = categories.sort(function(a, b){return b.spendAmount - a.spendAmount});
+
+    const otherObj =  {
+        Name: "Other",
+        spendAmount: 0,
+        Spend: 0,
+        Change: 0,
+    }
+
+  let totalPer = 0;
+
+  categories.forEach((each,idx)=>{
+      totalPer += each.Spend;
+      if(totalPer < 90 || idx == 0) return;
+      otherObj.spendAmount += each.spendAmount;
+      otherObj.Spend += each.Spend;
+      each.Spend = 0;
+    })
+
+  categories.push(otherObj);
+
+  setExpenseBreakdown({...expenseBreakdown,Categories:categories})
+
+   
+}, [insightsData]);
+
+useEffect(()=>{
+    
+  let minimum_date = dayjs(
+    Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
+    );
+
+  let maximum_date = toValue;
+  maximum_date = dayjs(
+    Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
+  );
+
+  let selectedOutflow: CashflowTable = {};
+  // let selectedInflow: CashflowTable = {};
+
+  const grossCashBurn: number[] = [];
+  const netCashBurn: number[] = [];
+ 
+  for (
+    let year = minimum_date!.year();
+    year <= maximum_date!.year();
+    year++
+  ) {
+    let min_month = 0;
+    let max_month = 11;
+    if (year === minimum_date!.year()) min_month = minimum_date!.month();
+    if (year === maximum_date!.year()) max_month = maximum_date!.month();
+    for (let month = min_month; month <= max_month; month++) {
+      const tempDate = dayjs().month(month).year(year);
+      const outflowTotal = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")].Total : 0;
+      selectedOutflow[tempDate.format("MMM YYYY")] = outflowTotal;
+
+      grossCashBurn.push(outflowTotal);
+      const saleTotal = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")].Sales : 0;
+
+      netCashBurn.push(outflowTotal - saleTotal);
+   
+    }
+  }
+
+  setGrossCashBurnData(grossCashBurn);
+  setNetCashBurnData(netCashBurn);
+  console.log('selectedDatadsfsdfdsdsf',grossCashBurn)
+  console.log('selectedDatadsfsdfdsdsf',netCashBurn)
+  // let months = Object.keys(selectedData);
+  // if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
+  //   months = Object.keys(outFlowSelectedData);
+  // }
+
+
+  
+},[globalMaxDate,globalMinDate,fromValue,toValue])
+
 
   const getYearStart = (date: Dayjs) => {
     const month = date.month();
@@ -353,6 +497,8 @@ const Insights = () => {
         </Grid>
         <Grid item xs={11.5} style={{ minWidth: "575px" }}>
           {expenseBreakdown.Categories.map((category) => {
+
+            if(category.Spend == 0) return;
             return (
               <Grid
                 key={`${category.Name}_expense`}
@@ -371,7 +517,7 @@ const Insights = () => {
                   xl={0.8}
                   className="expense-categories-field"
                 >
-                  {category.Spend}%
+                  {category.Spend.toFixed(2)}%
                 </Grid>
                 <Grid item xs={4.5} lg={5}>
                   <div className="expense-percentage">
@@ -547,7 +693,7 @@ const Insights = () => {
                         container
                         alignItems="center"
                         justifyContent="space-between"
-                        onClick={() => setFromOpen(true)}
+                        onClick={() => setToOpen(true)}
                         style={{
                           marginLeft: "0.5rem",
                           fontSize: "0.9rem",

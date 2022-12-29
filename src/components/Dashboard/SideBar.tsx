@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -12,17 +12,18 @@ import banking from "../../images/banking.png";
 import logout from "../../images/logout.png";
 import { sidebarUtils } from "../../utils/interface";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const sidebarData = {
   sections: [
     {
       name: "Cash Management",
       items: [
-        { icon: cashflows, text: "Cash Flows" },
-        { icon: insights, text: "Insights" },
-        { icon: receivables, text: "Receivables" },
-        { icon: bills, text: "Bills to Pay" },
-        { icon: banking, text: "Banking Transactions" },
+        { icon: cashflows, text: "Cash Flows", url:"cashflow" },
+        { icon: insights, text: "Insights", url:"insights" },
+        { icon: receivables, text: "Receivables", url:"receivables" },
+        { icon: bills, text: "Bills to Pay", url:"bills-to-pay" },
+        { icon: banking, text: "Banking Transactions", url:"banking-transactions" },
       ],
     },
     { name: "Credit Management", items: [] },
@@ -30,6 +31,25 @@ const sidebarData = {
 };
 
 const SideBar = (props: sidebarUtils) => {
+
+  const url = window.location.href;
+  const lastSegment = url.split('/').pop();
+ 
+  useEffect(()=>{
+
+
+    const sections = sidebarData.sections;
+
+    sections.forEach((each)=>{
+      each.items.forEach((each)=>{
+          if(each.url == lastSegment) {
+            props.setSelectedItem(each.text)
+          }
+
+      })
+    })
+
+  },[lastSegment])
   const Logout = () => {
     if (localStorage.getItem("tokens")) {
       const tokensObj = JSON.parse(localStorage.getItem("tokens")!);
@@ -92,21 +112,23 @@ const SideBar = (props: sidebarUtils) => {
                         {section.items.map((item) => {
                           return (
                             <React.Fragment key={item.text}>
+                              <Link to={'/dashboard/'+ item.url}>
                               <ListItem
                                 style={{
                                   padding: "0rem",
                                   cursor: "pointer",
                                 }}
                                 onClick={() => {
-                                  props.setSelectedItem(item.text);
-                                  props.setDrawerOpen(false);
+                                  // props.setSelectedItem(item.text);
+                                  // props.setDrawerOpen(false);
                                 }}
                               >
                                 <img
                                   src={item.icon}
                                   alt={item.text}
                                   className="section-item-icon"
-                                />
+                                  />
+                                  
                                 <Paper
                                   elevation={0}
                                   className="section-item-text"
@@ -128,6 +150,7 @@ const SideBar = (props: sidebarUtils) => {
                                   {item.text}
                                 </Paper>
                               </ListItem>
+                              </Link>
                             </React.Fragment>
                           );
                         })}
