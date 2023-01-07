@@ -21,7 +21,7 @@ const App = () => {
   const [accessToken, setAccessToken] = useState<string>("");
   const [user, setUser] = useState<User>({} as User);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
+  const [checking,setChecking] = useState<boolean>(true);
   
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
@@ -29,6 +29,8 @@ const App = () => {
       if (tokens) {
         const tokensObj = JSON.parse(tokens);
         setAccessToken(tokensObj.accessToken);
+      }else {
+        setChecking(false);
       }
     } catch (err) {
       localStorage.removeItem("tokens");
@@ -46,6 +48,8 @@ const App = () => {
           if ("role" in response.data) {
             setUser(response.data);
             setIsLoggedIn(true);
+            setChecking(false);
+
           } else {
             localStorage.removeItem("tokens");
             // window.location.href = "/";
@@ -60,17 +64,16 @@ const App = () => {
   }, [accessToken]);
 
 
-
   if (isLoggedIn) {
     return (
-      <Dashboard/>
+      <Dashboard accessToken={accessToken} user={user} />
     );
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login checking={checking} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/home" element={<Home />} />
@@ -78,6 +81,7 @@ const App = () => {
         <Route path="/dashboardSuper" element={<DashboardSuper />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="*" element={<Login checking={checking} />} />
       </Routes>
     </BrowserRouter>
   );

@@ -4,7 +4,7 @@ import SideBar from "../Dashboard/SideBar";
 import TopBar from "../Dashboard/TopBar";
 
 
-const AdminLayout = (props:{children:JSX.Element}) => {
+const AdminLayout = (props:{children:JSX.Element,user:any}) => {
  
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<string>("Cash Flows");
@@ -32,7 +32,7 @@ const AdminLayout = (props:{children:JSX.Element}) => {
                 <TopBar
                   setDrawerOpen={setDrawerOpen}
                   setSelectedItem={setSelectedItem}
-                  companyName='Static'
+                  companyName={props.user.name}
                 />
               </Grid>
               <Grid item xs={12}>

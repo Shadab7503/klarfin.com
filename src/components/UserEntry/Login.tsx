@@ -14,7 +14,7 @@ import { loginDetails } from "../../utils/interface";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Alert } from "../../utils/components";
 
-const Login = () => {
+const Login = (props:any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
   const [loginStatus, setLoginStatus] = useState<"error" | "success" | "">("");
@@ -28,7 +28,7 @@ const Login = () => {
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
     try {
-      if (tokens) window.location.href = "/dashboard/cashflow";
+      if (tokens && !props.checking) window.location.href = "/dashboard/cashflow";
       else setIsLoggedIn(false);
     } catch (err) {
       localStorage.removeItem("tokens");
@@ -106,7 +106,7 @@ const Login = () => {
       });
   };
 
-  if (!isLoggedIn)
+  if (!isLoggedIn && !props.checking)
     return (
       <div className="login-page">
         <Grid container className="login-container">

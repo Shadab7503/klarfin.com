@@ -4,6 +4,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { TopBarProps } from "../../utils/interface";
 import company from "../../images/company-logo.png";
 import settings from "../../images/settings.png";
+import { Link } from "react-router-dom";
+
 
 const TopBar = (props: TopBarProps) => {
   return (
@@ -37,9 +39,14 @@ const TopBar = (props: TopBarProps) => {
               container
               alignItems="center"
               style={{ cursor: "pointer" }}
-              onClick={() => props.setSelectedItem("Settings")}
+              // onClick={() => props.setSelectedItem("Settings")}
             >
-              <img src={settings} alt="settings" />
+
+              <Link to='/dashboard/settings' >
+                  <img src={settings} alt="settings" />
+              
+              </Link>
+              
             </Grid>
           </Grid>
         </Grid>

@@ -37,7 +37,9 @@ import {
   cashflows,
 } from "../../dummy_data/data";
 import axios from "axios";
-import { CashflowTable, ExpenseBreakdown } from "../../utils/interface";
+import { CashflowTable, CashinFlow, CashoutFlow, ExpenseBreakdown, Inflow, InflowData, Journal, JournalType, Outflow, OutflowData, Payments, Purchase, PurchaseType, StringDict } from "../../utils/interface";
+import moment from "moment";
+import Loading from "./Loading";
 
 ChartJS.register(
   CategoryScale,
@@ -211,28 +213,24 @@ const data4 = {
 };
 
 const Insights = (props:any) => {
- const {insightsData,
-  outFlowData,
-  inFlowData,
-  globalMinDate,
-  globalMaxDate,
-  fromValue,
-  toValue,
-  setFromValue,
-  setToValue,
+ const {
+  accessToken
 } = props;
 
   // const globalMinDate: Dayjs = dayjs("2012-03-01");
   // const globalMaxDate: Dayjs = dayjs("2023-06-01");
 
+  const [loadedPage, setLoadedPage] = useState<boolean>(false);
+
+
   const [openPeriod, setOpenPeriod] = useState<boolean>(false);
-  // const [fromValue, setFromValue] = useState<Dayjs | null>(globalMinDate);
-  // const [toValue, setToValue] = useState<Dayjs | null>(globalMaxDate);
+  const [fromValue, setFromValue] = useState<Dayjs | null>();
+  const [toValue, setToValue] = useState<Dayjs | null>();
   const [period, setPeriod] = useState<string>("Monthly");
   const [fromOpen, setFromOpen] = useState<boolean>(false);
   const [toOpen, setToOpen] = useState<boolean>(false);
-  const [minDate, setMinDate] = useState<Dayjs>(globalMinDate);
-  const [maxDate, setMaxDate] = useState<Dayjs>(globalMaxDate);
+  const [minDate, setMinDate] = useState<Dayjs>();
+  const [maxDate, setMaxDate] = useState<Dayjs>();
   const [selectedTab, setSelectedTab] = useState<string>("Categories");
   const [labels,setLabels] = useState<string[]>([]);
   const [revenue,setRevenue] = useState<number[]>([]);
@@ -243,7 +241,11 @@ const Insights = (props:any) => {
   });
   const [netCashBurnData,setNetCashBurnData] = useState<number[]>([]);
   const [grossCashBurnData,setGrossCashBurnData] = useState<number[]>([]);
-
+  const [insightsData,setInsightsData] = useState<any>(null);
+  const [outFlowData, setOutFlowData] = useState<CashflowTable>({} as CashflowTable);
+  const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
+  const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
+  const [inFlowData, setInFlowData] = useState<CashflowTable>({} as CashflowTable);
   
 const data1 = {
   labels,
@@ -286,14 +288,137 @@ const data2 = {
   ],
 };
 
+
+const getData = async ()=>{
+  setLoadedPage(false);
+
+       await   axios
+          .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/insights",{
+            startDate:fromValue,
+            endDate:toValue,
+            period
+          } ,{
+            headers: { Authorization: `Bearer ${accessToken}` },
+          })
+          .then(({data}) => {
+            setInsightsData(data);
+            
+          });
+
+
+          await   axios
+          .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", 
+          {startDate:fromValue,
+            endDate:toValue,
+            period
+          },
+          {
+            headers: { Authorization: `Bearer ${props.accessToken}` },
+          })
+          .then(({data}) => {
+            setInFlowData(data.data.outFlowSelectedData);
+          });
+
+          await   axios
+        .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", 
+        {startDate:fromValue,
+          endDate:toValue,
+          period
+        },
+        {
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+        })
+        .then(({data}) => {
+            setOutFlowData(data.data.outFlowSelectedData);
+        });
+
+
+        setLoadedPage(true);
+
+}
+
+useEffect(()=>{
+  axios
+ .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/minmax/minmax", {
+   headers: { Authorization: `Bearer ${props.accessToken}` },
+  
+ })
+ .then(({data}) => {
+ //   console.log('data',data)
+  setFromValue(dayjs(data.min))
+  setMinDate(dayjs(data.min))
+  setToValue(dayjs(data.min).add(1,'year'))
+  setMaxDate(dayjs(data.max))
+  setGlobalMaxDate(dayjs(data.min).add(1,'year'))
+  setGlobalMinDate(dayjs(data.min))
+ });
+
+},[])
+
+useEffect(()=>{
+  if(!fromValue || !toValue) return;
+  getData();
+
+},[fromValue,toValue])
+
+
+
+
+useEffect(()=>{
+    
+  if(!loadedPage) return;
+  let minimum_date = dayjs(
+    Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
+    );
+
+  let maximum_date = toValue;
+  maximum_date = dayjs(
+    Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
+  );
+
+  let selectedOutflow: any = {};
+  // let selectedInflow: CashflowTable = {};
+
+  const grossCashBurn: number[] = [];
+  const netCashBurn: number[] = [];
+ 
+  for (
+    let year = minimum_date!.year();
+    year <= maximum_date!.year();
+    year++
+  ) {
+    let min_month = 0;
+    let max_month = 11;
+    if (year === minimum_date!.year()) min_month = minimum_date!.month();
+    if (year === maximum_date!.year()) max_month = maximum_date!.month();
+    for (let month = min_month; month <= max_month; month++) {
+      const tempDate = dayjs().month(month).year(year);
+      const outflowTotal = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")]['Cash outflow'].Total : 0;
+      selectedOutflow[tempDate.format("MMM YYYY")] = outflowTotal;
+
+      grossCashBurn.push(outflowTotal);
+      const saleTotal = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]['Cash outflow'].Sales : 0;
+
+      netCashBurn.push(outflowTotal - saleTotal);
+   
+    }
+  }
+
+  setGrossCashBurnData(grossCashBurn);
+  setNetCashBurnData(netCashBurn);
+  
+},[loadedPage])
+
+
+
   
 useEffect(() => {
 
   if(!insightsData) return;
  
-  setLabels(Object.keys(insightsData.collection))
-  setCollections(insightsData.collection)
-  setRevenue(insightsData.revenue)
+  setLabels(insightsData.collection.map((each:any)=>each.label))
+  setCollections(insightsData.collection.map((each:any)=>each.value))
+  setRevenue(insightsData.revenue.map((each:any)=>each.value))
 
   let categories: {
     Name: string;
@@ -336,8 +461,11 @@ useEffect(() => {
   let totalPer = 0;
 
   categories.forEach((each,idx)=>{
+    if(totalPer < 90) {
+
       totalPer += each.Spend;
-      if(totalPer < 90 || idx == 0) return;
+      return;
+    }
       otherObj.spendAmount += each.spendAmount;
       otherObj.Spend += each.Spend;
       each.Spend = 0;
@@ -349,58 +477,6 @@ useEffect(() => {
 
    
 }, [insightsData]);
-
-useEffect(()=>{
-    
-  let minimum_date = dayjs(
-    Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
-    );
-
-  let maximum_date = toValue;
-  maximum_date = dayjs(
-    Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
-  );
-
-  let selectedOutflow: CashflowTable = {};
-  // let selectedInflow: CashflowTable = {};
-
-  const grossCashBurn: number[] = [];
-  const netCashBurn: number[] = [];
- 
-  for (
-    let year = minimum_date!.year();
-    year <= maximum_date!.year();
-    year++
-  ) {
-    let min_month = 0;
-    let max_month = 11;
-    if (year === minimum_date!.year()) min_month = minimum_date!.month();
-    if (year === maximum_date!.year()) max_month = maximum_date!.month();
-    for (let month = min_month; month <= max_month; month++) {
-      const tempDate = dayjs().month(month).year(year);
-      const outflowTotal = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")].Total : 0;
-      selectedOutflow[tempDate.format("MMM YYYY")] = outflowTotal;
-
-      grossCashBurn.push(outflowTotal);
-      const saleTotal = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")].Sales : 0;
-
-      netCashBurn.push(outflowTotal - saleTotal);
-   
-    }
-  }
-
-  setGrossCashBurnData(grossCashBurn);
-  setNetCashBurnData(netCashBurn);
-  console.log('selectedDatadsfsdfdsdsf',grossCashBurn)
-  console.log('selectedDatadsfsdfdsdsf',netCashBurn)
-  // let months = Object.keys(selectedData);
-  // if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
-  //   months = Object.keys(outFlowSelectedData);
-  // }
-
-
-  
-},[globalMaxDate,globalMinDate,fromValue,toValue])
 
 
   const getYearStart = (date: Dayjs) => {
@@ -438,7 +514,7 @@ useEffect(()=>{
       setMaxDate(globalMaxDate);
       setToValue(globalMaxDate);
       if (newValue === "Quarterly") {
-        const year = globalMaxDate.year();
+        const year = globalMaxDate!.year();
         setFromValue(dayjs(`${year}-01-01`));
         setToValue(dayjs(`${year}-01-01`));
       }
@@ -583,6 +659,8 @@ useEffect(()=>{
   const Merchants = () => {
     return <h1>Merchants</h1>;
   };
+
+  if (!loadedPage) return <Loading />;
 
   return (
     <Grid container mt={1} mb={5} style={{ overflowX: "hidden" }}>
@@ -828,7 +906,7 @@ useEffect(()=>{
               </Grid>
             </Grid>
           </Grid>
-          <Grid container mt={3} justifyContent="space-between">
+          {/* <Grid container mt={3} justifyContent="space-between">
             <Grid item lg={5} md={5.5} sm={11} xs={12}>
               <span className="insights-heading">
                 Daily Sales Outstanding (DSO)
@@ -870,7 +948,7 @@ useEffect(()=>{
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid item xs={12} className="insights-padding" mt={5}>
           <Grid container>
@@ -899,7 +977,7 @@ useEffect(()=>{
                     }}
                     label={"Categories"}
                   />
-                  <Tab
+                  {/* <Tab
                     value="Merchants"
                     style={{ textTransform: "none" }}
                     disableRipple={true}
@@ -911,7 +989,7 @@ useEffect(()=>{
                       },
                     }}
                     label={"Merchants"}
-                  />
+                  /> */}
                 </Tabs>
               </Grid>
             </Grid>
@@ -920,7 +998,7 @@ useEffect(()=>{
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} className="insights-padding" mt={8}>
+        {/* <Grid item xs={12} className="insights-padding" mt={8}>
           <Grid item xs={11.5} className="insights-heading">
             Balance Sheet - KPIs
           </Grid>
@@ -1103,7 +1181,7 @@ useEffect(()=>{
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Grid>
   );

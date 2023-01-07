@@ -90,11 +90,44 @@ function CashflowChart(props:any) {
     },
   
   }
+console.log('props.months',props.lebels)
+  const data = {
+    labels: props.lebels, datasets: [
+
+      {
+        type: 'line' as const,
+        label: 'Closing Balance',
+        borderColor: '#186090',
+        borderWidth: 1,
+        fill: false,
+        data:props.closingBal
+      },
+      {
+        type: 'bar' as const,
+        label: 'Cash Inflow',
+        backgroundColor: '#338455',
+        data: props.inflowGraphData,
+        borderColor: 'white',
+        barPercentage: 1,
+        categoryPercentage: 0.3,
+        borderWidth: 0,
+      },
+      {
+        type: 'bar' as const,
+        label: 'Cash Outflow',
+        backgroundColor: '#C5221F',
+        barPercentage: 1,
+        categoryPercentage: 0.3,
+        data: props.outflowGraphData,
+        borderWidth: 0,
+      },
+    ]
+  }
 
   return (
-        <div style={{height: '22rem',marginLeft: '-7.5rem',width:props.width+'px'}}>
+        <div style={{height: '22rem',marginLeft:props.marginLeft,width:props.width+'px'}}>
         {/* @ts-ignore */}
-            <Chart type='bar'  options={options} data={props.barData}  />
+            <Chart type='bar'  options={options} data={data}  />
 
         </div>
   )
