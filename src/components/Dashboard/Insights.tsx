@@ -246,6 +246,7 @@ const Insights = (props:any) => {
   const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
   const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
   const [inFlowData, setInFlowData] = useState<CashflowTable>({} as CashflowTable);
+  const [grossLabels, setGrossLabels] = useState<string[]>([]);
   
 const data1 = {
   labels,
@@ -269,7 +270,7 @@ const data1 = {
 
 
 const data2 = {
-  labels,
+  labels:grossLabels,
   datasets: [
     {
       label: "Gross",
@@ -316,6 +317,7 @@ const getData = async ()=>{
             headers: { Authorization: `Bearer ${props.accessToken}` },
           })
           .then(({data}) => {
+            setGrossLabels(data.data.months)
             setInFlowData(data.data.outFlowSelectedData);
           });
 
@@ -353,7 +355,7 @@ useEffect(()=>{
   setGlobalMinDate(dayjs(data.min))
  });
 
-},[])
+},[period])
 
 useEffect(()=>{
   if(!fromValue || !toValue) return;
@@ -367,42 +369,51 @@ useEffect(()=>{
 useEffect(()=>{
     
   if(!loadedPage) return;
-  let minimum_date = dayjs(
-    Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
-    );
+  // let minimum_date = dayjs(
+  //   Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
+  //   );
 
-  let maximum_date = toValue;
-  maximum_date = dayjs(
-    Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
-  );
+  // let maximum_date = toValue;
+  // maximum_date = dayjs(
+  //   Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
+  // );
 
-  let selectedOutflow: any = {};
-  // let selectedInflow: CashflowTable = {};
+  // let selectedOutflow: any = {};
+  // // let selectedInflow: CashflowTable = {};
 
   const grossCashBurn: number[] = [];
   const netCashBurn: number[] = [];
  
-  for (
-    let year = minimum_date!.year();
-    year <= maximum_date!.year();
-    year++
-  ) {
-    let min_month = 0;
-    let max_month = 11;
-    if (year === minimum_date!.year()) min_month = minimum_date!.month();
-    if (year === maximum_date!.year()) max_month = maximum_date!.month();
-    for (let month = min_month; month <= max_month; month++) {
-      const tempDate = dayjs().month(month).year(year);
-      const outflowTotal = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")]['Cash outflow'].Total : 0;
-      selectedOutflow[tempDate.format("MMM YYYY")] = outflowTotal;
+  // for (
+  //   let year = minimum_date!.year();
+  //   year <= maximum_date!.year();
+  //   year++
+  // ) {
+  //   let min_month = 0;
+  //   let max_month = 11;
+  //   if (year === minimum_date!.year()) min_month = minimum_date!.month();
+  //   if (year === maximum_date!.year()) max_month = maximum_date!.month();
+  //   for (let month = min_month; month <= max_month; month++) {
+  //     const tempDate = dayjs().month(month).year(year);
+  //     const outflowTotal = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")]['Cash outflow'].Total : 0;
+  //     selectedOutflow[tempDate.format("MMM YYYY")] = outflowTotal;
 
-      grossCashBurn.push(outflowTotal);
-      const saleTotal = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]['Cash outflow'].Sales : 0;
+  //     grossCashBurn.push(outflowTotal);
+  //     const saleTotal = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]['Cash outflow'].Sales : 0;
+
+  //     netCashBurn.push(outflowTotal - saleTotal);
+   
+  //   }
+  // }
+
+  Object.keys(outFlowData).forEach(key=>{
+
+    const saleTotal = inFlowData[key] ? inFlowData[key]['Cash outflow'].Sales : 0;
+    const outflowTotal = outFlowData[key] ? inFlowData[key]['Cash outflow'].Total : 0;
+    grossCashBurn.push(outflowTotal);
 
       netCashBurn.push(outflowTotal - saleTotal);
-   
-    }
-  }
+  })
 
   setGrossCashBurnData(grossCashBurn);
   setNetCashBurnData(netCashBurn);
