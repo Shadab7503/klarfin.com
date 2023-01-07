@@ -57,10 +57,8 @@ import {
   LineController,
   BarController,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
 
-
-
+import CashflowChart from "../Chart/Cashflow";
 
 ChartJS.register(
   LinearScale,
@@ -98,9 +96,8 @@ const utilButtons = [
   },
 ];
 
-const CashFlows = (props: { accessToken: string }) => {
+const CashFlows = (props: any) => {
 
-  const [loadedPage, setLoadedPage] = useState<boolean>(false);
   const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
   const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
   const [openPeriod, setOpenPeriod] = useState<boolean>(false);
@@ -111,333 +108,109 @@ const CashFlows = (props: { accessToken: string }) => {
   const [toOpen, setToOpen] = useState<boolean>(false);
   const [minDate, setMinDate] = useState<Dayjs>();
   const [maxDate, setMaxDate] = useState<Dayjs>();
-  
+
   const [inFlowData, setInFlowData] = useState<InflowData>({} as InflowData);
   const [outFlowData, setOutFlowData] = useState<InflowData>({} as InflowData);
   const [inflowCategories, setInflowCategories] = useState<StringDict>({});
   const [outflowCategories, setOutflowCategories] = useState<StringDict>({});
   const [openingBalance, setOpeningBalance] = useState<number>(0);
-  const [cashBalance,setBalance] =  useState<number>(0);
+  const [cashBalance, setBalance] = useState<number>(0);
+  const [loadedPage, setLoadedPage] = useState<boolean>(false);
 
-  const [barData,setBarData]= useState<any>();
-  
- 
-const options = { elements: {
-  layout:{
-    padding:0
-  },
-  point:{
-      radius: 2
+  const [inflowSelectedData, setInflowSelectedData] = useState<CashflowTable>();
+  const [inflowSelectedCategories, setInflowSelectedCategories] = useState<string[]>();
+  const [outflowSelectedData, setOutflowSelectedData] = useState<CashflowTable>();
+  const [outflowSelectedCategories, setOutflowSelectedCategories] = useState<string[]>();
+  const [selectedMonths, setSelectedMonths] = useState<string[]>();
+  const [openingBal, setOpeningBal] = useState<number[]>();
+  const [closingBal, setClosingBal] = useState<number[]>();
+  const [cellWidth, setCellWidth] = useState<number>(126);
+  const [marginLeft, setMarginLeft] = useState<number>(80);
+  const [inflowGraphData, setInflowGraphData] = useState<number[]>([]);
+  const [outflowGraphData, setOutflowGraphData] = useState<number[]>([]);
+
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/minmax/minmax", {
+        headers: { Authorization: `Bearer ${props.accessToken}` },
+
+      })
+      .then(({ data }) => {
+        //   console.log('data',data)
+        setFromValue(dayjs(data.min))
+        setMinDate(dayjs(data.min))
+        setToValue(dayjs(data.min).add(1, 'year'))
+        setMaxDate(dayjs(data.max))
+        setGlobalMaxDate(dayjs(data.min).add(1, 'year'))
+        setGlobalMinDate(dayjs(data.min))
+      });
+
+
+  }, [period])
+
+
+  const getData = async () => {
+
+    setLoadedPage(false);
+
+    await axios
+    .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/balance/balance", {
+      startDate: fromValue,
+        endDate: toValue,
+        period
+    }, {
+      headers: { Authorization: `Bearer ${props.accessToken}` },
+
+    }).then(({data})=>{
+      setOpeningBal(data.openingBalArrr);
+      setClosingBal(data.closeingBalArr);
+      setBalance(data.balance);
+    })
+
+    await axios
+      .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
+        startDate: fromValue,
+        endDate: toValue,
+        period
+      }, {
+        headers: { Authorization: `Bearer ${props.accessToken}` }
+      })
+      .then(({ data }) => {
+
+        setInflowSelectedData(data.data.outFlowSelectedData);
+        setSelectedMonths(data.data.months);
+        setInflowGraphData(data.data.cashoutflowGraph);
+        setInflowSelectedCategories(data.data.outCategories);
+
+      });
+
+    await axios
+      .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", {
+        startDate: fromValue,
+        endDate: toValue,
+        period
+      }, {
+        headers: { Authorization: `Bearer ${props.accessToken}` }
+      })
+      .then(({ data }) => {
+        setOutflowSelectedData(data.data.outFlowSelectedData);
+        setOutflowSelectedCategories(data.data.outCategories);
+        setOutflowGraphData(data.data.cashoutflowGraph);
+
+      });
+
+    setLoadedPage(true);
+
   }
-},
-
-maintainAspectRatio: false,
-  responsive: true,
-  plugins: {
-    legend: {     
-      display : false,
-      positon : "top" as const
-    },
-    title: {
-      display: false,
-      text: 'Cash Inflow Outflow Chart',
-    },
-    datalabels : {
-      display : false
-    },
-    customCanvasBackgroundColor: {
-      color: '#F5F5F5',
-    }
-  },
-  
-  scales: {
-    xAxes: {
-      offset: true,
-      ticks: {
-        beginAtZero: true,
-        display : false ,
-        font: {
-          family: "Montserrat",
-          weight:'600',
-          size:15
-        },
-        categoryPercentage: 1.0,
-          barPercentage: 1.0,
-      },
-      title: {
-        display: false,
-        text: "Months",
-      },
-      grid: {
-        display: false,
-      },
-      font: {
-        family: "Montserrat",
-      },
-    },
-    y: {
-      ticks: {
-       
-        font: {
-          family: "Montserrat",
-          weight:'600',
-          size:15
-        },
-        categoryPercentage: 1.0,
-        barPercentage: 0.1,
-        maxTicksLimit: 5,
-        stepSize: 0.1,
-        callback:function(value:number) {
-         
-            return 'INR '+value;
-      }
-      },
-      title: {
-        display: false,
-        text: "INR" ,
-      },
-      grid: {
-        borderDash: [2, 4],
-        color: "#00000099",
-        display: true,
-        padding:49
-      },
-    },
-  },
-
-}
-
-const plugin = {
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart :ChartJS, args:any, options:any) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = options.color || '#f5f6f7';
-    ctx.fillRect(0, 0, chart.width, chart.height);
-    ctx.restore();
-  }
-};
-  
-
 
   useEffect(() => {
 
-    axios
-      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
-        headers: { Authorization: `Bearer ${props.accessToken}` },
-      })
-      .then((response) => {
-        setupInflow(response.data);
-        setOpeningBalance(response.data.openingBal);
-      });
+    if (!fromValue) return;
 
-      axios
-      .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", {
-        headers: { Authorization: `Bearer ${props.accessToken}` },
-      })
-      .then((response) => {
-        // setupInflow(response.data);
-        setupOutflow(response.data);
-        // console.log(response.data);
-      });
+    getData();
 
-     
- 
-  }, [props]);
+  }, [fromValue, toValue,period]);
 
-
-  const handleMinMaxDates = (min:dayjs.Dayjs,max:dayjs.Dayjs)=>{
-
-   
-    if(minDate && (minDate.diff(min) < 0)) {
-      setGlobalMinDate(min);
-      setFromValue(min);
-      setMinDate(min);
-    }
-
-    if(maxDate && (maxDate.diff(max) < 0)) {
-      setGlobalMaxDate(max);
-      setToValue(max);
-      setMaxDate(max);
-    }
-
-    if(!maxDate || !minDate) {
-      
-    setGlobalMinDate(min);
-    setFromValue(min);
-    setMinDate(min);
-
-    setGlobalMaxDate(max);
-      setToValue(max);
-      setMaxDate(max);
-    }
-
-  }
-  
-  const setupInflow = (inflow: Inflow) => {
-    const cashinflow_data = inflow.cashinflow;
-
-    // const minimum_date = dayjs(
-    //   cashinflow_data[0]["cashinflow_receipt"][0]["voucherdate"],'DD-MM-YYYY'
-    // );
-    // const maximum_date = dayjs(
-    //   cashinflow_data[cashinflow_data.length - 1]["cashinflow_receipt"][0][
-    //     "voucherdate"
-    //   ],'DD-MM-YYYY'
-    // );
-
-    const dates:string[] = [];
-
-    cashinflow_data.forEach((cashinflow) => {
-      cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
-        dates.push(receipt.voucherdate);
-      });
-    });
-    
-    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
-
-    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
-    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
-    
-
-
-    handleMinMaxDates(dayjs(minimum_date),dayjs(maximum_date));
-    let inflowCategories: StringDict = { Total: 1 };
-    let baseInflowData: StringDict = { Total: 0 };
-    cashinflow_data.forEach((cashinflow: CashinFlow) => {
-      cashinflow.cashinflow_ledger.forEach((ledger) => {
-        inflowCategories[ledger.type] = 1;
-        baseInflowData[ledger.type] = 0;
-      });
-    });
-
-    const inflowDataTemp: InflowData = {};
-
-    
-    for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
-      let min_month = 0;
-      let max_month = 11;
-      if (year === minimum_date.year()) min_month = minimum_date.month();
-      if (year === maximum_date.year()) max_month = maximum_date.month();
-      for (let month = min_month; month <= max_month; month++) {
-        const tempDate = dayjs().month(month).year(year);
-        inflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
-      }
-    }
-
-    console.log('voucherDatesdf',minimum_date.year(),maximum_date.year());
-
-    cashinflow_data.forEach((cashinflow) => {
-      cashinflow.cashinflow_receipt.forEach((receipt, index: number) => {
-        const voucherDate = dayjs(receipt.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-        inflowDataTemp[voucherDate].Total += receipt.amount;
-        inflowDataTemp[voucherDate][cashinflow.cashinflow_ledger[index].type] +=
-          receipt.amount;
-      });
-    });
-
-    setInflowCategories(inflowCategories);
-    setInFlowData(inflowDataTemp);
-    // setLoadedPage(true);
-  };
-
-  
-  const setupOutflow = (outflow : Outflow) => {
-    let cashoutflow_data = outflow.cashoutflow;
-    const dates:string[] = [];
-
-    let outflowCategories: StringDict = {Total: 1 };
-    let baseInflowData: StringDict = {Total: 0 };
-    cashoutflow_data.forEach((cashoutflow: CashoutFlow) => {
-      cashoutflow.cashoutflow_journal.forEach((journal:any) => {
-        outflowCategories[journal.type[0].journal_type] = 1;
-        baseInflowData[journal.type[0].journal_type] = 0;
-        journal.type.forEach((each:JournalType)=>{
-          dates.push(each.payment_date);
-        })
-      });
-
-      cashoutflow.cashoutflow_payments.forEach((payments:any) => {
-        outflowCategories[payments.type.payment_type] = 1;
-        baseInflowData[payments.type.payment_type] = 0;
-        dates.push(payments.voucherdate);
-      });
-      cashoutflow.cashoutflow_purchase.forEach((purchase:any) => {
-        outflowCategories[purchase.type[0].purchase_type] = 1;
-        baseInflowData[purchase.type[0].purchase_type] = 0;
-
-        purchase.type.forEach((each:PurchaseType)=>{
-          dates.push(each.payment_voucherdate);
-        })
-      });
-    });
-    
-
-    const moments = dates.map(d => moment(d,'DD-MM-YYYY'));
-
-    const minimum_date = dayjs(moment(moment.min(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
-    const maximum_date = dayjs(moment(moment.max(moments),'DD-MM-YYYY').format('DD-MM-YYYY'),'DD-MM-YYYY');
-
-    // const minimum_date = dayjs(min_date);
-    // const maximum_date =  dayjs(max_date);
-
-    handleMinMaxDates(minimum_date,maximum_date);
-// console.log('maximum_date',maximum_date)
-
-    const outflowDataTemp: OutflowData = {};
-    for (let year = minimum_date.year(); year <= maximum_date.year(); year++) {
-      let min_month = 0;
-      let max_month = 11;
-      if (year === minimum_date.year()) min_month = minimum_date.month();
-      if (year === maximum_date.year()) max_month = maximum_date.month();
-      for (let month = min_month; month <= max_month; month++) {
-        const tempDate = dayjs().month(month).year(year);
-        outflowDataTemp[tempDate.format("MMM YYYY")] = { ...baseInflowData };
-      }
-    }
-
-
-    cashoutflow_data.forEach((cashoutflow:CashoutFlow) => {
-      cashoutflow.cashoutflow_journal.forEach((journal : Journal, index: number) => {
-        journal.type.forEach((each:JournalType)=>{
-          const voucherDate = dayjs(each.payment_date, 'DD-MM-YYYY').format("MMM YYYY");
-          // console.log('voucherDate',voucherDate)
-          if(outflowDataTemp[voucherDate]) {
-            outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
-            outflowDataTemp[voucherDate][each.journal_type] +=
-              each.payment_amount*-1;
-          }
-
-        })
-      });
-
-      cashoutflow.cashoutflow_payments.forEach((payments:Payments, index: number) => {
-        const voucherDate = dayjs(payments.voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-          if(outflowDataTemp[voucherDate]) {
-            outflowDataTemp[voucherDate].Total += payments.type.payment_amount*-1;
-            outflowDataTemp[voucherDate][payments.type.payment_type] +=
-              payments.type.payment_amount*-1;
-
-          }
-      });
-
-      cashoutflow.cashoutflow_purchase.forEach((purchase:Purchase, index: number) => {
-        purchase.type.forEach((each:PurchaseType)=>{
-          const voucherDate = dayjs(each.payment_voucherdate, 'DD-MM-YYYY').format("MMM YYYY");
-          if(outflowDataTemp[voucherDate]) {
-            outflowDataTemp[voucherDate].Total += each.payment_amount*-1;
-            outflowDataTemp[voucherDate][each.purchase_type] +=
-              each.payment_amount*-1;
-          }
-
-        })
-      });
-    });
-    setOutflowCategories(outflowCategories);
-    setOutFlowData(outflowDataTemp);
-  };
-  
 
   const getYearStart = (date: Dayjs) => {
     const month = date.month();
@@ -469,17 +242,22 @@ const plugin = {
         setToValue(dayjs(`${globalMaxDate!.year() + 1}-03-01`));
       }
     } else {
+      if (globalMinDate && globalMaxDate) {
+        setFromValue(globalMinDate);
+        setToValue(globalMaxDate);
+
+      }
       setMinDate(globalMinDate);
-      setFromValue(globalMinDate);
       setMaxDate(globalMaxDate);
-      setToValue(globalMaxDate);
       if (newValue === "Quarterly") {
-        const year = globalMaxDate!.year();
-        setFromValue(dayjs(`${year}-01-01`));
-        setToValue(dayjs(`${year}-01-01`));
+        const maxYear = globalMaxDate!.year();
+        const minYear = globalMinDate!.year();
+        setFromValue(dayjs(`${minYear}-04-01`));
+        setToValue(dayjs(`${maxYear}-01-01`));
       }
     }
     setPeriod(newValue);
+    setOpenPeriod(false);
   };
 
   const utilButton = (text: string, icon = "") => {
@@ -510,516 +288,614 @@ const plugin = {
     );
   };
 
-  const [inflowSelectedData,setInflowSelectedData] = useState<CashflowTable>();
-  const [inflowSelectedCategories,setInflowSelectedCategories] = useState<string[]>();
-  const [outflowSelectedData,setOutflowSelectedData] = useState<CashflowTable>();
-  const [outflowSelectedCategories,setOutflowSelectedCategories] = useState<string[]>();
-  const [selectedMonths,setSelectedMonths] = useState<string[]>();
-  const [openingBal,setOpeningBal] = useState<number[]>();
-  const [closingBal,setClosingBal] = useState<number[]>();
-  useEffect(()=>{
-    
-    let minimum_date = dayjs(
-      Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
-    );
-    let maximum_date = toValue;
-    if (period === "Quarterly") maximum_date = maximum_date!.add(2, "month");
-    maximum_date = dayjs(
-      Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
-    );
-    const quarterMap = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
-    const categories = [...Object.keys(inflowCategories)];
-    const outCategories = [...Object.keys(outflowCategories)];
 
-    if(!categories.length || !outCategories.length) return;
-
-
-    let selectedData: CashflowTable = {};
-
-    let baseInflowData: StringDict = {};
-    categories.forEach((category) => {
-      baseInflowData[category] = 0;
-    });
-
-
-    let baseOutflowData: StringDict = {};
-    outCategories.forEach((category) => {
-      baseOutflowData[category] = 0;
-    });
-
-    let outFlowSelectedData: CashflowTable = {};
-   
-    for (
-      let year = minimum_date!.year();
-      year <= maximum_date!.year();
-      year++
-    ) {
-      let min_month = 0;
-      let max_month = 11;
-      if (year === minimum_date!.year()) min_month = minimum_date!.month();
-      if (year === maximum_date!.year()) max_month = maximum_date!.month();
-      for (let month = min_month; month <= max_month; month++) {
-        const tempDate = dayjs().month(month).year(year);
-
-        if (period === "Monthly") {
-          selectedData[tempDate.format("MMM YYYY")] = {
-            "Cash inflow": inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]  : baseInflowData,
-          };
-
-          outFlowSelectedData[tempDate.format("MMM YYYY")] = {
-            "Cash outflow": outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")] : baseOutflowData,
-          };
-
-        } 
-        
-        else if (period === "Quarterly") {
-          const quarterNo = Math.floor(tempDate.month() / 3);
-          const quarterLabel: string = `${
-            quarterMap[quarterNo]
-          } ${tempDate.year()}`;
-
-          if (!(quarterLabel in selectedData)) {
-            selectedData[quarterLabel] = {
-              "Cash inflow": { ...baseInflowData },
-            };
-
-            outFlowSelectedData[quarterLabel] = {
-              "Cash outflow": {...baseOutflowData},
-            };
-          }
-
-          categories.forEach((type) => {
-            if (type === "Total") return;
-            selectedData[quarterLabel]["Cash inflow"].Total +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-            selectedData[quarterLabel]["Cash inflow"][type] +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-          });
-
-          outCategories.forEach((type) => {
-            if (type === "Total") return;
-            outFlowSelectedData[quarterLabel]["Cash outflow"].Total +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-            outFlowSelectedData[quarterLabel]["Cash outflow"][type] +=
-            outFlowData[tempDate.format("MMM YYYY")][type];
-          });
-        } else {
-          let annualLabel: string = `FY ${tempDate.year()}-${
-            (tempDate.year() + 1) % 100
-          }`;
-          if (tempDate.month() <= 2) {
-            annualLabel = `FY ${tempDate.year() - 1}-${tempDate.year() % 100}`;
-          }
-          if (!(annualLabel in selectedData)) {
-            selectedData[annualLabel] = {
-              "Cash inflow": { ...baseInflowData },
-            };
-
-            outFlowSelectedData[annualLabel] = {
-              "Cash outflow": { ...baseOutflowData },
-            };
-          }
-
-          categories.forEach((type) => {
-            if (type === "Total") return;
-            selectedData[annualLabel]["Cash inflow"].Total +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-            selectedData[annualLabel]["Cash inflow"][type] +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-          });
-
-          outCategories.forEach((type) => {
-            if (type === "Total") return;
-            outFlowSelectedData[annualLabel]["Cash outflow"].Total +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-            outFlowSelectedData[annualLabel]["Cash outflow"][type] +=
-              inFlowData[tempDate.format("MMM YYYY")][type];
-          });
-
-        }
-      }
+  useEffect(() => {
+    const wid = document.querySelector('.check-width');
+    if (wid) {
+      setCellWidth(wid.clientWidth);
     }
-
-    let months = Object.keys(selectedData);
-    if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
-      months = Object.keys(outFlowSelectedData);
+    const searchBar = document.querySelector('.searchBar');
+    if (searchBar) {
+      setMarginLeft(searchBar.clientWidth - 135);
     }
+    const table = document.querySelector('.scroller-1');
+    const table2 = document.querySelector('.scroller-2');
 
-    const cashinflowGraph:any = [];
-    const cashoutflowGraph:any = [];
-
-    let openingAmt = openingBalance; 
-    const openingBalArr:number[] = [];
-    const closeingBal:number[] = [];
-    openingBalArr.push(openingAmt);
-
-    Object.keys(selectedData).map((month: string,idx:number,arr:string[]) => {
-      selectedData[month]["Cash inflow"].Total >= 1
-      ? cashinflowGraph.push(selectedData[month]["Cash inflow"].Total)
-      : cashinflowGraph.push(0)
-    
-      const cashinflowTotal = selectedData[month]["Cash inflow"].Total
-      const cashOutFlowTotal = outFlowSelectedData[month]["Cash outflow"].Total 
-      console.log('cashinflowTotal',cashinflowTotal);
-      const closingBal = openingAmt + (cashinflowTotal -  cashOutFlowTotal);
-      
-      if(idx !== arr.length-1) {
-        openingBalArr.push(closingBal);
-        setBalance(closingBal);
-      }
-     
-      closeingBal.push(closingBal);
-
-      openingAmt = closingBal;
- 
+    table?.addEventListener('scroll', (e) => {
+      // table.scro
+      if (!table2) return;
+      table2.scrollLeft = table.scrollLeft;
     })
-
-    Object.keys(outFlowSelectedData).map((month: string) => {
-      // console.log(outFlowSelectedData[month]);
-      outFlowSelectedData[month]["Cash outflow"].Total >= 1
-      ? cashoutflowGraph.push(outFlowSelectedData[month]["Cash outflow"].Total)
-      : cashoutflowGraph.push(0)
-
+    table2?.addEventListener('scroll', (e) => {
+      // table.scro
+      if (!table) return;
+      table.scrollLeft = table2.scrollLeft;
     })
 
 
-      setBarData({labels:months,datasets:[
-      
-        {
-          type: 'line' as const,
-          label: 'Closing Balance',
-          borderColor: '#186090',
-          borderWidth: 1,
-          fill: false,
-          data:[...closeingBal],
-        },
-        {
-          type: 'bar' as const,
-          label: 'Cash Inflow',
-          backgroundColor: '#338455',
-          data: cashinflowGraph,
-          borderColor: 'white',
-          barPercentage: 1,
-          categoryPercentage: 0.3,
-          borderWidth: 0,     
-        },
-        {
-          type: 'bar' as const,
-          label: 'Cash Outflow',
-          backgroundColor: '#C5221F',
-          barPercentage: 1,
-          categoryPercentage: 0.3,
-          data:  cashoutflowGraph,
-          borderWidth: 0, 
-        },
-      ]})
+  })
 
-    setInflowSelectedData(selectedData);
-    setOutflowSelectedData(outFlowSelectedData);
-    setSelectedMonths(months);
-    setOpeningBal(openingBalArr);
-    setClosingBal(closeingBal);
-    setInflowSelectedCategories(categories)
-    setOutflowSelectedCategories(outCategories);
-    setLoadedPage(true);
-    
-  },[globalMaxDate,globalMinDate,fromValue,toValue,openingBalance])
+  // useEffect(()=>{
+
+  //   if(loading) return;
+
+  //   let minimum_date = dayjs(
+  //     Math.max(fromValue?.valueOf()!, globalMinDate?.valueOf()!)
+  //     );
+
+  //     let maximum_date = toValue;
+  //     console.log('minimum_date',minimum_date,toValue,toValue?.year());
+
+  //   if (period === "Quarterly") maximum_date = maximum_date!.add(2, "month");
+  //   // maximum_date = dayjs(
+  //   //   Math.min(maximum_date?.valueOf()!, globalMaxDate?.valueOf()!)
+  //   // );
+  //   const quarterMap = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
+  //   const categories = [...Object.keys(inflowCategories)];
+  //   const outCategories = [...Object.keys(outflowCategories)];
+
+  //   if(!categories.length || !outCategories.length) return;
+
+
+  //   let selectedData: CashflowTable = {};
+
+  //   let baseInflowData: StringDict = {};
+  //   categories.forEach((category) => {
+  //     baseInflowData[category] = 0;
+  //   });
+
+
+  //   let baseOutflowData: StringDict = {};
+  //   outCategories.forEach((category) => {
+  //     baseOutflowData[category] = 0;
+  //   });
+
+  //   let outFlowSelectedData: CashflowTable = {};
+
+  //   const cashinflowGraph:any = [];
+  //   const cashoutflowGraph:any = [];
+
+  //   const cashInflowRowData:number[] = [];
+  //   const cashOutflowRowData:number[] = [];
+
+  //   // console.log('inFlowData',inFlowData)
+  //   console.log('minimum_date!.year()',minimum_date!.year())
+  //   console.log('maximum_date!.year()',maximum_date!.year())
+  //   for (
+  //     let year = minimum_date!.year();
+  //     year <= maximum_date!.year();
+  //     year++
+  //   ) {
+  //     let min_month = 0;
+  //     let max_month = 11;
+  //     if (year === minimum_date!.year()) min_month = minimum_date!.month();
+  //     if (year === maximum_date!.year()) max_month = maximum_date!.month();
+  //     for (let month = min_month; month <= max_month; month++) {
+  //       const tempDate = dayjs().month(month).year(year);
+
+  //       if (period === "Monthly") {
+  //         selectedData[tempDate.format("MMM YYYY")] = {
+  //           "Cash inflow": inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")]  : baseInflowData,
+  //         };
+
+  //         cashInflowRowData.push(inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")].Total  : baseInflowData.Total);
+
+  //         outFlowSelectedData[tempDate.format("MMM YYYY")] = {
+  //           "Cash outflow": outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")] : baseOutflowData,
+  //         };
+
+  //         cashOutflowRowData.push(outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")].Total  : baseOutflowData.Total);
+
+  //       } 
+
+  //       else if (period === "Quarterly") {
+  //         const quarterNo = Math.floor(tempDate.month() / 3);
+  //         const quarterLabel: string = `${
+  //           quarterMap[quarterNo]
+  //         } ${tempDate.year()}`;
+
+  //         if (!(quarterLabel in selectedData)) {
+  //           selectedData[quarterLabel] = {
+  //             "Cash inflow": { ...baseInflowData },
+  //           };
+  //         }
+
+  //         // console.log('outFlowSelectedData',selectedData,quarterLabel);
+
+  //         if (!(quarterLabel in outFlowSelectedData)) {
+
+  //           outFlowSelectedData[quarterLabel] = {
+  //             "Cash outflow": {...baseOutflowData},
+  //           };
+  //         }
+
+
+  //         categories.forEach((type) => {
+  //           if (type === "Total") return;
+  //           selectedData[quarterLabel]["Cash inflow"].Total +=
+  //           inFlowData[tempDate.format("MMM YYYY")] ? 
+  //             inFlowData[tempDate.format("MMM YYYY")][type] : 0;
+
+  //           selectedData[quarterLabel]["Cash inflow"][type] +=
+  //           inFlowData[tempDate.format("MMM YYYY")] ?
+  //             inFlowData[tempDate.format("MMM YYYY")][type] : 0;
+  //         });
+
+  //         outCategories.forEach((type) => {
+  //           if (type === "Total") return;
+  //           outFlowSelectedData[quarterLabel]["Cash outflow"].Total +=
+  //           outFlowData[tempDate.format("MMM YYYY")] ?
+  //           outFlowData[tempDate.format("MMM YYYY")][type] : 0;
+  //           outFlowSelectedData[quarterLabel]["Cash outflow"][type] +=
+  //           outFlowData[tempDate.format("MMM YYYY")] ? 
+  //           outFlowData[tempDate.format("MMM YYYY")][type] : 0;
+  //         });
+  //       } else {
+  //         let annualLabel: string = `FY ${tempDate.year()}-${
+  //           (tempDate.year() + 1) % 100
+  //         }`;
+  //         if (tempDate.month() <= 2) {
+  //           annualLabel = `FY ${tempDate.year() - 1}-${tempDate.year() % 100}`;
+  //         }
+  //         if (!(annualLabel in selectedData)) {
+  //           selectedData[annualLabel] = {
+  //             "Cash inflow": { ...baseInflowData },
+  //           };
+
+  //           outFlowSelectedData[annualLabel] = {
+  //             "Cash outflow": { ...baseOutflowData },
+  //           };
+  //         }
+
+  //         categories.forEach((type) => {
+  //           if (type === "Total") return;
+  //           selectedData[annualLabel]["Cash inflow"].Total +=
+  //             inFlowData[tempDate.format("MMM YYYY")][type];
+  //           selectedData[annualLabel]["Cash inflow"][type] +=
+  //             inFlowData[tempDate.format("MMM YYYY")][type];
+  //         });
+
+  //         outCategories.forEach((type) => {
+  //           if (type === "Total") return;
+  //           outFlowSelectedData[annualLabel]["Cash outflow"].Total +=
+  //             inFlowData[tempDate.format("MMM YYYY")][type];
+  //           outFlowSelectedData[annualLabel]["Cash outflow"][type] +=
+  //             inFlowData[tempDate.format("MMM YYYY")][type];
+  //         });
+
+  //       }
+  //     }
+  //   }
+
+  //   console.log('selectedData',selectedData)
+  //   let months = Object.keys(selectedData);
+  //   if(Object.keys(outFlowSelectedData).length > Object.keys(selectedData).length) {
+  //     months = Object.keys(outFlowSelectedData);
+  //   }
+
+  //   let closing = 0;
+
+  //   let openingAmt = openingBalance*-1 == -0 ? 0 : openingBalance*-1; 
+
+
+  //   if (period === "Quarterly") {
+  //   //     for(let i =3;i<=5;i++) {
+  //   //       const tempDate = dayjs().month(i).year(2020);
+  //   // // console.log('tempDate.format("MMM YYYY")',tempDate.format("MMM YYYY"))
+  //   //     let  data1 = inFlowData[tempDate.format("MMM YYYY")] ? inFlowData[tempDate.format("MMM YYYY")].Total  : 0;
+  //   //     let  data2 = outFlowData[tempDate.format("MMM YYYY")] ? outFlowData[tempDate.format("MMM YYYY")].Total  : 0;
+
+  //   //       closing = openingAmt + (data1 -  data2);
+
+  //   //       openingAmt = closing; 
+  //   //     }
+
+  //       openingAmt = 0;
+
+  //   }
+
+
+  //   if(closing) {
+  //     openingAmt = closing;
+  //   }
+
+
+
+  //   const openingBalArr:number[] = [];
+  //   const closeingBalArr:number[] = [];
+  //   openingBalArr.push(openingAmt);
+
+  //   months.map((month: string,idx:number,arr:string[]) => {
+  //     selectedData[month]["Cash inflow"].Total >= 1
+  //     ? cashinflowGraph.push(selectedData[month]["Cash inflow"].Total)
+  //     : cashinflowGraph.push(0)
+
+  //     const cashinflowTotal = selectedData[month]["Cash inflow"].Total
+  //     const cashOutFlowTotal = outFlowSelectedData[month]["Cash outflow"].Total 
+
+  //     let closingBal = 0;
+
+  //     if(cashinflowTotal == 0 ) {
+  //       closingBal = openingAmt - cashOutFlowTotal;
+  //     } else {
+  //       closingBal = openingAmt + (cashinflowTotal -  cashOutFlowTotal);
+  //     }
+
+  //     if(idx !== arr.length-1) {
+  //       openingBalArr.push(closingBal);
+  //     }
+  //     if(idx !== arr.length) {
+  //       setBalance(closingBal);
+  //     }
+
+  //     closeingBalArr.push(closingBal);
+
+  //     openingAmt = closingBal;
+
+  //   })
+
+  //   Object.keys(outFlowSelectedData).map((month: string) => {
+  //     // console.log(outFlowSelectedData[month]);
+  //     outFlowSelectedData[month]["Cash outflow"].Total >= 1
+  //     ? cashoutflowGraph.push(outFlowSelectedData[month]["Cash outflow"].Total)
+  //     : cashoutflowGraph.push(0)
+
+  //   })
+
+  //     setBarData({labels:months,datasets:[
+
+  //       {
+  //         type: 'line' as const,
+  //         label: 'Closing Balance',
+  //         borderColor: '#186090',
+  //         borderWidth: 1,
+  //         fill: false,
+  //         data:[...closeingBalArr],
+  //       },
+  //       {
+  //         type: 'bar' as const,
+  //         label: 'Cash Inflow',
+  //         backgroundColor: '#338455',
+  //         data: cashinflowGraph,
+  //         borderColor: 'white',
+  //         barPercentage: 1,
+  //         categoryPercentage: 0.3,
+  //         borderWidth: 0,     
+  //       },
+  //       {
+  //         type: 'bar' as const,
+  //         label: 'Cash Outflow',
+  //         backgroundColor: '#C5221F',
+  //         barPercentage: 1,
+  //         categoryPercentage: 0.3,
+  //         data:  cashoutflowGraph,
+  //         borderWidth: 0, 
+  //       },
+  //     ]})
+
+  //   setInflowSelectedData(selectedData);
+  //   setOutflowSelectedData(outFlowSelectedData);
+  //   setSelectedMonths(months);
+  //   setOpeningBal([...openingBalArr]);
+  //   setClosingBal([...closeingBalArr]);
+  //   setInflowSelectedCategories(categories)
+  //   setOutflowSelectedCategories(outCategories);
+  //   setLoadedPage(true);
+
+  // // },[globalMaxDate,globalMinDate,fromValue,toValue,openingBalance])
+  // },[loading,globalMaxDate,globalMinDate,fromValue,toValue])
 
   const getSelectedData = () => {
-
-    if(!selectedMonths || !openingBal || !inflowSelectedData || !outflowSelectedData || !closingBal
-       || !inflowSelectedCategories || !outflowSelectedCategories) return null;
+ 
+    if (!selectedMonths || !inflowSelectedData || !outflowSelectedData || !closingBal || !openingBal 
+      || !inflowSelectedCategories || !outflowSelectedCategories) return <div>Loading...</div>
 
     return (
-      <TableContainer className="custom-scrollbar">
-        <Table
-          sx={{
-            borderCollapse: "separate",
-            maxWidth: "100vw",
-          }}
-        >
-          <TableHead>
-            <TableRow >
-             <TableCell  style={{
+      <div>
+
+        <TableContainer className="custom-scrollbar hideScroll scroller-1">
+          <Table
+            className="table-1"
+            sx={{
+              borderCollapse: "separate",
+              maxWidth: "100vw",
+            }}
+          >
+            <TableHead>
+
+              <TableRow >
+                <TableCell style={{
                   padding: 0,
                   paddingLeft: "1rem",
                   border: "none",
                   position: "sticky",
                   left: 0,
-                 
+
                 }}></TableCell>
-            <TableCell colSpan={selectedMonths.length+5} >
-              {/* <Chart type='bar'  options={options} data={barData} plugins={[plugin]} /> */}
-               {/* @ts-ignore */}
-              <div style={{height: '22rem','margin-left': '-7.5rem'}}>
-               {/* @ts-ignore */}
-               <Chart type='bar'  options={options} data={barData}  />
 
-              </div>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell
-                style={{
-                  padding: 0,
-                  paddingLeft: "1rem",
-                  border: "1px solid #d3d3d3",
-                  position: "sticky",
-                  left: 0,
-                  background: "white",
-                }}
-              >
-                <TextField
-                  inputProps={{
-                    style: {
-                      padding: 5,
-                      // height: "100%",
-                    },
-                  }}
-                  sx={{ height: "100%" }}
-                  className="topbar-search"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                    disableUnderline: true,
-                  }}
-                  variant="standard"
-                  placeholder="Search"
-                />
-              </TableCell>
-             
-              {selectedMonths.map((month: string) => {
-                return (
-                  <TableCell
-                    key={month}
-                    align="center"
-                    className="cashflows-table-column"
-                    sx={{ minWidth: "110px" }}
-                  >
-                    {month}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-              <TableRow>
-              <TableCell
-                sx={{ position: "sticky", left: 0 }}
-                className="cashflows-table-category"
-              >
-                <div style={{display:'flex',alignItems:'center'}}>
-                  <ShowChartIcon  sx={{
-                  fontSize: "1rem",
-                  color: "#3492D4",
-                  marginRight: "0.3rem",
-                  
-                }} />
-                  {" "}
-                  <p>Cash balance at beginning of the month</p>
+                <TableCell colSpan={selectedMonths.length} style={{ padding: 0 }} >
+                  <CashflowChart openingBal={openingBal} closingBal={closingBal} lebels={selectedMonths} inflowGraphData={inflowGraphData} outflowGraphData={outflowGraphData} marginLeft={marginLeft} width={(selectedMonths.length * cellWidth) + cellWidth} />
+                </TableCell>
 
-                </div>
-                
-              </TableCell>
-              {openingBal.map((bal) => {
-                return (
-                  <TableCell
-                    key={bal}
-                    align="center"
-                    className="cashflows-table-column"
-                    sx={{ borderBottom: "1px solid #d3d3d3" }}
-                  >
-                   {Math.floor(bal).toLocaleString("en-IN")}
-                  </TableCell>
-                );
-              })}
               </TableRow>
-          <TableRow>
-              <TableCell
-                sx={{ position: "sticky", left: 0 }}
-                className="cashflows-table-category"
-              >
-                <NorthEastIcon
-                  sx={{
-                    fontSize: "1rem",
-                    color: "#338455",
-                    marginRight: "0.2rem",
+
+            </TableHead>
+          </Table>
+        </TableContainer>
+        <TableContainer className="custom-scrollbar scroller-2">
+          <Table
+            sx={{
+              borderCollapse: "separate",
+              maxWidth: "100vw",
+            }}
+          >
+            <TableHead>
+
+
+              <TableRow className="row-width">
+                <TableCell
+                  className="searchBar"
+                  style={{
+                    padding: 0,
+                    paddingLeft: "1rem",
+                    border: "1px solid #d3d3d3",
+                    position: "sticky",
+                    left: 0,
+                    background: "white",
                   }}
-                />{" "}
-                Cash inflow
-              </TableCell>
-              {Object.keys(inflowSelectedData).map((month: string) => {
-                return (
-                  <TableCell
-                    key={month + "_2"}
-                    align="center"
-                    className="cashflows-table-column"
-                    sx={{ borderBottom: "1px solid #d3d3d3" }}
-                  >
-                    {inflowSelectedData[month]["Cash inflow"].Total >= 1
-                      ? Math.floor(
-                          inflowSelectedData[month]["Cash inflow"].Total
+                >
+                  <TextField
+                    inputProps={{
+                      style: {
+                        padding: 5,
+                        // height: "100%",
+                      },
+                    }}
+                    sx={{ height: "100%" }}
+                    className="topbar-search"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                      disableUnderline: true,
+                    }}
+                    variant="standard"
+                    placeholder="Search"
+                  />
+                </TableCell>
+
+                {selectedMonths.map((month: string) => {
+                  return (
+                    <TableCell
+                      key={month}
+                      align="center"
+                      className="cashflows-table-column check-width"
+                      sx={{ minWidth: "110px", maxWidth: "110px" }}
+                    >
+                      {month}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  sx={{ position: "sticky", left: 0 }}
+                  className="cashflows-table-category"
+                >
+                  <div style={{display:'flex',alignItems:'center'}}>
+                    <ShowChartIcon  sx={{
+                    fontSize: "1rem",
+                    color: "#3492D4",
+                    marginRight: "0.3rem",
+                    
+                  }} />
+                    {" "}
+                    <p>Cash balance at beginning of the {period}</p>
+
+                  </div>
+                  
+                </TableCell>
+                {openingBal.map((bal,idx) => {
+                  return (
+                    <TableCell
+                      key={bal+idx}
+                      align="center"
+                      className="cashflows-table-column"
+                      sx={{ borderBottom: "1px solid #d3d3d3" }}
+                    >
+                    {Math.floor(bal).toLocaleString("en-IN")}
+                    </TableCell>
+                  );
+                })}
+                </TableRow>
+              <TableRow>
+                <TableCell
+                  sx={{ position: "sticky", left: 0 }}
+                  className="cashflows-table-category"
+                >
+                  <NorthEastIcon
+                    sx={{
+                      fontSize: "1rem",
+                      color: "#338455",
+                      marginRight: "0.2rem",
+                    }}
+                  />{" "}
+                  Cash inflow
+                </TableCell>
+                {Object.keys(inflowSelectedData).map((month: string) => {
+                  return (
+                    <TableCell
+                      key={month + "_2"}
+                      align="center"
+                      className="cashflows-table-column"
+                      sx={{ borderBottom: "1px solid #d3d3d3" }}
+                    >
+                      {inflowSelectedData[month]["Cash outflow"].Total >= 1
+                        ? Math.floor(
+                          inflowSelectedData[month]["Cash outflow"].Total
                         ).toLocaleString("en-IN")
-                      : "-"}
-                  </TableCell>
+                        : "-"}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+
+              {inflowSelectedCategories.map((category) => {
+                if (category === "Total")
+                  return <React.Fragment key={category}></React.Fragment>;
+                return (
+                  <TableRow key={category}>
+                    <TableCell
+                      className="cashflows-table-subcategory"
+                      sx={{
+                        borderBottom: "1px solid #d3d3d3",
+                        minWidth: { xs: "80px", sm: "150px" },
+                        position: "sticky",
+                        left: 0,
+                        background: "white",
+                      }}
+                    >
+                      {category}
+                    </TableCell>
+                    {Object.keys(inflowSelectedData).map((month: string) => {
+                      return (
+                        <TableCell
+                          key={month + "_3"}
+                          align="center"
+                          sx={{
+                            borderBottom: "1px solid #d3d3d3",
+                            fontFamily: "Montserrat",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {inflowSelectedData[month]["Cash outflow"][category] >= 1
+                            ? Math.floor(
+                              inflowSelectedData[month]["Cash outflow"][category]
+                            ).toLocaleString("en-IN")
+                            : "-"}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
                 );
               })}
-            </TableRow>
-           
-            {inflowSelectedCategories.map((category) => {
-              if (category === "Total")
-                return <React.Fragment key={category}></React.Fragment>;
-              return (
-                <TableRow key={category}>
-                  <TableCell
-                    className="cashflows-table-subcategory"
-                    sx={{
-                      borderBottom: "1px solid #d3d3d3",
-                      minWidth: { xs: "80px", sm: "150px" },
-                      position: "sticky",
-                      left: 0,
-                      background: "white",
-                    }}
-                  >
-                    {category}
-                  </TableCell>
-                  {Object.keys(inflowSelectedData).map((month: string) => {
-                    return (
-                      <TableCell
-                        key={month + "_3"}
-                        align="center"
-                        sx={{
-                          borderBottom: "1px solid #d3d3d3",
-                          fontFamily: "Montserrat",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {inflowSelectedData[month]["Cash inflow"][category] >= 1
-                          ? Math.floor(
-                              inflowSelectedData[month]["Cash inflow"][category]
-                            ).toLocaleString("en-IN")
-                          : "-"}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
 
-      <TableRow>
-              <TableCell
-                sx={{ position: "sticky", left: 0 }}
-                className="cashflows-table-category"
-              >
-                <SouthEastIcon
-                  sx={{
-                    fontSize: "1rem",
-                    color: "#eb0014",
-                    marginRight: "0.2rem",
-                  }}
-                />{" "}
-                Cash outflow
-              </TableCell>
-              {Object.keys(outflowSelectedData).map((month: string) => {
-            
-                return (
-                  <TableCell
-                    key={month + "_2"}
-                    align="center"
-                    className="cashflows-table-column" 
-                    sx={{ borderBottom: "1px solid #d3d3d3" }}
-                  >
-                    {outflowSelectedData[month]["Cash outflow"].Total >= 1
-                      ? Math.floor(
+              <TableRow>
+                <TableCell
+                  sx={{ position: "sticky", left: 0 }}
+                  className="cashflows-table-category"
+                >
+                  <SouthEastIcon
+                    sx={{
+                      fontSize: "1rem",
+                      color: "#eb0014",
+                      marginRight: "0.2rem",
+                    }}
+                  />{" "}
+                  Cash outflow
+                </TableCell>
+                {Object.keys(outflowSelectedData).map((month: string) => {
+
+                  return (
+                    <TableCell
+                      key={month + "_2"}
+                      align="center"
+                      className="cashflows-table-column"
+                      sx={{ borderBottom: "1px solid #d3d3d3" }}
+                    >
+                      {outflowSelectedData[month]["Cash outflow"].Total >= 1
+                        ? Math.floor(
                           outflowSelectedData[month]["Cash outflow"].Total
                         ).toLocaleString("en-IN")
-                      : "-"}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-
-{outflowSelectedCategories.map((category:string) => {
-              if (category === "Total")
-                return <React.Fragment key={category}></React.Fragment>;
-              return (
-                <TableRow key={category}>
-                  <TableCell
-                    className="cashflows-table-subcategory"
-                    sx={{
-                      borderBottom: "1px solid #d3d3d3",
-                      minWidth: { xs: "80px", sm: "150px" },
-                      position: "sticky",
-                      left: 0,
-                      background: "white",
-                    }}
-                  >
-                    {category}
-                  </TableCell>
-                  {Object.keys(outflowSelectedData).map((month: string) => {
-                    //  if(outFlowSelectedData[month]) {
-                    //   // console.log('not',month)
-                    // }
-                   
-                    return (
-                      <TableCell
-                        key={month + "_3"}
-                        align="center"
-                        sx={{
-                          borderBottom: "1px solid #d3d3d3",
-                          fontFamily: "Montserrat",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {outflowSelectedData[month]["Cash outflow"][category] >= 1
-                          ? Math.floor(
-                              outflowSelectedData[month]["Cash outflow"][category]
-                            ).toLocaleString("en-IN")
-                          : "-"}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-            <TableRow>
-              <TableCell
-                sx={{ position: "sticky", left: 0 }}
-                className="cashflows-table-category"
-              >
-                 <div style={{display:'flex',alignItems:'center'}}>
-                  <ShowChartIcon  sx={{
-                  fontSize: "1rem",
-                  color: "#3492D4",
-                  marginRight: "0.3rem",
-                  
-                }} />
-                  {" "}
-                  <p>Cash balance at end of the month</p>
-
-                </div>
-              </TableCell>
-              {closingBal.map((bal) => {
-                return (
-                  <TableCell
-                    key={bal}
-                    align="center"
-                    className="cashflows-table-column"
-                    sx={{ borderBottom: "1px solid #d3d3d3" }}
-                  >
-                      {Math.floor(bal).toLocaleString("en-IN")}
-                  </TableCell>
-                );
-              })}
+                        : "-"}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
 
-   
-          </TableBody>
-        </Table>
-      </TableContainer>
+              {outflowSelectedCategories.map((category: string) => {
+                if (category === "Total")
+                  return <React.Fragment key={category}></React.Fragment>;
+                return (
+                  <TableRow key={category}>
+                    <TableCell
+                      className="cashflows-table-subcategory"
+                      sx={{
+                        borderBottom: "1px solid #d3d3d3",
+                        minWidth: { xs: "80px", sm: "150px" },
+                        position: "sticky",
+                        left: 0,
+                        background: "white",
+                      }}
+                    >
+                      {category}
+                    </TableCell>
+                    {Object.keys(outflowSelectedData).map((month: string) => {
+                      //  if(outFlowSelectedData[month]) {
+                      //   // console.log('not',month)
+                      // }
+
+                      return (
+                        <TableCell
+                          key={month + "_3"}
+                          align="center"
+                          sx={{
+                            borderBottom: "1px solid #d3d3d3",
+                            fontFamily: "Montserrat",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {outflowSelectedData[month]["Cash outflow"][category] >= 1
+                            ? Math.floor(
+                              outflowSelectedData[month]["Cash outflow"][category]
+                            ).toLocaleString("en-IN")
+                            : "-"}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+              <TableRow>
+                <TableCell
+                  sx={{ position: "sticky", left: 0 }}
+                  className="cashflows-table-category"
+                >
+                  <div style={{display:'flex',alignItems:'center'}}>
+                    <ShowChartIcon  sx={{
+                    fontSize: "1rem",
+                    color: "#3492D4",
+                    marginRight: "0.3rem",
+                    
+                  }} />
+                    {" "}
+                    <p>Cash balance at end of the {period}</p>
+
+                  </div>
+                </TableCell>
+                {closingBal.map((bal,idx) => {
+                  return (
+                    <TableCell
+                      key={bal+idx}
+                      align="center"
+                      className="cashflows-table-column"
+                      sx={{ borderBottom: "1px solid #d3d3d3" }}
+                    >
+                        {Math.floor(bal).toLocaleString("en-IN")}
+                    </TableCell>
+                  );
+                })}
+                </TableRow>
+
+
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     );
   };
 
@@ -1072,6 +948,7 @@ const plugin = {
           <Grid item>
             <div className="cash-balance">
               <span className="cash-balance-heading">CASH BALANCE:</span>
+              {toValue?.format("MMM YYYY")}
               <span
                 className="cash-value"
                 style={{
@@ -1085,7 +962,7 @@ const plugin = {
           </Grid>
         </Grid>
 
-      
+
       </Grid>
       <Modal open={openPeriod} onClose={() => setOpenPeriod(false)}>
         <Grid container className="modal-box" style={{ width: "400px" }} p={3}>
@@ -1141,10 +1018,10 @@ const plugin = {
                     period !== "Quarterly"
                       ? undefined
                       : (month) => {
-                          return !["Jan", "Apr", "Jul", "Oct"].includes(
-                            month?.format("MMM")!
-                          );
-                        }
+                        return !["Jan", "Apr", "Jul", "Oct"].includes(
+                          month?.format("MMM")!
+                        );
+                      }
                   }
                 />
               </LocalizationProvider>
@@ -1176,11 +1053,15 @@ const plugin = {
                     </h1>
                   )}
                   onChange={(newValue) => {
+                    
                     period !== "Annually"
                       ? setToValue(newValue)
                       : setToValue(getYearEnd(newValue!));
+
+                      setOpenPeriod(false);
                   }}
                   renderInput={(params) => {
+                    console.log('params',params)
                     return (
                       <div
                         onClick={() => setToOpen(true)}
@@ -1203,10 +1084,10 @@ const plugin = {
                     period !== "Quarterly"
                       ? undefined
                       : (month) => {
-                          return !["Jan", "Apr", "Jul", "Oct"].includes(
-                            month?.format("MMM")!
-                          );
-                        }
+                        return !["Jan", "Apr", "Jul", "Oct"].includes(
+                          month?.format("MMM")!
+                        );
+                      }
                   }
                 />
               </LocalizationProvider>
@@ -1231,11 +1112,11 @@ const plugin = {
                       <span style={{ fontSize: "0.8rem" }}>Quarterly</span>
                     }
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="Annually"
                     control={<Radio />}
                     label={<span style={{ fontSize: "0.8rem" }}>Annually</span>}
-                  />
+                  /> */}
                 </RadioGroup>
               </FormControl>
             </Grid>
