@@ -34,6 +34,7 @@ const Login = (props:any) => {
       localStorage.removeItem("tokens");
       setIsLoggedIn(false);
     }
+
   }, []);
 
   const handleSnackClose = (
@@ -131,6 +132,11 @@ const Login = (props:any) => {
                       fullWidth
                       name="email"
                       value={loginInfo.email}
+                      onKeyDown={e=>{
+                        if(e.keyCode == 13) {
+                          loginUser(loginInfo);
+                        }
+                      }}
                       onChange={handleChange}
                       error={validating && !validateEmail(loginInfo.email)}
                       helperText={
@@ -157,6 +163,11 @@ const Login = (props:any) => {
                       type="password"
                       name="password"
                       value={loginInfo.password}
+                      onKeyDown={e=>{
+                        if(e.keyCode == 13) {
+                          loginUser(loginInfo);
+                        }
+                      }}
                       onChange={handleChange}
                       error={
                         validating && !validatePassword(loginInfo.password)

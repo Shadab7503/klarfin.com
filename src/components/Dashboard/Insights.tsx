@@ -54,15 +54,33 @@ ChartJS.register(
   Legend
 );
 
-const numFormatter = (num: number) => {
-  if (num > 999 && num < 1000000) {
-    return num / 1000 + "K"; // convert to K for number from > 1000 < 1 million
-  } else if (num > 1000000) {
-    return num / 1000000 + "M"; // convert to M for number from > 1 million
-  } else if (num < 900) {
-    return num; // if value < 1000, nothing to do
+const numFormatter = (value: number) => {
+  if(value == 0) {
+    return value;
   }
-  return "";
+
+  let isNegitive = false;
+  if(value < 0) {
+    isNegitive = true;
+    value = value * -1;
+  }
+
+  const digits = value.toString().length;
+        
+            let number = value.toString();
+            if(digits >= 6 || digits >= 7) {
+              number = parseInt(number)/100000+' Lakh';
+            }
+
+            if(digits >= 8) {
+              number = parseInt(number)/10000000+' Crore';
+
+            }
+
+            if(isNegitive) {
+              return 'INR -'+number;
+            }
+            return 'INR '+number;
 };
 
 const labels = ["Jan22", "Feb22", "Mar22", "Apr22", "May22", "Jun22"];
@@ -339,6 +357,39 @@ const getData = async ()=>{
 
 }
 
+
+
+const handleMinMax = (min:string,max:string)=>{
+
+  setMinDate(dayjs(min));
+  setGlobalMinDate(dayjs(min))
+  setMaxDate(dayjs(max));
+
+  if(dayjs().subtract(1,'year').diff(dayjs(min)) > 0) {
+    setFromValue(dayjs().subtract(1, 'year'));
+  } else {
+    setFromValue(dayjs(min));
+  }
+
+  
+  if(dayjs(max).diff(new Date()) >0) {
+    setToValue(dayjs())
+    setGlobalMaxDate(dayjs());
+  }else {
+    setToValue(dayjs(max));
+    setGlobalMaxDate(dayjs(max));
+  }
+
+  // if(dayjs(min).add(1, 'year').diff(max) > 0) {
+  //   // setToValue(dayjs(max))
+  //   setGlobalMaxDate(dayjs(max))
+  // } else {
+  //   // setToValue(dayjs(min).add(1, 'year'))
+  //   setGlobalMaxDate(dayjs(min).add(1, 'year'))
+  // }
+
+}
+
 useEffect(()=>{
   axios
  .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/minmax/minmax", {
@@ -346,13 +397,9 @@ useEffect(()=>{
   
  })
  .then(({data}) => {
- //   console.log('data',data)
-  setFromValue(dayjs(data.min))
-  setMinDate(dayjs(data.min))
-  setToValue(dayjs(data.min).add(1,'year'))
-  setMaxDate(dayjs(data.max))
-  setGlobalMaxDate(dayjs(data.min).add(1,'year'))
-  setGlobalMinDate(dayjs(data.min))
+ 
+  handleMinMax(data.min,data.max);
+
  });
 
 },[period])
@@ -409,7 +456,7 @@ useEffect(()=>{
   Object.keys(outFlowData).forEach(key=>{
 
     const saleTotal = inFlowData[key] ? inFlowData[key]['Cash outflow'].Sales : 0;
-    const outflowTotal = outFlowData[key] ? inFlowData[key]['Cash outflow'].Total : 0;
+    const outflowTotal = outFlowData[key] ? outFlowData[key]['Cash outflow'].Total : 0;
     grossCashBurn.push(outflowTotal);
 
       netCashBurn.push(outflowTotal - saleTotal);
@@ -427,9 +474,10 @@ useEffect(() => {
 
   if(!insightsData) return;
  
-  setLabels(insightsData.collection.map((each:any)=>each.label))
-  setCollections(insightsData.collection.map((each:any)=>each.value))
-  setRevenue(insightsData.revenue.map((each:any)=>each.value))
+  setLabels(Object.keys(insightsData.collection));
+  setCollections(Object.keys(insightsData.collection).map((key) => insightsData.collection[key]))
+  setRevenue(Object.keys(insightsData.revenue).map((key) => insightsData.revenue[key]))
+  
 
   let categories: {
     Name: string;
@@ -501,7 +549,6 @@ useEffect(() => {
     if (month <= 2) return dayjs(`${date.year()}-03-01`);
     else return dayjs(`${date.year() + 1}-03-01`);
   };
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     if (newValue === "Annually") {
@@ -520,19 +567,23 @@ useEffect(() => {
         setToValue(dayjs(`${globalMaxDate!.year() + 1}-03-01`));
       }
     } else {
-      setMinDate(globalMinDate);
-      setFromValue(globalMinDate);
-      setMaxDate(globalMaxDate);
-      setToValue(globalMaxDate);
+      if (fromValue && toValue) {
+        setFromValue(fromValue);
+        setToValue(toValue);
+
+      }
+      // setMinDate(fromValue);
+      // setMaxDate(toValue);
       if (newValue === "Quarterly") {
-        const year = globalMaxDate!.year();
-        setFromValue(dayjs(`${year}-01-01`));
-        setToValue(dayjs(`${year}-01-01`));
+        const maxYear = toValue!.year();
+        const minYear = fromValue!.year();
+        setFromValue(dayjs(`${minYear}-04-01`));
+        setToValue(dayjs(`${maxYear}-01-01`));
       }
     }
     setPeriod(newValue);
+    setOpenPeriod(false);
   };
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setSelectedTab(newValue);
   };
@@ -571,7 +622,7 @@ useEffect(() => {
               Spend Amount <br />
               (INR)
             </Grid>
-            <Grid
+            {/* <Grid
               item
               xs={1.5}
               lg={1.3}
@@ -579,7 +630,7 @@ useEffect(() => {
               textAlign="center"
             >
               % Change
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
         <Grid item xs={11.5} style={{ minWidth: "575px" }}>
@@ -620,9 +671,10 @@ useEffect(() => {
                   className="expense-categories-field"
                   style={{ fontWeight: 600, textAlign: "center" }}
                 >
-                  {category.spendAmount}
+                  {Math.floor(category.spendAmount).toLocaleString("en-IN")}
+                  {/* {category.spendAmount} */}
                 </Grid>
-                <Grid
+                {/* <Grid
                   item
                   xs={1.5}
                   lg={1.3}
@@ -658,7 +710,7 @@ useEffect(() => {
                       />
                     </>
                   )}
-                </Grid>
+                </Grid> */}
               </Grid>
             );
           })}
@@ -708,6 +760,17 @@ useEffect(() => {
                       ? setFromValue(newValue)
                       : setFromValue(getYearStart(newValue!));
                   }}
+
+                  onMonthChange={(newValue)=>{
+                   
+                    period !== "Annually"
+                    ? setFromValue(newValue?.add(1,'month').subtract(1,'day'))
+                    : setFromValue(getYearStart(newValue!));
+
+                    setFromOpen(false)
+                    setOpenPeriod(false)
+                  }}
+
                   renderInput={(params) => (
                     <Grid
                       container
@@ -776,6 +839,14 @@ useEffect(() => {
                       ? setToValue(newValue)
                       : setToValue(getYearEnd(newValue!));
                   }}
+                  onMonthChange={(newValue)=>{
+                    period !== "Annually"
+                    ? setToValue(newValue?.add(1,'month').subtract(1,'day'))
+                    : setToValue(getYearStart(newValue!));
+                    setToOpen(false)
+                    setOpenPeriod(false)
+
+                  }}
                   renderInput={(params) => {
                     return (
                       <Grid
@@ -834,11 +905,11 @@ useEffect(() => {
                       <span style={{ fontSize: "0.8rem" }}>Quarterly</span>
                     }
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="Annually"
                     control={<Radio />}
                     label={<span style={{ fontSize: "0.8rem" }}>Annually</span>}
-                  />
+                  /> */}
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -966,7 +1037,7 @@ useEffect(() => {
             <Grid item xs={11.5} className="insights-heading">
               Expense Breakdown
             </Grid>
-            <Grid item xs={11.5} className="insights-tabs settings-tabs">
+            {/* <Grid item xs={11.5} className="insights-tabs settings-tabs">
               <Grid container style={{ overflow: "hidden" }}>
                 <Tabs
                   value={selectedTab}
@@ -988,7 +1059,7 @@ useEffect(() => {
                     }}
                     label={"Categories"}
                   />
-                  {/* <Tab
+                  <Tab
                     value="Merchants"
                     style={{ textTransform: "none" }}
                     disableRipple={true}
@@ -1000,10 +1071,10 @@ useEffect(() => {
                       },
                     }}
                     label={"Merchants"}
-                  /> */}
+                  />
                 </Tabs>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid item xs={11.5} sm={12}>
               {selectedTab === "Categories" ? <Categories /> : <Merchants />}
             </Grid>

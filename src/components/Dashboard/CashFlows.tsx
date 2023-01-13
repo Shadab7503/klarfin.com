@@ -129,6 +129,38 @@ const CashFlows = (props: any) => {
   const [inflowGraphData, setInflowGraphData] = useState<number[]>([]);
   const [outflowGraphData, setOutflowGraphData] = useState<number[]>([]);
 
+
+  const handleMinMax = (min:string,max:string)=>{
+
+    setMinDate(dayjs(min));
+    setGlobalMinDate(dayjs(min))
+    setMaxDate(dayjs(max));
+
+    if(dayjs().subtract(1,'year').diff(dayjs(min)) > 0) {
+      setFromValue(dayjs().subtract(1, 'year'));
+    } else {
+      setFromValue(dayjs(min));
+    }
+
+    
+    if(dayjs(max).diff(new Date()) >0) {
+      setToValue(dayjs())
+      setGlobalMaxDate(dayjs());
+    }else {
+      setToValue(dayjs(max));
+      setGlobalMaxDate(dayjs(max));
+    }
+
+    // if(dayjs(min).add(1, 'year').diff(max) > 0) {
+    //   // setToValue(dayjs(max))
+    //   setGlobalMaxDate(dayjs(max))
+    // } else {
+    //   // setToValue(dayjs(min).add(1, 'year'))
+    //   setGlobalMaxDate(dayjs(min).add(1, 'year'))
+    // }
+
+  }
+
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/minmax/minmax", {
@@ -136,13 +168,8 @@ const CashFlows = (props: any) => {
 
       })
       .then(({ data }) => {
-        //   console.log('data',data)
-        setFromValue(dayjs(data.min))
-        setMinDate(dayjs(data.min))
-        setToValue(dayjs(data.min).add(1, 'year'))
-        setMaxDate(dayjs(data.max))
-        setGlobalMaxDate(dayjs(data.min).add(1, 'year'))
-        setGlobalMinDate(dayjs(data.min))
+
+       handleMinMax(data.min,data.max);
       });
 
 
@@ -157,6 +184,8 @@ const CashFlows = (props: any) => {
     .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/balance/balance", {
       startDate: fromValue,
         endDate: toValue,
+       minDate,
+        maxDate,
         period
     }, {
       headers: { Authorization: `Bearer ${props.accessToken}` },
@@ -179,6 +208,7 @@ const CashFlows = (props: any) => {
 
         setInflowSelectedData(data.data.outFlowSelectedData);
         setSelectedMonths(data.data.months);
+        // console.log('data.data.months',data.data.months);
         setInflowGraphData(data.data.cashoutflowGraph);
         setInflowSelectedCategories(data.data.outCategories);
 
@@ -242,16 +272,16 @@ const CashFlows = (props: any) => {
         setToValue(dayjs(`${globalMaxDate!.year() + 1}-03-01`));
       }
     } else {
-      if (globalMinDate && globalMaxDate) {
-        setFromValue(globalMinDate);
-        setToValue(globalMaxDate);
+      if (fromValue && toValue) {
+        setFromValue(fromValue);
+        setToValue(toValue);
 
       }
-      setMinDate(globalMinDate);
-      setMaxDate(globalMaxDate);
+      // setMinDate(fromValue);
+      // setMaxDate(toValue);
       if (newValue === "Quarterly") {
-        const maxYear = globalMaxDate!.year();
-        const minYear = globalMinDate!.year();
+        const maxYear = toValue!.year();
+        const minYear = fromValue!.year();
         setFromValue(dayjs(`${minYear}-04-01`));
         setToValue(dayjs(`${maxYear}-01-01`));
       }
@@ -590,10 +620,15 @@ const CashFlows = (props: any) => {
     if (!selectedMonths || !inflowSelectedData || !outflowSelectedData || !closingBal || !openingBal 
       || !inflowSelectedCategories || !outflowSelectedCategories) return <div>Loading...</div>
 
+      const scrollbar = document.querySelector('.custom-scrollbar');
+      if(scrollbar) {
+        const width = scrollbar.clientWidth;
+        scrollbar.scrollTo(width,0)
+      }
     return (
       <div>
 
-        <TableContainer className="custom-scrollbar hideScroll scroller-1">
+        <TableContainer className="custom-scrollbar hideScroll scroller-1" style={{marginTop:'-20px'}}>
           <Table
             className="table-1"
             sx={{
@@ -614,8 +649,9 @@ const CashFlows = (props: any) => {
                 }}></TableCell>
 
                 <TableCell colSpan={selectedMonths.length} style={{ padding: 0 }} >
-                  <CashflowChart openingBal={openingBal} closingBal={closingBal} lebels={selectedMonths} inflowGraphData={inflowGraphData} outflowGraphData={outflowGraphData} marginLeft={marginLeft} width={(selectedMonths.length * cellWidth) + cellWidth} />
+                  <CashflowChart closingBal={closingBal} lebels={[...Object.keys(outflowSelectedData)]} inflowGraphData={inflowGraphData} outflowGraphData={outflowGraphData} marginLeft={marginLeft} width={(selectedMonths.length * cellWidth) + cellWidth} />
                 </TableCell>
+                
 
               </TableRow>
 
@@ -694,20 +730,23 @@ const CashFlows = (props: any) => {
                     
                   }} />
                     {" "}
-                    <p>Cash balance at beginning of the {period}</p>
+                    <p>Cash balance at beginning of the {period == 'Monthly' ? 'month' : 'quarter'}</p>
 
                   </div>
                   
                 </TableCell>
-                {openingBal.map((bal,idx) => {
+                {selectedMonths.map((month:any,idx) => {
+                  // if(!openingBal[month]) return null;
+
                   return (
                     <TableCell
-                      key={bal+idx}
+                      key={month+idx}
                       align="center"
                       className="cashflows-table-column"
                       sx={{ borderBottom: "1px solid #d3d3d3" }}
                     >
-                    {Math.floor(bal).toLocaleString("en-IN")}
+                    {Math.floor(openingBal[month]).toLocaleString("en-IN")}
+                    {/* { openingBal[month] } */}
                     </TableCell>
                   );
                 })}
@@ -873,19 +912,22 @@ const CashFlows = (props: any) => {
                     
                   }} />
                     {" "}
-                    <p>Cash balance at end of the {period}</p>
+                    <p>Cash balance at end of the {period == 'Monthly' ? 'month' : 'quarter'}</p>
 
                   </div>
                 </TableCell>
-                {closingBal.map((bal,idx) => {
+                {selectedMonths.map((month:any,idx) => {
+                  if(!closingBal[month]) return null;
+
                   return (
                     <TableCell
-                      key={bal+idx}
+                      key={month+idx}
                       align="center"
                       className="cashflows-table-column"
                       sx={{ borderBottom: "1px solid #d3d3d3" }}
                     >
-                        {Math.floor(bal).toLocaleString("en-IN")}
+                    {Math.floor(closingBal[month]).toLocaleString("en-IN")}
+
                     </TableCell>
                   );
                 })}
@@ -947,8 +989,7 @@ const CashFlows = (props: any) => {
         <Grid container className="cash-display" justifyContent="space-between">
           <Grid item>
             <div className="cash-balance">
-              <span className="cash-balance-heading">CASH BALANCE:</span>
-              {toValue?.format("MMM YYYY")}
+              <span className="cash-balance-heading">CASH BALANCE ( {toValue?.format("MMM YYYY")} )</span>
               <span
                 className="cash-value"
                 style={{
@@ -993,13 +1034,25 @@ const CashFlows = (props: any) => {
                     </h1>
                   )}
                   onChange={(newValue) => {
+                    if(period == "Annually") {
+                      setFromValue(getYearStart(newValue!));
+                    }
+                    // period !== "Annually"
+                    // ? setFromValue(newValue)
+                    // : setFromValue(getYearStart(newValue!));
+                  }}
+                  onMonthChange={(newValue)=>{
+                   
                     period !== "Annually"
-                      ? setFromValue(newValue)
-                      : setFromValue(getYearStart(newValue!));
+                    ? setFromValue(newValue?.add(1,'month').subtract(1,'day'))
+                    : setFromValue(getYearStart(newValue!));
+
+                    setFromOpen(false)
+                    setOpenPeriod(false)
                   }}
                   renderInput={(params) => (
                     <div
-                      onClick={() => setFromOpen(true)}
+                      onClick={() => setFromOpen(true) }
                       style={{
                         marginLeft: "0.5rem",
                         display: "inline-block",
@@ -1053,15 +1106,27 @@ const CashFlows = (props: any) => {
                     </h1>
                   )}
                   onChange={(newValue) => {
-                    
-                    period !== "Annually"
-                      ? setToValue(newValue)
-                      : setToValue(getYearEnd(newValue!));
-
+                  
+                    if(!newValue) return;
+                    if(period == "Annually") {
+                      setToValue(getYearEnd(newValue!));
                       setOpenPeriod(false);
+                    }
+                    // period !== "Annually"
+                    //   ? setToValue(newValue)
+                    //   : setToValue(getYearEnd(newValue!));
+
+                  }}
+
+                  onMonthChange={(newValue)=>{
+                    period !== "Annually"
+                    ? setToValue(newValue?.add(1,'month').subtract(1,'day'))
+                    : setToValue(getYearStart(newValue!));
+                    setToOpen(false)
+                    setOpenPeriod(false)
+
                   }}
                   renderInput={(params) => {
-                    console.log('params',params)
                     return (
                       <div
                         onClick={() => setToOpen(true)}
