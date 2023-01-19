@@ -626,9 +626,9 @@ const CashFlows = (props: any) => {
         scrollbar.scrollTo(width,0)
       }
     return (
-      <div>
+      <div className="custom-scrollbar__container custom-scrollbar">
 
-        <TableContainer className="custom-scrollbar hideScroll scroller-1" style={{marginTop:'-20px'}}>
+        <TableContainer className="custom-scrollbar hideScroll scroller-1">
           <Table
             className="table-1"
             sx={{
@@ -1044,7 +1044,7 @@ const CashFlows = (props: any) => {
                   onMonthChange={(newValue)=>{
                    
                     period !== "Annually"
-                    ? setFromValue(newValue?.add(1,'month').subtract(1,'day'))
+                    ? setFromValue(newValue)
                     : setFromValue(getYearStart(newValue!));
 
                     setFromOpen(false)

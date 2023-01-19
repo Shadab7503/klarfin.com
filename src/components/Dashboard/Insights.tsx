@@ -220,15 +220,7 @@ const data3 = {
   ],
 };
 
-const data4 = {
-  labels: ["0 - 30", "31 - 60", "61 - 90", "91 - 120", "> 120"],
-  datasets: [
-    {
-      data: [14.2, 19.81, 22.16, 37.5, 6.3],
-      backgroundColor: ["#F0F5FE", "#4375F4", "#30A8D8", "#3287D9", "#132F77"],
-    },
-  ],
-};
+
 
 const Insights = (props:any) => {
  const {
@@ -265,6 +257,8 @@ const Insights = (props:any) => {
   const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
   const [inFlowData, setInFlowData] = useState<CashflowTable>({} as CashflowTable);
   const [grossLabels, setGrossLabels] = useState<string[]>([]);
+  const [receivables, setReceivables] = useState<number[]>([]);
+  const [receivablesLabel, setReceivablesLabel] = useState<string[]>([]);
   
 const data1 = {
   labels,
@@ -274,14 +268,14 @@ const data1 = {
       data: revenue,
       backgroundColor: "#2960EC",
       borderColor: "#2960EC",
-      pointRadius: 0,
+      pointRadius: 2,
     },
     {
       label: "Collections",
       data: collections,
       backgroundColor: "#39B6D2",
       borderColor: "#39B6D2",
-      pointRadius: 0,
+      pointRadius: 2,
     },
   ],
 };
@@ -295,14 +289,27 @@ const data2 = {
       data: grossCashBurnData,
       backgroundColor: "#2960EC",
       borderColor: "#2960EC",
-      pointRadius: 0,
+      pointRadius: 2,
     },
     {
       label: "Net",
       data: netCashBurnData,
       backgroundColor: "#39B6D2",
       borderColor: "#39B6D2",
-      pointRadius: 0,
+      pointRadius: 2,
+    },
+  ],
+};
+
+const data4 = {
+  // labels : ["0 - 30", "31 - 60", "61 - 90", "91 - 120", "> 120"],
+  labels: receivablesLabel,
+  datasets: [
+    {
+    // data: [14.2, 19.81, 22.16, 37.5, 6.3],
+
+      data: receivables,
+      backgroundColor: ["#F0F5FE", "#4375F4", "#30A8D8", "#3287D9", "#132F77"],
     },
   ],
 };
@@ -478,6 +485,8 @@ useEffect(() => {
   setCollections(Object.keys(insightsData.collection).map((key) => insightsData.collection[key]))
   setRevenue(Object.keys(insightsData.revenue).map((key) => insightsData.revenue[key]))
   
+  setReceivablesLabel(Object.keys(insightsData.receivables));
+  setReceivables(Object.keys(insightsData.receivables).map((key) => insightsData.receivables[key]));
 
   let categories: {
     Name: string;
@@ -764,7 +773,7 @@ useEffect(() => {
                   onMonthChange={(newValue)=>{
                    
                     period !== "Annually"
-                    ? setFromValue(newValue?.add(1,'month').subtract(1,'day'))
+                    ? setFromValue(newValue)
                     : setFromValue(getYearStart(newValue!));
 
                     setFromOpen(false)
@@ -988,8 +997,8 @@ useEffect(() => {
               </Grid>
             </Grid>
           </Grid>
-          {/* <Grid container mt={3} justifyContent="space-between">
-            <Grid item lg={5} md={5.5} sm={11} xs={12}>
+          <Grid container mt={3} justifyContent="space-between">
+            {/* <Grid item lg={5} md={5.5} sm={11} xs={12}>
               <span className="insights-heading">
                 Daily Sales Outstanding (DSO)
               </span>
@@ -1004,7 +1013,7 @@ useEffect(() => {
                   <Bar options={optionsBar} data={data3} />
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid
               item
               lg={5}
@@ -1030,7 +1039,7 @@ useEffect(() => {
                 </Grid>
               </Grid>
             </Grid>
-          </Grid> */}
+          </Grid>
         </Grid>
         <Grid item xs={12} className="insights-padding" mt={5}>
           <Grid container>
