@@ -89,7 +89,29 @@ const DashboardSuper = () => {
     setApproving("");
   };
 
-  const approveAdmin = (id: string, email: string,approve:boolean=true) => {
+
+  const adminDelete = (id: string) => {
+    setApproving("loading");
+    var config = {
+      method: "post",
+      url: `${process.env.REACT_APP_BACKEND_HOST}v1/super/delete/${id}`,
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+      data: {
+      },
+    };
+    axios(config)
+      .then((response) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        setApproving("error");
+      });
+  };
+
+  const adminAction = (id: string, email: string,approve:boolean=true) => {
     setApproving("loading");
     var config = {
       method: "post",
@@ -173,7 +195,11 @@ const DashboardSuper = () => {
                         { column.field == 'isAdminApproved' ? (row[column.field] ? 'Approved' : 'UnApproved') : null }
                       </TableCell>
                     ))}
-                    <TableCell align="center">
+                    <TableCell align="center" >
+                      
+                      <div style={{display:'flex'}} >
+
+                     
 
                       {
 
@@ -184,7 +210,7 @@ const DashboardSuper = () => {
                               className="bills-pay"
                               py={1}
                               px={2}
-                              onClick={() => approveAdmin(row["id"], row["email"],false)}
+                              onClick={() => adminAction(row["id"], row["email"],false)}
                               style={{
                                 background:'#e93447'
                               }}
@@ -198,7 +224,7 @@ const DashboardSuper = () => {
                           className="bills-pay"
                           py={1}
                           px={2}
-                          onClick={() => approveAdmin(row["id"], row["email"])}
+                          onClick={() => adminAction(row["id"], row["email"])}
                           style={{
                             background:
                               row["email"] in approvedEmails
@@ -213,7 +239,20 @@ const DashboardSuper = () => {
 
                       </Grid>
                       }
-                
+                       <Grid
+                          item
+                          className="bills-pay"
+                          py={1}
+                          px={2}
+                          onClick={() => window.confirm('Delete user?') && adminDelete(row["id"])}
+                          style={{
+                            background:'#e93447',
+                            marginLeft:'1rem'
+                          }}
+                        >
+                          Delete
+                        </Grid>
+                        </div>
                     </TableCell>
                   </TableRow>
                 ))}

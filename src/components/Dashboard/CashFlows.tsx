@@ -639,14 +639,18 @@ const CashFlows = (props: any) => {
             <TableHead>
 
               <TableRow >
-                <TableCell style={{
-                  padding: 0,
-                  paddingLeft: "1rem",
-                  border: "none",
-                  position: "sticky",
-                  left: 0,
-
-                }}></TableCell>
+              {/* <TableCell
+                  className="searchBar"
+                  style={{
+                    padding: 0,
+                    paddingLeft: "1rem",
+                    position: "sticky",
+                    left: 0,
+                    background: "white",
+                  }}
+                >
+                
+                </TableCell> */}
 
                 <TableCell colSpan={selectedMonths.length} style={{ padding: 0 }} >
                   <CashflowChart closingBal={closingBal} lebels={[...Object.keys(outflowSelectedData)]} inflowGraphData={inflowGraphData} outflowGraphData={outflowGraphData} marginLeft={marginLeft} width={(selectedMonths.length * cellWidth) + cellWidth} />
@@ -1042,7 +1046,6 @@ const CashFlows = (props: any) => {
                     // : setFromValue(getYearStart(newValue!));
                   }}
                   onMonthChange={(newValue)=>{
-                   
                     period !== "Annually"
                     ? setFromValue(newValue)
                     : setFromValue(getYearStart(newValue!));
@@ -1188,6 +1191,20 @@ const CashFlows = (props: any) => {
           </Grid>
         </Grid>
       </Modal>
+      {
+        inflowGraphData.length < 2
+        && 
+        <Grid item xs={12} mt={2}>
+        <Grid container className="receivables-warning" justifyContent="center">
+          <span style={{ color: "#C3142F", textAlign: "center" }}>
+            {" "}
+            Kindly sync your tally data with Klarfin. Just takes 2 minutes.
+          </span>
+        </Grid>
+      </Grid>
+
+      }
+      
       <Grid item xs={12} mt={5}>
         {getSelectedData()}
       </Grid>
