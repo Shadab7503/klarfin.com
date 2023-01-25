@@ -19,7 +19,7 @@ const Dashboard = (props: any) => {
           <CashFlows accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboard/insights" element={<AdminLayout user={user} ><Insights accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboard/settings" element={<AdminLayout user={user} ><Settings role={user.role} email={user.email} accessToken={accessToken} /></AdminLayout>} />
-        <Route path="/dashboard/receivables" element={<AdminLayout user={user} ><Receivables name={user.name} /></AdminLayout>} />
+        <Route path="/dashboard/receivables" element={<AdminLayout user={user} ><Receivables name={user.name} accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboard/bills-to-pay" element={<AdminLayout user={user} ><Bills /></AdminLayout>} />
       </Routes>
     </BrowserRouter>

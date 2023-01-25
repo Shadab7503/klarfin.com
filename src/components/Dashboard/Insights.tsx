@@ -327,8 +327,8 @@ const getData = async ()=>{
             headers: { Authorization: `Bearer ${accessToken}` },
           })
           .then(({data}) => {
+            console.log('breakArray',data.breakArray)
             setInsightsData(data);
-            
           });
 
 
