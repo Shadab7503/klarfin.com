@@ -95,25 +95,25 @@ const SignUp = () => {
         setWaitingForResponse(false);
         if (response.data.success) {
           setRegisterStatus("success");
-          if ("token" in response.data.detail.member.token)
-            localStorage.setItem(
-              "tokens",
-              JSON.stringify({
-                accessToken: response.data.detail.member.token.token,
-                refreshToken:
-                  response.data.detail.member.token.refreshToken.refresh,
-              })
-            );
-          else
-            localStorage.setItem(
-              "tokens",
-              JSON.stringify({
-                accessToken:
-                  response.data.detail.member.token.updateToken.token,
-                refreshToken:
-                  response.data.detail.member.token.refreshToken.refresh,
-              })
-            );
+          // if ("token" in response.data.detail.member.token)
+          //   localStorage.setItem(
+          //     "tokens",
+          //     JSON.stringify({
+          //       accessToken: response.data.detail.member.token.token,
+          //       refreshToken:
+          //         response.data.detail.member.token.refreshToken.refresh,
+          //     })
+          //   );
+          // else
+          //   localStorage.setItem(
+          //     "tokens",
+          //     JSON.stringify({
+          //       accessToken:
+          //         response.data.detail.member.token.updateToken.token,
+          //       refreshToken:
+          //         response.data.detail.member.token.refreshToken.refresh,
+          //     })
+          //   );
           setNewUser({
             name: "",
             companyName: "",
@@ -123,9 +123,9 @@ const SignUp = () => {
             industryName: "",
             password: "",
           });
-          setTimeout(function () {
-            window.location.href = "/dashboard";
-          }, 1000);
+          // setTimeout(function () {
+          //   // window.location.href = "/dashboard";
+          // }, 1000);
         } else {
           setRegisterStatus("error");
           setErrorMsg(response.data.message);
@@ -153,6 +153,18 @@ const SignUp = () => {
   if (isLoggedIn === false)
     return (
       <div className="signup-page">
+        {
+          registerStatus && 
+         <Alert
+            onClose={handleSnackClose}
+            severity="success"
+            sx={{ width: "100%" }}
+            className="snack"
+            style={{position:'fixed'}}
+          >
+            You have successfully signed up. Kindly wait for approval of your account by Klarfin.
+          </Alert>
+        }
         <Grid container className="signup-container">
           <Grid item md={6}>
             <Grid
@@ -469,23 +481,10 @@ const SignUp = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Snackbar
-          open={registerStatus === "success"}
-          autoHideDuration={6000}
-          onClose={handleSnackClose}
-        >
-          <Alert
-            onClose={handleSnackClose}
-            severity="success"
-            sx={{ width: "100%" }}
-            className="snack"
-          >
-            Successfully Registered!
-          </Alert>
-        </Snackbar>
+        
         <Snackbar
           open={registerStatus === "error"}
-          autoHideDuration={6000}
+          autoHideDuration={60000}
           onClose={handleSnackClose}
         >
           <Alert
@@ -504,6 +503,7 @@ const SignUp = () => {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
+
       </div>
     );
   else

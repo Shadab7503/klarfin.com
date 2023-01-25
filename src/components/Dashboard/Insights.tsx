@@ -765,9 +765,14 @@ useEffect(() => {
                     </h1>
                   )}
                   onChange={(newValue) => {
-                    period !== "Annually"
-                      ? setFromValue(newValue)
-                      : setFromValue(getYearStart(newValue!));
+
+                    if(period == "Annually") {
+                      setFromValue(getYearStart(newValue!));
+                    }
+
+                    // period !== "Annually"
+                    //   ? setFromValue(newValue)
+                    //   : setFromValue(getYearStart(newValue!));
                   }}
 
                   onMonthChange={(newValue)=>{
@@ -844,9 +849,13 @@ useEffect(() => {
                     </h1>
                   )}
                   onChange={(newValue) => {
-                    period !== "Annually"
-                      ? setToValue(newValue)
-                      : setToValue(getYearEnd(newValue!));
+                    if(period == "Annually") {
+                      setToValue(getYearEnd(newValue!));
+                      setOpenPeriod(false);
+                    }
+                    // period !== "Annually"
+                    //   ? setToValue(newValue)
+                    //   : setToValue(getYearEnd(newValue!));
                   }}
                   onMonthChange={(newValue)=>{
                     period !== "Annually"

@@ -1104,7 +1104,8 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                           className="receivables-row-value"
                           align="center"
                         >
-                          {row[column.field]}
+                         {/* .toLocaleString("en-IN") */}
+                          {(column.field == 'balance amount' || column.field == 'amount') ? row[column.field].toLocaleString("en-IN") : row[column.field]}
                         </TableCell>
                       ))}
                       {/* <TableCell align="center">
