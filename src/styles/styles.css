@@ -5,6 +5,10 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+body {
+  overscroll-behavior-x: none;
+}
+
 ::placeholder {
   font-family: "Montserrat";
   font-weight: bold;
@@ -564,14 +568,14 @@ a {
 .cash-balance-heading {
   font-family: "Montserrat";
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.9rem;
   display: block;
 }
 
 .cash-value {
   font-family: "Montserrat";
   font-weight: 1000;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   display: block;
 }
 
@@ -589,7 +593,7 @@ a {
 }
 
 .topbar {
-  padding: 1.2rem 1rem;
+  padding: 0.7rem 1rem;
   box-shadow: 2px 2px #e0e0e0;
   border-bottom: 1px solid #3491d5;
 }
@@ -1052,6 +1056,16 @@ a {
   font-weight: bold;
 }
 
+/* CashFlow scrollbar */
+.custom-scrollbar__container{
+  overflow-x: scroll; 
+  height: calc(100vh - 205px);
+}
+
+.custom-scrollbar__container .custom-scrollbar{
+  overflow-x: visible;
+}
+
 @media only screen and (max-width: 1400px) {
   .features-title,
   .works-title {
@@ -1166,6 +1180,10 @@ a {
   .MuiGrid-root.credit-top {
     font-size: 1rem;
   }
+  
+  .custom-scrollbar__container{
+    height: calc(100vh - 256px);
+  }
 }
 @media only screen and (max-width: 1050px) {
   .section-heading {
@@ -1251,6 +1269,10 @@ a {
   }
   .MuiGrid-root.insights-padding {
     margin-left: 1rem;
+  }
+
+  .custom-scrollbar__container{
+    height: calc(100vh - 275px);
   }
 }
 
@@ -1343,5 +1365,9 @@ a {
   }
   .MuiTableCell-root.receivables-row-value {
     padding: 1rem 0.5rem;
+  }
+
+  .custom-scrollbar__container{
+    height: calc(100vh - 325px);
   }
 }

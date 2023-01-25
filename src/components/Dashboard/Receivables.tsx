@@ -40,6 +40,7 @@ import {
   ColumnTypeMap,
   ColumnBoolean,
 } from "../../utils/interface";
+import axios from "axios";
 
 const defaultFilter = {
   min: "",
@@ -64,7 +65,7 @@ const defaultFilters = {
   "ageing days": { ...defaultFilter, dataType: "number" },
 } as Filters;
 
-const Receivables = (props: { name: string }) => {
+const Receivables = (props: { name: string,accessToken:string }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLDivElement>(null);
   const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
   const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
@@ -93,6 +94,22 @@ const Receivables = (props: { name: string }) => {
   const [receivables, setReceivables] =
     useState<ReceivablesData>(receivablesData);
   var open = Boolean(anchorEl);
+
+  const [receivablesList,setReceivablesList] = useState<any>([]);
+
+  useEffect(()=>{
+
+   axios
+    .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/receivables/index", 
+    
+    {
+      headers: { Authorization: `Bearer ${props.accessToken}` },
+    })
+    .then(({data}) => {
+      setReceivablesList(data.breakArray);
+    });
+
+  },[])
 
   useEffect(() => {
     if (Object.keys(receivables).length > 0) {
@@ -1069,17 +1086,17 @@ const Receivables = (props: { name: string }) => {
                         </TableCell>
                       );
                     })}
-                    <TableCell
+                    {/* <TableCell
                       align="center"
                       className="receivables-column-header"
                       style={{ minWidth: "120px" }}
                     >
                       Actions
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {receivables?.rows?.map((row, index: number) => (
+                  {receivablesList?.map((row:any, index: number) => (
                     <TableRow key={`${index}_row`}>
                       {receivables?.columns?.map((column, colIndex: number) => (
                         <TableCell
@@ -1090,7 +1107,7 @@ const Receivables = (props: { name: string }) => {
                           {row[column.field]}
                         </TableCell>
                       ))}
-                      <TableCell align="center">
+                      {/* <TableCell align="center">
                         <Grid
                           container
                           alignItems="center"
@@ -1129,7 +1146,7 @@ const Receivables = (props: { name: string }) => {
                             />
                           </Grid>
                         </Grid>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
