@@ -43,7 +43,6 @@ const SignUp = () => {
   }
 
   useEffect(() => {
-  
     setNewUser({...newUser,email:`${searchParams.get("email") ? searchParams.get("email") : ''}`,name:`${searchParams.get("name") ? searchParams.get("name") : ''}`,companyName:`${searchParams.get("org") ? searchParams.get("org") : '' }`,panNumber:`${searchParams.get("pan") ? searchParams.get("pan") : ''}`,industryName:`${searchParams.get("industry") ? searchParams.get("industry") : ''}`});
     // for (const [key, value] of urlParams) {
     //     console.log(`${key}:${value}`);
@@ -218,7 +217,7 @@ const SignUp = () => {
                     <TextField
                      disabled={isDisabled('org')}
                       className="form-label"
-                      placeholder="example@gmail.com"
+                      placeholder="Company/ Organisation Name"
                       error={
                         validating &&
                         !validators.validateNotEmpty(newUser.companyName)

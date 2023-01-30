@@ -32,7 +32,7 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
                 <TopBar
                   setDrawerOpen={setDrawerOpen}
                   setSelectedItem={setSelectedItem}
-                  companyName={props.user.name}
+                  companyName={props.user.companyName}
                 />
               </Grid>
               <Grid item xs={12}>

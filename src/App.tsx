@@ -7,7 +7,7 @@ import DashboardSuper from "./components/SuperAdmin/DashboardSuper";
 import SignUp from "./components/UserEntry/SignUp";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Verify from "./components/Verify/Verify";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./styles/styles.css";
 
 import React, { useState, useEffect } from "react";
@@ -81,7 +81,7 @@ const App = () => {
         <Route path="/dashboardSuper" element={<DashboardSuper />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/verify" element={<Verify />} />
-        <Route path="*" element={<Login checking={checking} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
