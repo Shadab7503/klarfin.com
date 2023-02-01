@@ -4,6 +4,7 @@ import { Chart } from 'react-chartjs-2';
 
 function CashflowChart(props:any) {
 
+  console.log('props',props);
   const options = {
 
     elements: {
@@ -91,7 +92,7 @@ function CashflowChart(props:any) {
             // return 'INR ' + (item ? (value / item.value).toFixed(0).replace(rx, "$1") + item.symbol : "0");
             const digits = value.toString().length;
             let number = value+'';
-            if(digits >= 6 || digits >= 7) {
+            if((digits >= 6 || digits >= 7) && digits < 8) {
               number = +number/100000+' Lakh';
             }
 
