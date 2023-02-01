@@ -40,6 +40,7 @@ import axios from "axios";
 import { CashflowTable, CashinFlow, CashoutFlow, ExpenseBreakdown, Inflow, InflowData, Journal, JournalType, Outflow, OutflowData, Payments, Purchase, PurchaseType, StringDict } from "../../utils/interface";
 import moment from "moment";
 import Loading from "./Loading";
+import { Button } from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -357,6 +358,20 @@ const getData = async ()=>{
         })
         .then(({data}) => {
             setOutFlowData(data.data.outFlowSelectedData);
+        });
+
+        await   axios
+        .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/statutory-liabilities", 
+        {startDate:fromValue,
+          endDate:toValue,
+          period
+        },
+        {
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+        })
+        .then(({data}) => {
+            // setOutFlowData(data.data.outFlowSelectedData);
+            console.log(data);
         });
 
 
@@ -929,6 +944,10 @@ useEffect(() => {
                     label={<span style={{ fontSize: "0.8rem" }}>Annually</span>}
                   /> */}
                 </RadioGroup>
+                <div style={{display:'flex',justifyContent:'space-between'}}>
+                  <Button variant="outlined">Cancel</Button>
+                  <Button variant="contained">Ok</Button>
+                </div>
               </FormControl>
             </Grid>
           </Grid>
@@ -1098,7 +1117,7 @@ useEffect(() => {
             </Grid>
           </Grid>
         </Grid>
-        {/* <Grid item xs={12} className="insights-padding" mt={8}>
+        <Grid item xs={12} className="insights-padding" mt={8}>
           <Grid item xs={11.5} className="insights-heading">
             Balance Sheet - KPIs
           </Grid>
@@ -1220,7 +1239,7 @@ useEffect(() => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} className="insights-padding" mt={8}>
+        {/* <Grid item xs={12} className="insights-padding" mt={8}>
           <Grid item xs={11.5} className="insights-heading">
             Cash Flows - KPIs
           </Grid>
