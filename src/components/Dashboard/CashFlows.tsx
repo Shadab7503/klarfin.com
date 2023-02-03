@@ -180,7 +180,9 @@ const CashFlows = (props: any) => {
 
     setLoadedPage(false);
 
-    await axios
+   const [balRes,inflowRes,outflowRes] =  await Promise.all([
+
+      axios
     .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/balance/balance", {
       startDate: fromValue,
         endDate: toValue,
@@ -190,31 +192,18 @@ const CashFlows = (props: any) => {
     }, {
       headers: { Authorization: `Bearer ${props.accessToken}` },
 
-    }).then(({data})=>{
-      setOpeningBal(data.openingBalArrr);
-      setClosingBal(data.closeingBalArr);
-      setBalance(data.balance);
-    })
+    }),
 
-    await axios
+    axios
       .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", {
         startDate: fromValue,
         endDate: toValue,
         period
       }, {
         headers: { Authorization: `Bearer ${props.accessToken}` }
-      })
-      .then(({ data }) => {
+      }),
 
-        setInflowSelectedData(data.data.outFlowSelectedData);
-        setSelectedMonths(data.data.months);
-        // console.log('data.data.months',data.data.months);
-        setInflowGraphData(data.data.cashoutflowGraph);
-        setInflowSelectedCategories(data.data.outCategories);
-
-      });
-
-    await axios
+      axios
       .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", {
         startDate: fromValue,
         endDate: toValue,
@@ -222,12 +211,23 @@ const CashFlows = (props: any) => {
       }, {
         headers: { Authorization: `Bearer ${props.accessToken}` }
       })
-      .then(({ data }) => {
-        setOutflowSelectedData(data.data.outFlowSelectedData);
-        setOutflowSelectedCategories(data.data.outCategories);
-        setOutflowGraphData(data.data.cashoutflowGraph);
 
-      });
+    ]);
+
+    setOpeningBal(balRes.data.openingBalArrr);
+    setClosingBal(balRes.data.closeingBalArr);
+    setBalance(balRes.data.balance);
+    console.log('datadatadata',balRes.data);
+
+      setInflowSelectedData(inflowRes.data.data.outFlowSelectedData);
+      setSelectedMonths(inflowRes.data.data.months);
+      // console.log('data.data.months',data.data.months);
+      setInflowGraphData(inflowRes.data.data.cashoutflowGraph);
+      setInflowSelectedCategories(inflowRes.data.data.outCategories);
+
+      setOutflowSelectedData(outflowRes.data.data.outFlowSelectedData);
+      setOutflowSelectedCategories(outflowRes.data.data.outCategories);
+      setOutflowGraphData(outflowRes.data.data.cashoutflowGraph);
 
     setLoadedPage(true);
 
