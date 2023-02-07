@@ -59,6 +59,7 @@ import {
 } from 'chart.js';
 
 import CashflowChart from "../Chart/Cashflow";
+import { Button } from "@mui/material";
 
 ChartJS.register(
   LinearScale,
@@ -137,7 +138,7 @@ const CashFlows = (props: any) => {
     setMaxDate(dayjs(max));
 
     if(dayjs().subtract(1,'year').diff(dayjs(min)) > 0) {
-      setFromValue(dayjs().subtract(1, 'year'));
+      setFromValue(dayjs().subtract(1, 'year').set('date',1));
     } else {
       setFromValue(dayjs(min));
     }
@@ -230,16 +231,16 @@ const CashFlows = (props: any) => {
       setOutflowGraphData(outflowRes.data.data.cashoutflowGraph);
 
     setLoadedPage(true);
-
+    setOpenPeriod(false)
   }
 
   useEffect(() => {
 
-    if (!fromValue) return;
+    if(!globalMinDate || !globalMaxDate) return;
 
     getData();
 
-  }, [fromValue, toValue,period]);
+  }, [globalMinDate,globalMaxDate,period]);
 
 
   const getYearStart = (date: Dayjs) => {
@@ -1038,21 +1039,22 @@ const CashFlows = (props: any) => {
                     </h1>
                   )}
                   onChange={(newValue) => {
-                    if(period == "Annually") {
-                      setFromValue(getYearStart(newValue!));
-                    }
-                    // period !== "Annually"
-                    // ? setFromValue(newValue)
-                    // : setFromValue(getYearStart(newValue!));
-                  }}
-                  onMonthChange={(newValue)=>{
                     period !== "Annually"
                     ? setFromValue(newValue)
                     : setFromValue(getYearStart(newValue!));
 
-                    setFromOpen(false)
-                    setOpenPeriod(false)
+                    // period !== "Annually"
+                    // ? setFromValue(newValue)
+                    // : setFromValue(getYearStart(newValue!));
                   }}
+                  // onMonthChange={(newValue)=>{
+                  //   period !== "Annually"
+                  //   ? setFromValue(newValue)
+                  //   : setFromValue(getYearStart(newValue!));
+
+                  //   setFromOpen(false)
+                  //   setOpenPeriod(false)
+                  // }}
                   renderInput={(params) => (
                     <div
                       onClick={() => setFromOpen(true) }
@@ -1109,26 +1111,32 @@ const CashFlows = (props: any) => {
                     </h1>
                   )}
                   onChange={(newValue) => {
+                    let month = newValue?.month();
+                
+                    //@ts-ignore
+                    month++;
+
+                    const year = newValue?.year();
+                    const days = moment(`${year}-${month}`, "YYYY-MM").daysInMonth();
+                    
                   
-                    if(!newValue) return;
-                    if(period == "Annually") {
-                      setToValue(getYearEnd(newValue!));
-                      setOpenPeriod(false);
-                    }
-                    // period !== "Annually"
-                    //   ? setToValue(newValue)
-                    //   : setToValue(getYearEnd(newValue!));
-
-                  }}
-
-                  onMonthChange={(newValue)=>{
+                     //@ts-ignore
+                    const date = dayjs(`${year}-${`${month}`.padStart(2,'0')}-${`${days}`.padStart(2,'0')}T08:02:17-05:00`, "YYYY-MM-DDTHH:mm:ssZ[Z]")
                     period !== "Annually"
-                    ? setToValue(newValue?.add(1,'month').subtract(1,'day'))
-                    : setToValue(getYearStart(newValue!));
-                    setToOpen(false)
-                    setOpenPeriod(false)
-
+                    ? setToValue(date)
+                    : setToValue(getYearStart(date!));
+                    // setToOpen(false)
+                    // setOpenPeriod(false)
                   }}
+
+                  // onMonthChange={(newValue)=>{
+                  //   period !== "Annually"
+                  //   ? setToValue(newValue?.add(1,'month').subtract(1,'day'))
+                  //   : setToValue(getYearStart(newValue!));
+                  //   setToOpen(false)
+                  //   setOpenPeriod(false)
+
+                  // }}
                   renderInput={(params) => {
                     return (
                       <div
@@ -1186,6 +1194,12 @@ const CashFlows = (props: any) => {
                     label={<span style={{ fontSize: "0.8rem" }}>Annually</span>}
                   /> */}
                 </RadioGroup>
+                <div style={{display:'flex',justifyContent:'space-between'}}>
+                  <Button variant="outlined" onClick={()=>{setOpenPeriod(false)}}>Cancel</Button>
+                  <Button onClick={()=>{
+                    getData();
+                  }} variant="contained">Ok</Button>
+                </div>
               </FormControl>
             </Grid>
           </Grid>

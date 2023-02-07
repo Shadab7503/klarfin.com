@@ -41,6 +41,7 @@ import {
   ColumnBoolean,
 } from "../../utils/interface";
 import axios from "axios";
+import { Box, IconButton, TableFooter, TablePagination } from "@mui/material";
 
 const defaultFilter = {
   min: "",
@@ -66,6 +67,67 @@ const defaultFilters = {
 } as Filters;
 
 const Receivables = (props: { name: string,accessToken:string }) => {
+
+  function TablePaginationActions(props: any) {
+   
+    const { count, page, rowsPerPage, onPageChange } = props;
+  
+    const handleFirstPageButtonClick = (
+      event: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+      onPageChange(event, 0);
+    };
+  
+    const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onPageChange(event, page - 1);
+    };
+  
+    const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onPageChange(event, page + 1);
+    };
+  
+    const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    };
+  
+    return (
+      <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+        <IconButton
+          onClick={handleFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="first page"
+        >
+          {/* {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />} */}
+          First
+        </IconButton>
+        <IconButton
+          onClick={handleBackButtonClick}
+          disabled={page === 0}
+          aria-label="previous page"
+        >
+          {/* {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />} */}
+          Previous
+        </IconButton>
+        <IconButton
+          onClick={handleNextButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="next page"
+        >
+          {/* {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />} */}
+          Next
+        </IconButton>
+        <IconButton
+          onClick={handleLastPageButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="last page"
+        >
+          {/* {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />} */}
+          Last
+        </IconButton>
+      </Box>
+    );
+  }
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLDivElement>(null);
   const [globalMinDate, setGlobalMinDate] = useState<Dayjs>();
   const [globalMaxDate, setGlobalMaxDate] = useState<Dayjs>();
@@ -1151,7 +1213,28 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                     </TableRow>
                   ))}
                 </TableBody>
+                <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={3}
+              count={receivablesList.length}
+              rowsPerPage={10}
+              page={1}
+              SelectProps={{
+                inputProps: {
+                  'aria-label': 'rows per page',
+                },
+                native: true,
+              }}
+              onPageChange={()=>{alert()}}
+              onRowsPerPageChange={()=>{alert()}}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
               </Table>
+
             </TableContainer>
           </Grid>
         ) : null}

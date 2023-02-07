@@ -319,21 +319,18 @@ const data4 = {
 const getData = async ()=>{
   setLoadedPage(false);
 
-       await   axios
-          .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/insights",{
-            startDate:fromValue,
-            endDate:toValue,
-            period
-          } ,{
-            headers: { Authorization: `Bearer ${accessToken}` },
-          })
-          .then(({data}) => {
-            console.log('breakArray',data.breakArray)
-            setInsightsData(data);
-          });
+  const [insightsData,cashinflowData,outflowData,statutoryData,receivables,breakdownsData] = await Promise.all([
 
+    axios
+    .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/insights",{
+      startDate:fromValue,
+      endDate:toValue,
+      period
+    } ,{
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }),
 
-          await   axios
+    axios
           .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashinflow/cash", 
           {startDate:fromValue,
             endDate:toValue,
@@ -341,13 +338,9 @@ const getData = async ()=>{
           },
           {
             headers: { Authorization: `Bearer ${props.accessToken}` },
-          })
-          .then(({data}) => {
-            setGrossLabels(data.data.months)
-            setInFlowData(data.data.outFlowSelectedData);
-          });
+          }),
 
-          await   axios
+          axios
         .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/cashoutflow/cashout", 
         {startDate:fromValue,
           endDate:toValue,
@@ -355,12 +348,9 @@ const getData = async ()=>{
         },
         {
           headers: { Authorization: `Bearer ${props.accessToken}` },
-        })
-        .then(({data}) => {
-            setOutFlowData(data.data.outFlowSelectedData);
-        });
+        }),
 
-        await   axios
+        axios
         .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/statutory-liabilities", 
         {startDate:fromValue,
           endDate:toValue,
@@ -369,13 +359,100 @@ const getData = async ()=>{
         {
           headers: { Authorization: `Bearer ${props.accessToken}` },
         })
-        .then(({data}) => {
-            // setOutFlowData(data.data.outFlowSelectedData);
-            console.log(data);
-        });
+        ,
+        axios
+        .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/receivables", 
+        {startDate:fromValue,
+          endDate:toValue,
+          period
+        }, 
+        {
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+        })
+        ,
+        axios
+        .post(process.env.REACT_APP_BACKEND_HOST + "v1/user/insights/breakdowns", 
+        {startDate:fromValue,
+          endDate:toValue,
+          period
+        }, 
+        {
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+        })
+
+  ]);
+
+  setInsightsData(insightsData.data);
+
+  setReceivablesLabel(Object.keys(receivables.data.receivables));
+  setReceivables(Object.keys(receivables.data.receivables).map((key) => receivables.data.receivables[key]));
 
 
-        setLoadedPage(true);
+  setGrossLabels(cashinflowData.data.data.months)
+  setInFlowData(cashinflowData.data.data.outFlowSelectedData);
+  setOutFlowData(outflowData.data.data.outFlowSelectedData);
+
+
+  
+  let categories: {
+    Name: string;
+    spendAmount: number;
+    Spend: number;
+    Change: number;
+  }[] = [
+    {
+      Name: "Purchase",
+      spendAmount: breakdownsData.data.breakedData.purchaseAmt,
+      Spend: (breakdownsData.data.breakedData.purchaseAmt/breakdownsData.data.breakedData.total)*100,
+      Change: 0,
+  }
+  ];
+
+
+  Object.keys(breakdownsData.data.breakedData.breakdowns).forEach(key=>{
+
+    const obj = {
+      Name: key,
+      spendAmount: breakdownsData.data.breakedData.breakdowns[key],
+      Spend: (breakdownsData.data.breakedData.breakdowns[key]/breakdownsData.data.breakedData.total)*100,
+      Change: 0,
+    }
+
+
+    categories.push(obj);
+
+  })
+  
+  categories = categories.sort(function(a, b){return b.spendAmount - a.spendAmount});
+
+    const otherObj =  {
+        Name: "Other",
+        spendAmount: 0,
+        Spend: 0,
+        Change: 0,
+    }
+
+  let totalPer = 0;
+
+  categories.forEach((each,idx)=>{
+    if(totalPer < 90) {
+
+      totalPer += each.Spend;
+      return;
+    }
+      otherObj.spendAmount += each.spendAmount;
+      otherObj.Spend += each.Spend;
+      each.Spend = 0;
+    })
+
+  categories.push(otherObj);
+
+  setExpenseBreakdown({...expenseBreakdown,Categories:categories})
+
+
+
+  setLoadedPage(true);
+  setOpenPeriod(false)
 
 }
 
@@ -388,7 +465,7 @@ const handleMinMax = (min:string,max:string)=>{
   setMaxDate(dayjs(max));
 
   if(dayjs().subtract(1,'year').diff(dayjs(min)) > 0) {
-    setFromValue(dayjs().subtract(1, 'year'));
+    setFromValue(dayjs().subtract(1, 'year').set('date',1));
   } else {
     setFromValue(dayjs(min));
   }
@@ -401,14 +478,6 @@ const handleMinMax = (min:string,max:string)=>{
     setToValue(dayjs(max));
     setGlobalMaxDate(dayjs(max));
   }
-
-  // if(dayjs(min).add(1, 'year').diff(max) > 0) {
-  //   // setToValue(dayjs(max))
-  //   setGlobalMaxDate(dayjs(max))
-  // } else {
-  //   // setToValue(dayjs(min).add(1, 'year'))
-  //   setGlobalMaxDate(dayjs(min).add(1, 'year'))
-  // }
 
 }
 
@@ -427,10 +496,11 @@ useEffect(()=>{
 },[period])
 
 useEffect(()=>{
-  if(!fromValue || !toValue) return;
+  if(!globalMinDate || !globalMaxDate) return;
   getData();
 
-},[fromValue,toValue])
+},[globalMinDate,globalMaxDate])
+
 
 
 
@@ -500,64 +570,6 @@ useEffect(() => {
   setCollections(Object.keys(insightsData.collection).map((key) => insightsData.collection[key]))
   setRevenue(Object.keys(insightsData.revenue).map((key) => insightsData.revenue[key]))
   
-  setReceivablesLabel(Object.keys(insightsData.receivables));
-  setReceivables(Object.keys(insightsData.receivables).map((key) => insightsData.receivables[key]));
-
-  let categories: {
-    Name: string;
-    spendAmount: number;
-    Spend: number;
-    Change: number;
-  }[] = [
-    {
-      Name: "Purchase",
-      spendAmount: insightsData.breakedData.purchaseAmt,
-      Spend: (insightsData.breakedData.purchaseAmt/insightsData.breakedData.total)*100,
-      Change: 0,
-  }
-  ];
-
-
-  Object.keys(insightsData.breakedData.breakdowns).forEach(key=>{
-
-    const obj = {
-      Name: key,
-      spendAmount: insightsData.breakedData.breakdowns[key],
-      Spend: (insightsData.breakedData.breakdowns[key]/insightsData.breakedData.total)*100,
-      Change: 0,
-    }
-
-
-    categories.push(obj);
-
-  })
-  
-  categories = categories.sort(function(a, b){return b.spendAmount - a.spendAmount});
-
-    const otherObj =  {
-        Name: "Other",
-        spendAmount: 0,
-        Spend: 0,
-        Change: 0,
-    }
-
-  let totalPer = 0;
-
-  categories.forEach((each,idx)=>{
-    if(totalPer < 90) {
-
-      totalPer += each.Spend;
-      return;
-    }
-      otherObj.spendAmount += each.spendAmount;
-      otherObj.Spend += each.Spend;
-      each.Spend = 0;
-    })
-
-  categories.push(otherObj);
-
-  setExpenseBreakdown({...expenseBreakdown,Categories:categories})
-
    
 }, [insightsData]);
 
@@ -781,24 +793,36 @@ useEffect(() => {
                   )}
                   onChange={(newValue) => {
 
-                    if(period == "Annually") {
-                      setFromValue(getYearStart(newValue!));
-                    }
+                    // let month = newValue?.month();
+                
+                    // //@ts-ignore
+                    // month++;
 
-                    // period !== "Annually"
-                    //   ? setFromValue(newValue)
-                    //   : setFromValue(getYearStart(newValue!));
-                  }}
+                    // const year = newValue?.year();
+                    // // const days = moment(`${year}-${month}`, "YYYY-MM").daysInMonth();
+                    
+                  
+                    //  //@ts-ignore
+                    // const date = dayjs(`${year}-${`${month}`.padStart(2,'0')}-01T08:02:17-05:00`, "YYYY-MM-DDTHH:mm:ssZ[Z]")
+                    // console.log('date',date)
 
-                  onMonthChange={(newValue)=>{
-                   
                     period !== "Annually"
                     ? setFromValue(newValue)
                     : setFromValue(getYearStart(newValue!));
 
-                    setFromOpen(false)
-                    setOpenPeriod(false)
+                    // setFromOpen(false)
+                    // setOpenPeriod(false)
                   }}
+
+                  // onMonthChange={(newValue)=>{
+                   
+                  //   period !== "Annually"
+                  //   ? setFromValue(newValue)
+                  //   : setFromValue(getYearStart(newValue!));
+
+                  //   setFromOpen(false)
+                  //   setOpenPeriod(false)
+                  // }}
 
                   renderInput={(params) => (
                     <Grid
@@ -864,22 +888,31 @@ useEffect(() => {
                     </h1>
                   )}
                   onChange={(newValue) => {
-                    if(period == "Annually") {
-                      setToValue(getYearEnd(newValue!));
-                      setOpenPeriod(false);
-                    }
-                    // period !== "Annually"
-                    //   ? setToValue(newValue)
-                    //   : setToValue(getYearEnd(newValue!));
-                  }}
-                  onMonthChange={(newValue)=>{
-                    period !== "Annually"
-                    ? setToValue(newValue?.add(1,'month').subtract(1,'day'))
-                    : setToValue(getYearStart(newValue!));
-                    setToOpen(false)
-                    setOpenPeriod(false)
+                    let month = newValue?.month();
+                
+                    //@ts-ignore
+                    month++;
 
+                    const year = newValue?.year();
+                    const days = moment(`${year}-${month}`, "YYYY-MM").daysInMonth();
+                    
+                  
+                     //@ts-ignore
+                    const date = dayjs(`${year}-${`${month}`.padStart(2,'0')}-${`${days}`.padStart(2,'0')}T08:02:17-05:00`, "YYYY-MM-DDTHH:mm:ssZ[Z]")
+                    period !== "Annually"
+                    ? setToValue(date)
+                    : setToValue(getYearStart(date!));
+                    // setToOpen(false)
+                    // setOpenPeriod(false)
                   }}
+                  // onMonthChange={(newValue)=>{
+                  //   period !== "Annually"
+                  //   ? setToValue(newValue?.add(1,'month').subtract(1,'day'))
+                  //   : setToValue(getYearStart(newValue!));
+                  //   setToOpen(false)
+                  //   setOpenPeriod(false)
+
+                  // }}
                   renderInput={(params) => {
                     return (
                       <Grid
@@ -945,8 +978,10 @@ useEffect(() => {
                   /> */}
                 </RadioGroup>
                 <div style={{display:'flex',justifyContent:'space-between'}}>
-                  <Button variant="outlined">Cancel</Button>
-                  <Button variant="contained">Ok</Button>
+                  <Button variant="outlined" onClick={()=>{setOpenPeriod(false)}}>Cancel</Button>
+                  <Button onClick={()=>{
+                    getData();
+                  }} variant="contained">Ok</Button>
                 </div>
               </FormControl>
             </Grid>
