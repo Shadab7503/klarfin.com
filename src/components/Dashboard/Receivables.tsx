@@ -42,6 +42,7 @@ import {
 } from "../../utils/interface";
 import axios from "axios";
 import { Box, IconButton, TableFooter, TablePagination } from "@mui/material";
+import Loading from "./Loading";
 
 const defaultFilter = {
   min: "",
@@ -159,8 +160,10 @@ const Receivables = (props: { name: string,accessToken:string }) => {
 
   const [receivablesList,setReceivablesList] = useState<any>([]);
 
-  useEffect(()=>{
+  const [loading,setLoading] = useState(false);
 
+  useEffect(()=>{
+    setLoading(true);
    axios
     .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/receivables/index", 
     
@@ -169,6 +172,8 @@ const Receivables = (props: { name: string,accessToken:string }) => {
     })
     .then(({data}) => {
       setReceivablesList(data.breakArray);
+    setLoading(false);
+
     });
 
   },[])
@@ -673,6 +678,8 @@ const Receivables = (props: { name: string,accessToken:string }) => {
     setOpenWhatsapp(false);
     setWhatsappNumber("");
   };
+
+  if (loading) return <Loading />;
 
   return (
     <Grid container px={1}>
