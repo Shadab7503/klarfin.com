@@ -15,6 +15,10 @@ import axios from "axios";
 import { User } from "./utils/interface";
 import CashFlows from "./components/Dashboard/CashFlows";
 
+//@ts-ignore
+import {Helmet} from "react-helmet";
+
+
 
 
 const App = () => {
@@ -64,27 +68,37 @@ const App = () => {
   }, [accessToken]);
 
 
+  let jsx = null;
   if (isLoggedIn) {
-    return (
+    jsx =  (
       <Dashboard accessToken={accessToken} user={user} />
     );
+  } else {
+    jsx =  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Login checking={checking} />} />
+      {/* <Route path="/about" element={<About />} /> */}
+      {/* <Route path="/contact" element={<Contact />} /> */}
+      {/* <Route path="/home" element={<Home />} /> */}
+      <Route path="/loginSuper" element={<LoginSuper />} />
+      <Route path="/dashboardSuper" element={<DashboardSuper />} />
+      <Route path="/register" element={<SignUp />} />
+      <Route path="/verify" element={<Verify />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  </BrowserRouter>
   }
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login checking={checking} />} />
-        {/* <Route path="/about" element={<About />} /> */}
-        {/* <Route path="/contact" element={<Contact />} /> */}
-        {/* <Route path="/home" element={<Home />} /> */}
-        <Route path="/loginSuper" element={<LoginSuper />} />
-        <Route path="/dashboardSuper" element={<DashboardSuper />} />
-        <Route path="/register" element={<SignUp />} />
-        <Route path="/verify" element={<Verify />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
+
+  return <div>
+     <Helmet>
+     <script type="text/javascript" defer src="//cdn.mouseflow.com/projects/c7854091-7e49-48fa-a4f6-3846521a9ac4.js"></script>
+            </Helmet>
+
+    {
+      jsx
+    }
+  </div>;
 };
 
 export default App;
