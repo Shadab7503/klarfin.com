@@ -1221,7 +1221,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                   ))}
                 </TableBody>
                 <TableFooter>
-          <TableRow>
+          {/* <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={3}
@@ -1238,7 +1238,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
               onRowsPerPageChange={()=>{alert()}}
               ActionsComponent={TablePaginationActions}
             />
-          </TableRow>
+          </TableRow> */}
         </TableFooter>
               </Table>
 

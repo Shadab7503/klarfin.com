@@ -66,8 +66,10 @@ const numFormatter = (value: number) => {
     value = value * -1;
   }
 
-  const digits = value.toString().length;
-        
+  let digits = value.toString().length;
+  if(value <0) {
+    digits--;
+  }  
             let number = value.toString();
             if(digits >= 6 || digits >= 7) {
               number = parseInt(number)/100000+' Lakh';
