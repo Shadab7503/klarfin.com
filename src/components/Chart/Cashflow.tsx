@@ -73,6 +73,8 @@ function CashflowChart(props:any) {
           maxTicksLimit: 5,
           stepSize: 0.1,
           callback:function(value:number) {
+            console.log('value',value);
+            value = Math.ceil(value);
             if(value == 0) {
               return 0;
             }
@@ -90,7 +92,10 @@ function CashflowChart(props:any) {
             //   return value >= item.value;
             // });
             // return 'INR ' + (item ? (value / item.value).toFixed(0).replace(rx, "$1") + item.symbol : "0");
-            const digits = value.toString().length;
+            let digits = value.toString().length;
+            if(value <0) {
+              digits--;
+            }
             let number = value+'';
             if((digits >= 6 || digits >= 7) && digits < 8) {
               number = +number/100000+' Lakh';
