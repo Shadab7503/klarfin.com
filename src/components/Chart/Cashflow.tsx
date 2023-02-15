@@ -78,20 +78,7 @@ function CashflowChart(props:any) {
             if(value == 0) {
               return 0;
             }
-            // const lookup = [
-            //   { value: 1, symbol: "" },
-            //   { value: 1e3, symbol: "k" },
-            //   { value: 1e6, symbol: "M" },
-            //   { value: 1e9, symbol: "G" },
-            //   { value: 1e12, symbol: "T" },
-            //   { value: 1e15, symbol: "P" },
-            //   { value: 1e18, symbol: "E" }
-            // ];
-            // const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-            // var item = lookup.slice().reverse().find(function(item) {
-            //   return value >= item.value;
-            // });
-            // return 'INR ' + (item ? (value / item.value).toFixed(0).replace(rx, "$1") + item.symbol : "0");
+           
             let digits = value.toString().length;
             if(value <0) {
               digits--;
