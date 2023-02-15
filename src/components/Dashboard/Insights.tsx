@@ -56,34 +56,26 @@ ChartJS.register(
 );
 
 const numFormatter = (value: number) => {
-  if(value == 0) {
-    return value;
-  }
-
-  let isNegitive = false;
-  if(value < 0) {
-    isNegitive = true;
-    value = value * -1;
-  }
-
-  let digits = value.toString().length;
-  if(value <0) {
-    digits--;
-  }  
-            let number = value.toString();
-            if(digits >= 6 || digits >= 7) {
-              number = parseInt(number)/100000+' Lakh';
+  console.log('value',value);
+            value = Math.ceil(value);
+            if(value == 0) {
+              return 0;
+            }
+           
+            let digits = value.toString().length;
+            if(value <0) {
+              digits--;
+            }
+            let number = value+'';
+            if((digits >= 6 || digits >= 7) && digits < 8) {
+              number = +number/100000+' Lakh';
             }
 
             if(digits >= 8) {
-              number = parseInt(number)/10000000+' Crore';
+              number = +number/10000000+' Crore';
 
             }
-
-            if(isNegitive) {
-              return 'INR -'+number;
-            }
-            return 'INR '+number;
+              return 'INR '+number;
 };
 
 const labels = ["Jan22", "Feb22", "Mar22", "Apr22", "May22", "Jun22"];
@@ -386,8 +378,8 @@ const getData = async ()=>{
 
   setInsightsData(insightsData.data);
 
-  setReceivablesLabel(Object.keys(receivables.data.receivables));
-  setReceivables(Object.keys(receivables.data.receivables).map((key) => receivables.data.receivables[key]));
+  setReceivablesLabel(Object.keys(receivables.data.receivables).reverse());
+  setReceivables(Object.keys(receivables.data.receivables).map((key) => receivables.data.receivables[key]).reverse());
 
 
   setGrossLabels(cashinflowData.data.data.months)
@@ -1154,6 +1146,10 @@ useEffect(() => {
             </Grid>
           </Grid>
         </Grid>
+
+        <h1 style={{    width: '100%',
+    textAlign: 'center',
+    marginTop: '6rem'}}>The data below is illustrative only</h1>
         <Grid item xs={12} className="insights-padding" mt={8}>
           <Grid item xs={11.5} className="insights-heading">
             Balance Sheet - KPIs

@@ -796,6 +796,8 @@ const Bills = () => {
           </Grid>
         </Grid>
       </Menu>
+
+
       <Grid item xs={12} className="receivables-filters-bar" mt={5}>
         <Grid container justifyContent="flex-end">
           {Object.keys(filters).map((column: string) => {
@@ -865,6 +867,11 @@ const Bills = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      <h1 style={{    width: '100%',
+    textAlign: 'center',
+    marginTop: '6rem'}}>The data below is illustrative only</h1>
+    
       <Grid item xs={12} mt={5}>
         <Grid container>
           <TableContainer className="custom-scrollbar">
