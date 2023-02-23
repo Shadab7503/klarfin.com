@@ -93,14 +93,13 @@ const Receivables = (props: { name: string,accessToken:string }) => {
   
     return (
       <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-        <IconButton
+        {/* <IconButton
           onClick={handleFirstPageButtonClick}
           disabled={page === 0}
           aria-label="first page"
         >
-          {/* {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />} */}
           First
-        </IconButton>
+        </IconButton> */}
         <IconButton
           onClick={handleBackButtonClick}
           disabled={page === 0}
@@ -117,14 +116,13 @@ const Receivables = (props: { name: string,accessToken:string }) => {
           {/* {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />} */}
           Next
         </IconButton>
-        <IconButton
+        {/* <IconButton
           onClick={handleLastPageButtonClick}
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
           aria-label="last page"
         >
-          {/* {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />} */}
           Last
-        </IconButton>
+        </IconButton> */}
       </Box>
     );
   }
@@ -162,19 +160,29 @@ const Receivables = (props: { name: string,accessToken:string }) => {
 
   const [loading,setLoading] = useState(false);
 
-  useEffect(()=>{
+  const getReceivablesData = (filter:{page:number,limit:number})=>{
     setLoading(true);
-   axios
+    const {page,limit} = filter;
+    axios
     .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/receivables/index", 
     
     {
       headers: { Authorization: `Bearer ${props.accessToken}` },
+      params: {
+        limit,
+        page
+      }
     })
     .then(({data}) => {
-      setReceivablesList(data.breakArray);
+      setReceivablesList(data.tradersClosing);
     setLoading(false);
 
     });
+
+  }
+
+  useEffect(()=>{
+    getReceivablesData({page:1,limit:20})
 
   },[])
 
@@ -1165,7 +1173,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {receivablesList?.map((row:any, index: number) => (
+                  {receivablesList?.docs?.map((row:any, index: number) => (
                     <TableRow key={`${index}_row`}>
                       {receivables?.columns?.map((column, colIndex: number) => (
                         <TableCell
@@ -1220,26 +1228,39 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                     </TableRow>
                   ))}
                 </TableBody>
+
+               { receivablesList.totalDocs &&
+               
+           
+
                 <TableFooter>
-          {/* <TableRow>
+          <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={3}
-              count={receivablesList.length}
-              rowsPerPage={10}
-              page={1}
+              rowsPerPageOptions={[]}
+              colSpan={6}
+              count={receivablesList.totalDocs}
+              rowsPerPage={receivablesList.limit}
+              page={receivablesList.nextPage-1}
               SelectProps={{
                 inputProps: {
                   'aria-label': 'rows per page',
                 },
                 native: true,
               }}
-              onPageChange={()=>{alert()}}
-              onRowsPerPageChange={()=>{alert()}}
+              onPageChange={(data:any,page:number)=>{
+                   getReceivablesData({page:page,limit:receivablesList.limit})
+              }}
+    //           onRowsPerPageChange={(e:any)=>{
+    //             console.log(e)
+    //             // console.log(e.options[e.selectedIndex].text)
+    // // getReceivablesData({page:1,limit:20})
+
+    //           }}
               ActionsComponent={TablePaginationActions}
             />
-          </TableRow> */}
+          </TableRow>
         </TableFooter>
+            }
               </Table>
 
             </TableContainer>
