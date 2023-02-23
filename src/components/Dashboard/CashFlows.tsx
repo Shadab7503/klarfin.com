@@ -1206,7 +1206,7 @@ const CashFlows = (props: any) => {
         </Grid>
       </Modal>
       {
-        inflowGraphData.length < 2
+        inflowGraphData.length < 1
         && 
         <Grid item xs={12} mt={2}>
         <Grid container className="receivables-warning" justifyContent="center">
