@@ -174,7 +174,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
       }
     })
     .then(({data}) => {
-      setReceivablesList(data.tradersClosing);
+      setReceivablesList(data.breakArray);
     setLoading(false);
 
     });
@@ -1173,7 +1173,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {receivablesList?.docs?.map((row:any, index: number) => (
+                  {receivablesList?.map((row:any, index: number) => (
                     <TableRow key={`${index}_row`}>
                       {receivables?.columns?.map((column, colIndex: number) => (
                         <TableCell
@@ -1229,7 +1229,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                   ))}
                 </TableBody>
 
-               { receivablesList.totalDocs &&
+               {/* { receivablesList.totalDocs &&
                
            
 
@@ -1260,7 +1260,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
             />
           </TableRow>
         </TableFooter>
-            }
+            } */}
               </Table>
 
             </TableContainer>

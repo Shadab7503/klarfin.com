@@ -111,6 +111,8 @@ const DashboardSuper = () => {
       });
   };
 
+
+
   const adminAction = (id: string, email: string,approve:boolean=true) => {
     setApproving("loading");
     var config = {
@@ -149,6 +151,25 @@ const DashboardSuper = () => {
       });
   };
 
+  const processData = (id: string) => {
+    setApproving("loading");
+    var config = {
+      method: "post",
+      url: `${process.env.REACT_APP_BACKEND_HOST}v1/admin/processData/start/${id}`,
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      }
+    };
+    axios(config)
+      .then((response) => {
+        getAdmins();
+      })
+      .catch((err) => {
+        console.log(err);
+        setApproving("error");
+      });
+  };
+
   if (isLoggedIn)
     return (
       <Grid container justifyContent="center">
@@ -178,6 +199,13 @@ const DashboardSuper = () => {
                     className="receivables-column-header"
                     style={{ minWidth: "120px" }}
                   >
+                    Process Data
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    className="receivables-column-header"
+                    style={{ minWidth: "120px" }}
+                  >
                     Actions
                   </TableCell>
                 </TableRow>
@@ -197,7 +225,7 @@ const DashboardSuper = () => {
                     ))}
                     <TableCell align="center" >
                       
-                      <div style={{display:'flex'}} >
+                      <div style={{display:'flex',alignItems:'center'}} >
 
                      
 
@@ -235,6 +263,35 @@ const DashboardSuper = () => {
                           {row["email"] in approvedEmails
                             ? "Approved"
                             : "Approve"}
+                        </Grid>
+
+                      </Grid>
+                      }
+                      {
+
+                      row['dataProcessed']  ? 
+
+                            <Grid
+                              item
+                              className="bills-pay"
+                              py={1}
+                              px={2}
+                              mx={3}
+                              onClick={() => processData(row["id"])}
+                            
+                            >
+                              Processe Again
+                            </Grid>
+
+                          : <Grid container justifyContent="center">
+                        <Grid
+                          item
+                          className="bills-pay"
+                          py={1}
+                          px={2}
+                          onClick={() => processData(row["id"])}
+                        >
+                          Process Now
                         </Grid>
 
                       </Grid>
