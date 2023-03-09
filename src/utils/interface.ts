@@ -237,7 +237,8 @@ export interface Admin {
   apiKey: string;
   isEmailVerified: boolean;
   isAdminApproved:boolean;
-  dataProcessed:boolean
+  dataProcessed:boolean;
+  dataProcessing:boolean;
 }
 
 export interface AdminColumn {
