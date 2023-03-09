@@ -19,9 +19,10 @@ const sidebarData = {
     {
       name: "Cash Management",
       items: [
+        { icon: cashflows, text: "Investing", url:"investing" },
         { icon: cashflows, text: "Cash Flows", url:"cashflow" },
-        { icon: insights, text: "Insights", url:"insights" },
         { icon: receivables, text: "Receivables", url:"receivables" },
+        { icon: insights, text: "Insights", url:"insights" },
         { icon: bills, text: "Bills to Pay", url:"bills-to-pay" },
         { icon: banking, text: "Banking Transactions", url:"banking-transactions" },
       ],

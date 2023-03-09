@@ -269,8 +269,7 @@ const DashboardSuper = () => {
                       }
                       {
 
-                      row['dataProcessed']  ? 
-
+                      row['dataProcessed'] && !row['dataProcessing'] &&   (
                             <Grid
                               item
                               className="bills-pay"
@@ -283,18 +282,38 @@ const DashboardSuper = () => {
                               Processe Again
                             </Grid>
 
-                          : <Grid container justifyContent="center">
-                        <Grid
-                          item
-                          className="bills-pay"
-                          py={1}
-                          px={2}
-                          onClick={() => processData(row["id"])}
-                        >
-                          Process Now
-                        </Grid>
+                      )
 
-                      </Grid>
+                      }
+
+                      {
+                          row['dataProcessing'] && <Grid container justifyContent="center">
+                          <Grid
+                            item
+                            className="bills-pay"
+                            py={1}
+                            px={2}
+                            onClick={() => {}}
+                          >
+                            Please Wait...
+                          </Grid>
+  
+                        </Grid>
+                      }
+
+                      {
+                          !row['dataProcessing'] && !row['dataProcessed'] && <Grid container justifyContent="center">
+                          <Grid
+                            item
+                            className="bills-pay"
+                            py={1}
+                            px={2}
+                            onClick={() => processData(row["id"])}
+                          >
+                            Process Now
+                          </Grid>
+  
+                        </Grid>
                       }
                        <Grid
                           item
