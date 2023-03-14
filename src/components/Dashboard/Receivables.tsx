@@ -43,6 +43,8 @@ import {
 import axios from "axios";
 import { Box, IconButton, TableFooter, TablePagination } from "@mui/material";
 import Loading from "./Loading";
+import { DataGrid } from "@mui/x-data-grid";
+import { GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid/models";
 
 const defaultFilter = {
   min: "",
@@ -689,6 +691,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
 
   if (loading) return <Loading />;
 
+
   return (
     <Grid container px={1}>
       <Modal open={openFilter} onClose={() => setOpenFilter(false)}>
@@ -1057,6 +1060,8 @@ const Receivables = (props: { name: string,accessToken:string }) => {
           </Grid>
         </Grid>
       </Menu>
+
+    
       <Grid item xs={12} className="receivables-filters-bar" mt={5}>
         <Grid container justifyContent="flex-end">
           {Object.keys(filters).map((column: string) => {
@@ -1136,7 +1141,68 @@ const Receivables = (props: { name: string,accessToken:string }) => {
         </Grid>
       </Grid>
       <Grid item xs={12} mt={5} sx={{ maxWidth: "95vw" }}>
-        {receivables ? (
+      <div style={{ height: '60vh', width: '100%' }}>
+ 
+ <DataGrid 
+//  hideFooter={true}
+rowsPerPageOptions={[50, 100, 1000]}
+// rowsPerPageOptions
+ onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
+   console.log(params,event)
+ }}
+ onCellEditCommit={ async (data)=>{
+   console.log(data)
+    axios.post(process.env.REACT_APP_BACKEND_HOST + "v1/user/receivables/update-credit-period",{
+      id:data.id,
+      value:data.value
+    }, 
+    {
+      headers: { Authorization: `Bearer ${props.accessToken}` }
+    });
+ }}
+rows={receivablesList.map((each:any,idx:number)=>{
+
+ return {...each,id:each['invoice number']}
+})}
+
+columns={receivables?.columns.map(each=>{
+let editable= false;
+if(each.field == 'credit period') {
+  editable = true;
+}
+if(each.field == 'ageing days') {
+ return {...each,width:180,editable:false,renderCell:(params:any)=>{
+  console.log('params',params)
+  return <div>
+
+ {params.value}
+
+ {
+  params.row.isOverDue ?
+  <span style={{
+    border: '1px solid red',
+    fontWeight: '700',
+    borderRadius: '1rem',
+    padding: '5px 7px',
+    color: 'red',
+    marginLeft: '1rem',
+  }}>
+    Overdue
+  </span>
+   : null
+ }
+ <span>
+
+ </span>
+ </div>
+  }}
+}
+return {...each,width:180,editable:editable}
+})} 
+
+/>
+</div>
+        {false ? (
           <Grid container>
             <TableContainer className="custom-scrollbar">
               <Table
@@ -1153,6 +1219,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                           align="center"
                           className="receivables-column-header"
                           onClick={() => handleSortRequest(column.field)}
+                          
                         >
                           <TableSortLabel
                             active={sortColumn === column.field}
@@ -1180,6 +1247,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                           key={`${index}_${colIndex}_col`}
                           className="receivables-row-value"
                           align="center"
+                          // contentEditable= {true}
                         >
                          {/* .toLocaleString("en-IN") */}
                           {(column.field == 'balance amount' || column.field == 'amount') ? row[column.field].toLocaleString("en-IN") : row[column.field]}

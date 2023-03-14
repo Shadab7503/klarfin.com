@@ -35,6 +35,7 @@ export interface ReceivablesRow {
   "balance amount": number;
   date: string;
   "ageing days": number;
+  "credit period": number;
   history: History[];
 }
 
@@ -45,6 +46,7 @@ export interface RecivablesColumn {
     | "amount"
     | "balance amount"
     | "date"
+    | "credit period"
     | "ageing days";
   headerName: string;
 }
@@ -317,108 +319,11 @@ export const receivablesData: ReceivablesData = {
     { field: "invoice number", headerName: "Invoice number" },
     { field: "amount", headerName: "Amount INR" },
     { field: "balance amount", headerName: "Balance amount" },
+    { field: "credit period", headerName: "Credit Period" },
     { field: "ageing days", headerName: "Ageing Days" },
   ],
-  rows: [
-    {
-      customer: "John & Co",
-      "invoice number": 12,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "24-Jun-22",
-      "ageing days": 80,
-      history: [],
-    },
-    {
-      customer: "Shine Inc",
-      "invoice number": 20,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "02-Jan-22",
-      "ageing days": 253,
-      history: [
-        {
-          date: "01-Aug-22",
-          updatedBy: "John",
-          actionTaker: "Robin",
-          recepient: "Riley",
-          action: "messaged",
-          msg: "Reminder for the payment once",
-        },
-        {
-          date: "02-Aug-22",
-          updatedBy: "John",
-          actionTaker: "Robin",
-          recepient: "Riley",
-          action: "emailed",
-          msg: "Reminder for the payment twice",
-        },
+  rows:[]
 
-        {
-          date: "04-Aug-22",
-          updatedBy: "John",
-          actionTaker: "Robin",
-          recepient: "Riley",
-          action: "called",
-          msg: "Reminder for the payment thrice",
-        },
-      ],
-    },
-    {
-      customer: "Jezone Inc",
-      "invoice number": 22,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "14-Mar-22",
-      "ageing days": 182,
-      history: [],
-    },
-    {
-      customer: "Ayeko Trading",
-      "invoice number": 35,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "01-Sep-22",
-      "ageing days": 11,
-      history: [],
-    },
-    {
-      customer: "Breaing & Co",
-      "invoice number": 4,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "18-Apr-22",
-      "ageing days": 147,
-      history: [],
-    },
-    {
-      customer: "Angel Sales",
-      "invoice number": 16,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "15-Nov-22",
-      "ageing days": 301,
-      history: [],
-    },
-    {
-      customer: "Shine Inc",
-      "invoice number": 27,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "16-Apr-22",
-      "ageing days": 149,
-      history: [],
-    },
-    {
-      customer: "Ayeko Trading",
-      "invoice number": 32,
-      amount: 500000,
-      "balance amount": 350000,
-      date: "17-Jun-22",
-      "ageing days": 87,
-      history: [],
-    },
-  ],
 };
 
 export const billsData: BillsData = {
