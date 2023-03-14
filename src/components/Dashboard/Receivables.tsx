@@ -1161,12 +1161,41 @@ rowsPerPageOptions={[50, 100, 1000]}
     });
  }}
 rows={receivablesList.map((each:any,idx:number)=>{
+
  return {...each,id:each['invoice number']}
 })}
+
 columns={receivables?.columns.map(each=>{
 let editable= false;
 if(each.field == 'credit period') {
- editable = true;
+  editable = true;
+}
+if(each.field == 'ageing days') {
+ return {...each,width:180,editable:false,renderCell:(params:any)=>{
+  console.log('params',params)
+  return <div>
+
+ {params.value}
+
+ {
+  params.row.isOverDue ?
+  <span style={{
+    border: '1px solid red',
+    fontWeight: '700',
+    borderRadius: '1rem',
+    padding: '5px 7px',
+    color: 'red',
+    marginLeft: '1rem',
+  }}>
+    Overdue
+  </span>
+   : null
+ }
+ <span>
+
+ </span>
+ </div>
+  }}
 }
 return {...each,width:180,editable:editable}
 })} 
