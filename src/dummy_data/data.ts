@@ -318,8 +318,8 @@ export const receivablesData: ReceivablesData = {
     { field: "date", headerName: "Date" },
     { field: "invoice number", headerName: "Invoice number" },
     { field: "amount", headerName: "Amount INR" },
-    { field: "balance amount", headerName: "Balance amount" },
-    { field: "credit period", headerName: "Credit Period" },
+    { field: "balance amount", headerName: "Balance amount INR" },
+    { field: "credit period", headerName: "Credit Period ( Days )" },
     { field: "ageing days", headerName: "Ageing Days" },
   ],
   rows:[]

@@ -29,6 +29,8 @@ export interface sidebarUtils {
   drawerOpen: boolean;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  superAdmin?:boolean
 }
 
 export interface TopBarProps {

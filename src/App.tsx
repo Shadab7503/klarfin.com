@@ -1,6 +1,4 @@
-import Home from "./components/Main/Home/Home";
-import About from "./components/Main/About/About";
-import Contact from "./components/Main/Contact/Contact";
+
 import Login from "./components/UserEntry/Login";
 import LoginSuper from "./components/SuperAdmin/LoginSuper";
 import DashboardSuper from "./components/SuperAdmin/DashboardSuper";
@@ -13,7 +11,6 @@ import "./styles/styles.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { User } from "./utils/interface";
-import CashFlows from "./components/Dashboard/CashFlows";
 
 //@ts-ignore
 import {Helmet} from "react-helmet";
@@ -23,9 +20,13 @@ import {Helmet} from "react-helmet";
 
 const App = () => {
   const [accessToken, setAccessToken] = useState<string>("");
+  const [superAccessToken, setSuperAccessToken] = useState<string>("");
   const [user, setUser] = useState<User>({} as User);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [checking,setChecking] = useState<boolean>(true);
+
+  const [isSuperLoggedIn,setIsSuperLoggedIn] =  useState<boolean>(false);
+
   
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
@@ -67,13 +68,33 @@ const App = () => {
     }
   }, [accessToken]);
 
+  useEffect(() => {
+    let tokens = localStorage.getItem("superTokens");
+    try {
+      if (tokens) {
+        const tokensObj = JSON.parse(tokens);
+        setIsSuperLoggedIn(true);
+        setSuperAccessToken(tokensObj.accessToken);
+      } 
+    } catch (err) {
+      localStorage.removeItem("superTokens");
+      // window.location.href = "/loginSuper";
+    }
+  }, []);
 
-  let jsx = null;
+
+  let jsx;
   if (isLoggedIn) {
     jsx =  (
       <Dashboard accessToken={accessToken} user={user} />
     );
-  } else {
+  }
+
+  else if(isSuperLoggedIn) {
+    jsx =  <DashboardSuper  />
+  }
+  
+  else {
     jsx =  <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login checking={checking} />} />
@@ -81,7 +102,7 @@ const App = () => {
       {/* <Route path="/contact" element={<Contact />} /> */}
       {/* <Route path="/home" element={<Home />} /> */}
       <Route path="/loginSuper" element={<LoginSuper />} />
-      <Route path="/dashboardSuper" element={<DashboardSuper />} />
+
       <Route path="/register" element={<SignUp />} />
       <Route path="/verify" element={<Verify />} />
       <Route path="*" element={<Navigate to="/" replace />} />
