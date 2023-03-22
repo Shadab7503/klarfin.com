@@ -17,21 +17,16 @@ import { Link } from "react-router-dom";
 const sidebarData = {
   sections: [
     {
-      name: "Cash Management",
+      name: "Super Admin",
       items: [
-        { icon: cashflows, text: "Investments", url:"investing" },
-        { icon: cashflows, text: "Cash Flows", url:"cashflow" },
-        { icon: receivables, text: "Receivables", url:"receivables" },
-        { icon: insights, text: "Insights", url:"insights" },
-        { icon: bills, text: "Bills to Pay", url:"bills-to-pay" },
-        { icon: banking, text: "Banking Transactions", url:"banking-transactions" },
+        { icon: cashflows, text: "Users", url:"users" },
+        { icon: cashflows, text: "Investment", url:"investment" },
       ],
-    },
-    { name: "Credit Management", items: [] },
+    }
   ],
 };
 
-const SideBar = (props: sidebarUtils) => {
+const SideBarSuper = (props: sidebarUtils) => {
 
   const url = window.location.href;
   const lastSegment = url.split('/').pop();
@@ -113,7 +108,7 @@ const SideBar = (props: sidebarUtils) => {
                         {section.items.map((item) => {
                           return (
                             <React.Fragment key={item.text}>
-                              <Link to={'/dashboard/'+ item.url}>
+                              <Link to={'/dashboardSuper/'+ item.url}>
                               <ListItem
                                 style={{
                                   padding: "0rem",
@@ -222,4 +217,4 @@ const SideBar = (props: sidebarUtils) => {
   );
 };
 
-export default SideBar;
+export default SideBarSuper;

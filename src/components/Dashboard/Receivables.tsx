@@ -1096,7 +1096,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
             );
           })}
           <Grid item className="receivables-filters">
-            <Grid
+            {/* <Grid
               container
               alignItems="center"
               style={{ cursor: "pointer" }}
@@ -1108,7 +1108,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
                 style={{ marginRight: "0.5rem" }}
               />{" "}
               Filters
-            </Grid>
+            </Grid> */}
           </Grid>
           <Grid item>
             <TextField
@@ -1172,7 +1172,7 @@ if(each.field == 'credit period') {
 }
 if(each.field == 'ageing days') {
  return {...each,width:180,editable:false,renderCell:(params:any)=>{
-  console.log('params',params)
+  // console.log('params',params)
   return <div>
 
  {params.value}

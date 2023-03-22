@@ -15,6 +15,7 @@ import { validateEmail, validatePassword } from "../../utils/validators";
 import { Alert } from "../../utils/components";
 
 const LoginSuper = () => {
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
   const [loginStatus, setLoginStatus] = useState<"error" | "success" | "">("");
@@ -28,7 +29,7 @@ const LoginSuper = () => {
   useEffect(() => {
     let tokens = localStorage.getItem("superTokens");
     try {
-      if (tokens) window.location.href = "/dashboardSuper";
+      if (tokens) window.location.href = "/dashboardSuper/users";
       else setIsLoggedIn(false);
     } catch (err) {
       localStorage.removeItem("superTokens");

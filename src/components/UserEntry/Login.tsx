@@ -28,7 +28,7 @@ const Login = (props:any) => {
   useEffect(() => {
     let tokens = localStorage.getItem("tokens");
     try {
-      if (tokens && !props.checking) window.location.href = "/dashboard/cashflow";
+      if (tokens && !props.checking) window.location.href = "/dashboard/investing";
       else setIsLoggedIn(false);
     } catch (err) {
       localStorage.removeItem("tokens");
@@ -94,7 +94,7 @@ const Login = (props:any) => {
             remember: true,
           });
           setTimeout(function () {
-            window.location.href = "/dashboard/cashflow";
+            window.location.href = "/dashboard/investing";
           }, 1000);
         } else {
           setLoginStatus("error");

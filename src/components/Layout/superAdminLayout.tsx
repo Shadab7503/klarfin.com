@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
-import SideBar from "../Dashboard/SideBar";
 import TopBar from "../Dashboard/TopBar";
+import SideBarSuper from "../Dashboard/SideBarSuper";
 
 
-const AdminLayout = (props:{children:JSX.Element,user:any}) => {
+const SuperAdminLayout = (props:{children:JSX.Element,user:any}) => {
  
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-    const [selectedItem, setSelectedItem] = useState<string>("investing");
+    const [selectedItem, setSelectedItem] = useState<string>("Investment");
 
     return (
       <div className="dashboard">
         <Grid container className="dashboard-container">
           <Grid item lg="auto" md={2.5}>
-            <SideBar
+          <SideBarSuper
               selectedItem={selectedItem}
               drawerOpen={drawerOpen}
               setSelectedItem={setSelectedItem}
               setDrawerOpen={setDrawerOpen}
             />
+            
           </Grid>
           <Grid
             item
@@ -28,13 +29,16 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
             style={{ maxHeight: "100vh", overflow: "auto" }}
           >
             <Grid container>
+              {/* {
+                !props.superAdmin && 
               <Grid item xs={12}>
                 <TopBar
                   setDrawerOpen={setDrawerOpen}
                   setSelectedItem={setSelectedItem}
-                  companyName={props.user.companyName}
+                  companyName={props.user?.companyName}
                 />
               </Grid>
+              } */}
               <Grid item xs={12}>
                  {
                     props.children
@@ -49,4 +53,4 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
 
 };
 
-export default AdminLayout;
+export default SuperAdminLayout;
