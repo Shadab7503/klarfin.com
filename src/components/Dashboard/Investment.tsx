@@ -242,7 +242,7 @@ e.preventDefault();
   if (loading) return <Loading />;
 
   return (
-    <div>
+    <div style={{fontFamily:'Montserrat'}}>
       
 
       <Box sx={{ width: '100%',bgcolor: 'background.paper' }}>
@@ -311,7 +311,7 @@ e.preventDefault();
           padding: '1rem',
           backgroundColor: ' #00a1d147'
         }} variant="h5" component="h2">
-          No investment Found
+          No Investment Found
         </Typography>
 
       </div>
@@ -593,7 +593,7 @@ e.preventDefault();
           padding: '1rem',
           backgroundColor: ' #00a1d147'
         }} variant="h5" component="h2">
-          No promoter Found
+          No Investment Found
         </Typography>
 
       </div>
