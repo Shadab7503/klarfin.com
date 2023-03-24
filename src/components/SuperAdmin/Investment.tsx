@@ -64,9 +64,10 @@ export default function Investment(props: any) {
 
     const [columns, setColumns] = useState([
         { field: 'idx', headerName: 'SN', width: 180 },
-        { field: 'username', headerName: 'User Name', width: 180 },
+        { field: 'org', headerName: 'Organization Name', width: 180 },
+        { field: 'type', headerName: 'Investment For', width: 180 },
         { field: 'frequency', headerName: 'Frequency', width: 180 },
-        { field: 'amount', headerName: 'Amount', width: 180 },
+        { field: 'amount', headerName: 'Amount of Investment', width: 180 },
         { field: 'fund', headerName: 'Fund', width: 180 },
         { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
         { field: 'returns', headerName: 'Return generated', type: 'number' },

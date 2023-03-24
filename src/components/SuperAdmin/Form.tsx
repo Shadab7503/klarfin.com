@@ -1,4 +1,4 @@
-import  React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Grid, MenuItem, Typography } from '@mui/material';
@@ -6,9 +6,9 @@ import { Button } from '@mui/joy';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function Form(props:any) {
+export default function Form(props: any) {
 
-  const {accessToken}  = props;
+  const { accessToken } = props;
 
   const [loading, setLoading] = useState(false);
 
@@ -17,87 +17,126 @@ export default function Form(props:any) {
   const navigate = useNavigate();
 
 
-  const [data,setData] = useState<any>({
-    'username':{value:'',error:''},
-    'frequency':{value:'Once in a week',error:''},
-    'day1':{value:'Sunday',error:''},
-    'day2':{value:'Monday',error:''},
-    'amount':{value:'',error:''},
-    'fund':{value:'',error:''},
-    'portfolio':{value:'',error:''},
-    'returns':{value:'',error:''},
+  const [data, setData] = useState<any>({
+    'org': { value: '', error: '' },
+    'frequency': { value: 'Once in a week', error: '' },
+    'day1': { value: 'Sunday', error: '' },
+    'day2': { value: 'Monday', error: '' },
+    'amount': { value: '', error: '' },
+    'fund': { value: '', error: '' },
+    'portfolio': { value: '', error: '' },
+    'returns': { value: '', error: '' },
+    'type': { value: '', error: '' }
   });
 
-  useEffect(()=>{
-    if(!id) return;
+  const [users, setUsers] = useState<any>([]);
+
+  const getAdmins = () => {
+
+    setLoading(true)
+    if (accessToken) {
+      axios
+        .get(
+          process.env.REACT_APP_BACKEND_HOST + "v1/super/get-all-un-approved",
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        )
+        .then((response) => {
+          if (
+            "message" in response.data &&
+            response.data.message === "UnApproved Admin"
+          ) {
+
+            setUsers([...response.data.admin]);
+            setLoading(false)
+
+          }
+
+
+        })
+        .catch((err) => {
+          console.log(err);
+          localStorage.removeItem("superTokens");
+          window.location.href = "/loginSuper";
+        });
+    }
+  }
+
+  useEffect(() => {
+    getAdmins()
+  }, [])
+
+  useEffect(() => {
+    if (!id) return;
 
     setLoading(true)
 
     axios
-    .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/single-investment`,
+      .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/single-investment`,
         {
-            headers: { Authorization: `Bearer ${props.accessToken}` },
-            params: {
-                id: id
-              }
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+          params: {
+            id: id
+          }
         })
-    .then((res) => {
+      .then((res) => {
         // setInvestmentList(data.investments);
-        const {investment} = res.data;
-        if(!investment) return;
+        const { investment } = res.data;
+        if (!investment) return;
         let toUpdate = {};
-        Object.keys(investment).forEach(key=>{
+        Object.keys(investment).forEach(key => {
           const each = investment[key];
-          toUpdate[key] = {value:each,error:''};
+          toUpdate[key] = { value: each, error: '' };
         })
         console.log(toUpdate);
-        setData({...data,...toUpdate});
+        setData({ ...data, ...toUpdate });
         setLoading(false);
 
-    });
+      });
 
-  },[id])
+  }, [id])
 
 
-  const updateHandler = ()=>{
+  const updateHandler = () => {
     setLoading(true)
     axios
-    .patch(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,data,
+      .patch(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`, data,
         {
-            headers: { Authorization: `Bearer ${props.accessToken}` },
-         
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+
         })
-    .then(({ data }) => {
+      .then(({ data }) => {
         // setInvestmentList(data.investments);
         navigate(`/dashboardSuper/investment`)
         setLoading(false);
 
-    });
+      });
   }
 
 
-  const saveHandler = ()=>{
+  const saveHandler = () => {
     let errorFound = false;
-    Object.keys(data).forEach(key=>{
+    Object.keys(data).forEach(key => {
       let each = data[key];
-      if(!each) {
+      if (!each) {
         each.error = 'Feild is required';
         errorFound = true;
       }
     })
 
     console.log(data)
-     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,data, 
-     {
-       headers: { Authorization: `Bearer ${accessToken}` }
-     }).then(res=>{
-      navigate(`/dashboardSuper/investment`)
-     })
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`, data,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).then(res => {
+        navigate(`/dashboardSuper/investment`)
+      })
 
   }
-  const changeHandler = ((type:string,value:any)=>{
-    const newData = {...data};
-   
+  const changeHandler = ((type: string, value: any) => {
+    const newData = { ...data };
+
     newData[type].value = value;
     setData(newData);
     console.log(newData)
@@ -108,7 +147,7 @@ export default function Form(props:any) {
       value: 'Once in a week',
       label: 'Once in a week',
     },
-  
+
     {
       value: 'Twice in a week',
       label: 'Twice in a week',
@@ -118,12 +157,12 @@ export default function Form(props:any) {
       value: 'Once in a two week',
       label: 'Once in a two week',
     },
-  
-  
+
+
   ];
 
   const weekDays = [
-    
+
     {
       value: 'Sunday',
       label: 'Sunday',
@@ -157,166 +196,200 @@ export default function Form(props:any) {
 
   return (
 
-    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height:'100vh' }}>
-     <h2 style={{marginBottom:'20px'}}>Add Investment</h2>
-    <Box
-      component="form"
-      // sx={{
-      //   '& .MuiTextField-root': { m: 1, width: '25ch' },
-      // }}
-      
-      autoComplete="off"
-      onSubmit={ async (e:any)=>{
-        e.preventDefault()
-       
-        if(!id)  {
-          saveHandler();
-          return;
-        }
-        
-        updateHandler();
+    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
+      <h2 style={{ marginBottom: '20px' }}> {id ? 'Update' : 'Add'} Investment</h2>
+      <Box
+        component="form"
+        // sx={{
+        //   '& .MuiTextField-root': { m: 1, width: '25ch' },
+        // }}
 
-      }}
-    >
-      <div style={{marginBottom:'20px',display:'flex',justifyContent:'space-between'}}>
-      <TextField onChange={(e)=>{
-        changeHandler('username',e.target.value)
-      }} 
+        autoComplete="off"
+        onSubmit={async (e: any) => {
+          e.preventDefault()
 
-      value={data['username'].value}
-       required
-
-       style={{width:'48%'}} id="outlined-basic" label="User Name" variant="outlined" />
-      <div style={{width:'48%',display:'flex',justifyContent:'space-between'}}>
-        <TextField
-      value={data['frequency'].value}
-
-        required
-        onChange={(e)=>{
-          changeHandler('frequency',e.target.value)
-        }}
-            id="outlined-select-currency"
-            select
-            label="Frequency"
-            defaultValue="once"
-            // helperText="Please select your currency"
-            style={{ width:'30%' }}
-          >
-            {frequency.map((option) => (
-              <MenuItem  key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
-          required
-          
-          value={data['day1']?.value}
-          onChange={(e)=>{
-            changeHandler('day1',e.target.value)
-          }}
-            id="outlined-select-currency"
-            select
-            label="Week day"
-            defaultValue="Sunday"
-            // helperText="Please select your currency"
-            style={{ width:'30%' }}
-          >
-            {weekDays.map((option) => (
-              <MenuItem  key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          {
-            data['frequency'].value == 'Twice in a week' && 
-          <TextField
-          required
-          value={data['day2']?.value}
-         onChange={(e)=>{
-          changeHandler('day2',e.target.value)
-        }}
-            id="outlined-select-currency"
-            select
-            label="Week day"
-            defaultValue="Sunday"
-            // helperText="Please select your currency"
-            style={{ width:'30%' }}
-          >
-            {weekDays.map((option) => (
-              <MenuItem  key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+          if (!id) {
+            saveHandler();
+            return;
           }
-      
 
-      </div>
+          updateHandler();
 
-      </div>
-      <div style={{marginBottom:'20px',display:'flex',justifyContent:'space-between'}}>
-      <TextField
-      value={data['amount'].value}
-      required
-      type='number'
-       onChange={(e)=>{
-        changeHandler('amount',e.target.value)
-      }}
-       style={{width:'48%'}} id="outlined-basic" label="Amount" variant="outlined" />
-      <TextField
-      value={data['fund'].value}
+        }}
+      >
+        <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ width: '48%', display: 'flex', justifyContent: 'space-between' }}>
+            <TextField onChange={(e) => {
+              changeHandler('org', e.target.value)
+              changeHandler('type', e.target.value)
+            }}
 
-      required
-       onChange={(e)=>{
-        changeHandler('fund',e.target.value)
-      }}
-       style={{width:'48%'}} id="outlined-basic" label="Fund" variant="outlined" />
+              value={data['org'].value}
+              required
+              select
+              defaultValue={users[0]?.companyName}
+              style={{ width: '50%' }} id="outlined-basic" label="Organization Name" variant="outlined" >
 
-      </div>
-      <div style={{marginBottom:'20px',display:'flex',justifyContent:'space-between'}}>
-      <TextField
-      value={data['portfolio'].value}
+              {users.map((option) => (
+                <MenuItem key={option.apiKey} value={option.companyName}>
+                  {option.companyName}
+                </MenuItem>
+              ))}
+            </TextField>
 
-      required
-      type='number'
+            <TextField onChange={(e) => {
+              changeHandler('type', e.target.value)
+            }}
 
-       onChange={(e)=>{
-        changeHandler('portfolio',e.target.value)
-      }}
-       style={{width:'48%'}} id="outlined-basic" label="Current Portfolio Amount" variant="outlined" />
-      <TextField
-      type='number'
-      value={data['returns'].value}
+              value={data['type']?.value}
+              required
+              select
+              defaultValue={data['org']?.value}
+              style={{ width: '48%' }} id="outlined-basic" label="Investment for" variant="outlined" >
 
-      required
-       onChange={(e)=>{
-        changeHandler('returns',e.target.value)
-      }}
-       style={{width:'48%'}} id="outlined-basic" label="Return Generated" variant="outlined" />
 
-      </div>
-      
-      <div style={{display:'flex',justifyContent:'end'}}>
-      <Button type='submit' sx={{
-                  background: "#231955",
-                  fontFamily: "Work Sans",
-                  fontWeight: "bold",
-                  padding: "0.7rem 2rem",
-                  borderRadius: "2rem",
-                  fontSize: "1.5rem",
-                  marginTop: "1rem",
-                 color:'#fff',
-                 "&:hover": {
-                  backgroundColor: "#231955",
-                },
-                }} variant="solid">{ id ? 'Update' : 'Submit'}</Button>
+              <MenuItem key='org name' value={data['org']?.value}>
+                {data['org']?.value}
+              </MenuItem>
 
-      </div>
-     
-    </Box>
+              <MenuItem key='promoter' value='promoter'>
+                Promoter
+              </MenuItem>
+
+
+            </TextField>
+
+          </div>
+          <div style={{ width: '48%', display: 'flex', justifyContent: 'space-between' }}>
+            <TextField
+              value={data['frequency'].value}
+
+              required
+              onChange={(e) => {
+                changeHandler('frequency', e.target.value)
+              }}
+              id="outlined-select-currency"
+              select
+              label="Frequency"
+              defaultValue="once"
+              // helperText="Please select your currency"
+              style={{ width: '30%' }}
+            >
+              {frequency.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              required
+
+              value={data['day1']?.value}
+              onChange={(e) => {
+                changeHandler('day1', e.target.value)
+              }}
+              id="outlined-select-currency"
+              select
+              label="Week day"
+              defaultValue="Sunday"
+              // helperText="Please select your currency"
+              style={{ width: '30%' }}
+            >
+              {weekDays.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {
+              data['frequency'].value == 'Twice in a week' &&
+              <TextField
+                required
+                value={data['day2']?.value}
+                onChange={(e) => {
+                  changeHandler('day2', e.target.value)
+                }}
+                id="outlined-select-currency"
+                select
+                label="Week day"
+                defaultValue="Sunday"
+                // helperText="Please select your currency"
+                style={{ width: '30%' }}
+              >
+                {weekDays.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            }
+
+
+          </div>
+
+        </div>
+        <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
+          <TextField
+            value={data['amount'].value}
+            required
+            type='number'
+            onChange={(e) => {
+              changeHandler('amount', e.target.value)
+            }}
+            style={{ width: '48%' }} id="outlined-basic" label="Amount of Investment" variant="outlined" />
+          <TextField
+            value={data['fund'].value}
+
+            required
+            onChange={(e) => {
+              changeHandler('fund', e.target.value)
+            }}
+            style={{ width: '48%' }} id="outlined-basic" label="Fund" variant="outlined" />
+
+        </div>
+        <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
+          <TextField
+            value={data['portfolio'].value}
+
+            required
+            type='number'
+
+            onChange={(e) => {
+              changeHandler('portfolio', e.target.value)
+            }}
+            style={{ width: '48%' }} id="outlined-basic" label="Current Portfolio Amount" variant="outlined" />
+          <TextField
+            type='number'
+            value={data['returns'].value}
+
+            required
+            onChange={(e) => {
+              changeHandler('returns', e.target.value)
+            }}
+            style={{ width: '48%' }} id="outlined-basic" label="Return Generated" variant="outlined" />
+
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'end' }}>
+          <Button type='submit' sx={{
+            background: "#231955",
+            fontFamily: "Work Sans",
+            fontWeight: "bold",
+            padding: "0.7rem 2rem",
+            borderRadius: "2rem",
+            fontSize: "1.5rem",
+            marginTop: "1rem",
+            color: '#fff',
+            "&:hover": {
+              backgroundColor: "#231955",
+            },
+          }} variant="solid">{id ? 'Update' : 'Submit'}</Button>
+
+        </div>
+
+      </Box>
 
     </Grid>
   );
