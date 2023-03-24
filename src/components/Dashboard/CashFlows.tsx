@@ -1001,7 +1001,7 @@ const CashFlows = (props: any) => {
                   color: cashBalance >= 0 ? "#338455" : "#950101",
                 }}
               >
-                {cashBalance >= 0 ? "+" : "-"}Rs{" "}
+                {cashBalance >= 0 ? "+" : "-"}INR{" "}
                 {Math.abs(cashBalance).toLocaleString("en-IN")}
               </span>
             </div>
