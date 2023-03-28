@@ -1145,7 +1145,7 @@ const Receivables = (props: { name: string,accessToken:string }) => {
  
  <DataGrid 
 //  hideFooter={true}
-rowsPerPageOptions={[50, 100, 1000]}
+rowsPerPageOptions={[50,100,200]}
 // rowsPerPageOptions
  onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
    console.log(params,event)
@@ -1162,7 +1162,7 @@ rowsPerPageOptions={[50, 100, 1000]}
  }}
 rows={receivablesList.map((each:any,idx:number)=>{
 
- return {...each,id:each['invoice number']}
+ return {...each,id:idx}
 })}
 
 columns={receivables?.columns.map(each=>{
