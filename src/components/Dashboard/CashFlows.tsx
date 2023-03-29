@@ -215,8 +215,24 @@ const CashFlows = (props: any) => {
 
     ]);
 
-    setOpeningBal(balRes.data.openingBalArrr);
-    setClosingBal(balRes.data.closeingBalArr);
+    const openingObj = {};
+
+    balRes.data.openingBalArrr.forEach(each=>{
+      openingObj[each.date] = each.value;
+    });
+
+
+
+    const closingObj = {};
+
+    balRes.data.closeingBalArr.forEach(each=>{
+      closingObj[each.date] = each.value;
+    });
+
+     //@ts-ignore
+    setOpeningBal(openingObj);
+    //@ts-ignore
+    setClosingBal(closingObj);
     setBalance(balRes.data.balance);
     console.log('datadatadata',balRes.data);
 
