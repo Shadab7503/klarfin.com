@@ -1197,13 +1197,13 @@ const CashFlows = (props: any) => {
                     control={<Radio />}
                     label={<span style={{ fontSize: "0.8rem" }}>Monthly</span>}
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="Quarterly"
                     control={<Radio />}
                     label={
                       <span style={{ fontSize: "0.8rem" }}>Quarterly</span>
                     }
-                  />
+                  /> */}
                   {/* <FormControlLabel
                     value="Annually"
                     control={<Radio />}
@@ -1211,7 +1211,7 @@ const CashFlows = (props: any) => {
                   /> */}
                 </RadioGroup>
                 <div style={{display:'flex',justifyContent:'space-between'}}>
-                  <Button variant="outlined" onClick={()=>{setOpenPeriod(false)}}>Cancel</Button>
+                  <Button style={{marginRight:'2rem'}} variant="outlined" onClick={()=>{setOpenPeriod(false)}}>Cancel</Button>
                   <Button onClick={()=>{
                     getData();
                   }} variant="contained">Ok</Button>
