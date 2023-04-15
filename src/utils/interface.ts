@@ -6,6 +6,7 @@ export interface user {
   email: string;
   industryName: string;
   password: string;
+  token: string;
 }
 
 export interface ExpenseBreakdown {

@@ -29,6 +29,7 @@ const SignUp = () => {
     email: "",
     industryName: "",
     password: "",
+    token:''
   });
 
 
@@ -43,7 +44,7 @@ const SignUp = () => {
   }
 
   useEffect(() => {
-    setNewUser({...newUser,email:`${searchParams.get("email") ? searchParams.get("email") : ''}`,name:`${searchParams.get("name") ? searchParams.get("name") : ''}`,companyName:`${searchParams.get("org") ? searchParams.get("org") : '' }`,panNumber:`${searchParams.get("pan") ? searchParams.get("pan") : ''}`,industryName:`${searchParams.get("industry") ? searchParams.get("industry") : ''}`});
+    setNewUser({...newUser,email:`${searchParams.get("email") ? searchParams.get("email") : ''}`,name:`${searchParams.get("name") ? searchParams.get("name") : ''}`,companyName:`${searchParams.get("org") ? searchParams.get("org") : '' }`,panNumber:`${searchParams.get("pan") ? searchParams.get("pan") : ''}`,industryName:`${searchParams.get("industry") ? searchParams.get("industry") : ''}`,token:`${searchParams.get("token") ? searchParams.get("token") : ''}`});
     // for (const [key, value] of urlParams) {
     //     console.log(`${key}:${value}`);
     // }
@@ -121,6 +122,7 @@ const SignUp = () => {
             email: "",
             industryName: "",
             password: "",
+            token:''
           });
           // setTimeout(function () {
           //   // window.location.href = "/dashboard";
