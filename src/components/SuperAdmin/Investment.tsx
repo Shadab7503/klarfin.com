@@ -27,8 +27,7 @@ export default function Investment(props: any) {
         
         if(type == 'delete') {
            
-            axios
-            .delete(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,
+            axios.delete(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` },
                     data: {
@@ -66,28 +65,66 @@ export default function Investment(props: any) {
         { field: 'idx', headerName: 'SN', width: 180 },
         { field: 'org', headerName: 'Organization Name', width: 180 },
         { field: 'type', headerName: 'Investment For', width: 180 },
-        { field: 'frequency', headerName: 'Frequency', width: 180 },
-        { field: 'amount', headerName: 'Amount of Investment', width: 180 },
+        // { field: 'frequency', headerName: 'Frequency', width: 180 },
+        // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
         { field: 'fund', headerName: 'Fund', width: 180 },
-        { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
-        { field: 'returns', headerName: 'Return generated', type: 'number' },
+        // { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
+        // { field: 'returns', headerName: 'Return generated', type: 'number' },
         {
             field: 'Actions', headerName: 'action', width: 420, renderCell: (params: any) => {
                 console.log('params', params)
-                return <div style={{ display: 'flex' }}>
+                return <div style={{ display: 'flex', justifyContent:'space-between' }}>
 
                     <Grid
                         item
                         className="bills-pay"
                         py={1}
                         px={2}
-
+                        style={{marginRight:'1rem'}}
                         onClick={()=>{navigate(`/dashboardSuper/add-investment/${params.id}`)}}
 
                     >
                         Edit
                     </Grid>
+                   
                     <Grid
+                        item
+                        className="bills-pay"
+                        py={1}
+                        px={2}
+                        style={{ background: 'green', marginRight:'1rem' }}
+                        onClick={()=>{navigate(`/dashboardSuper/order/${params.row.folio.Folio}`)}}
+
+                    >
+                        Create Order
+                    </Grid>
+
+                    <Grid
+                        item
+                        className="bills-pay"
+                        py={1}
+                        px={2}
+                        style={{ background: 'orange',marginRight:'1rem' }}
+                        onClick={()=>{navigate(`/dashboardSuper/investment/details/${params.row.folio.Folio}`)}}
+
+                    >
+                        View
+                    </Grid>
+
+                    <Grid
+                        item
+                        className="bills-pay"
+                        py={1}
+                        px={2}
+                        style={{marginRight:'1rem'}}
+                        onClick={()=>{navigate(`/dashboardSuper/redeem/${params.row.folio.Folio}`)}}
+
+                    >
+                        Redeem
+                    </Grid>
+                   
+
+                    {/* <Grid
                         item
                         className="bills-pay"
                         style={{ background: 'red' }}
@@ -100,7 +137,7 @@ export default function Investment(props: any) {
 
                     >
                         Delete
-                    </Grid>
+                    </Grid> */}
                     <span>
 
                     </span>
@@ -171,9 +208,7 @@ export default function Investment(props: any) {
           },
         }}
 
-        
-
-        >Add Investment</Button>
+        >Add Investor</Button>
         </Link>
         <h2 style={{ marginBottom: '20px' }}>All Investments</h2>
 
@@ -195,12 +230,12 @@ export default function Investment(props: any) {
                         obj[key] = value;
                     })
                   
-                    return { ...obj, id: each._id, idx: idx + 1 }
+                    return { ...obj, id: each._id, idx: idx + 1, org:each.user_id.name,fund:each.fund_id.name,type:each.type == 1 ? 'Organization' : 'Promotor' }
                 })}
 
                 columns={columns.map(each => {
                    
-                    return { ...each, width: 180 }
+                    return { ...each }
                 })}
 
             />

@@ -37,17 +37,23 @@ const SignUp = () => {
  
 
   const isDisabled = (type:string)=>{
-    if(searchParams.get(type)) {
+    const id = searchParams.get("code");
+    if(id) {
       return true;
     }
     return false;
   }
 
   useEffect(() => {
-    setNewUser({...newUser,email:`${searchParams.get("email") ? searchParams.get("email") : ''}`,name:`${searchParams.get("name") ? searchParams.get("name") : ''}`,companyName:`${searchParams.get("org") ? searchParams.get("org") : '' }`,panNumber:`${searchParams.get("pan") ? searchParams.get("pan") : ''}`,industryName:`${searchParams.get("industry") ? searchParams.get("industry") : ''}`,token:`${searchParams.get("token") ? searchParams.get("token") : ''}`});
-    // for (const [key, value] of urlParams) {
-    //     console.log(`${key}:${value}`);
-    // }
+    const id = searchParams.get("code");
+
+    axios
+      .post(process.env.REACT_APP_BACKEND_HOST + 'v1/admin/data', {id})
+      .then(({data})=>{
+        setNewUser(data.detail)
+      });
+
+
     let tokens = localStorage.getItem("tokens");
     try {
       if (tokens) window.location.href = "/dashboard";
@@ -65,9 +71,11 @@ const SignUp = () => {
   };
 
   const signUpUser = (user: user) => {
+    console.log(user)
+  
     let url = "v1/admin/register";
 
-    if(searchParams.get('memberLogin')) {
+    if(searchParams.get("code")) {
       url = "v1/member/setPassword";
     }
     setValidating(true);
@@ -95,6 +103,10 @@ const SignUp = () => {
         setWaitingForResponse(false);
         if (response.data.success) {
           setRegisterStatus("success");
+
+          if(searchParams.get("code")) {
+            window.location.href = '/login';
+          }
           // if ("token" in response.data.detail.member.token)
           //   localStorage.setItem(
           //     "tokens",
