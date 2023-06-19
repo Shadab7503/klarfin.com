@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
 import axios from 'axios';
+import { Alert } from '../../../utils/components';
 import { createFolio } from '../../../services/nippon.service';
 import { parseError } from '../../../utils/common';
 
@@ -15,6 +16,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [existInvester,setExitInvester] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
 
 
@@ -118,7 +120,10 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
         // navigate(`/dashboardSuper/investment`)
         setIsLoading(false);
         if (!data.succ) {
-          return;
+          if(data.public_msg == "Invester Already Exits"){
+            setExitInvester(true);
+            return;
+          }
         };
         capturedDataHandler([{ inv_id: data.invData.id }, { pan: data.invData.pan }]);
         console.log('data', data);
@@ -134,6 +139,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   return (
     <Card sx={{ maxWidth: 600, margin: '0 auto' }}>
       <CardContent>
+        
         <form onSubmit={saveHandler} style={{ width: '100%' }}>
           <Typography variant="subtitle1" gutterBottom>
             Investment
@@ -282,6 +288,22 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
         message="Investment submitted successfully!"
         sx={{ marginBottom: 2 }}
       />
+      <Snackbar
+        open={existInvester}
+        autoHideDuration={3000}
+        onClose={() => setExitInvester(false)}
+        message=""
+        sx={{ marginBottom: 2 }}
+      >
+        <Alert
+            severity="warning"
+            sx={{ width: "100%" }}
+            className="snack"
+          >
+            Investment Already Exist !
+          </Alert>
+      </Snackbar>
+      
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}

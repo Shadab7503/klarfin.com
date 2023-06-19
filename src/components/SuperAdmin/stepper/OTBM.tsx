@@ -31,7 +31,7 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
     setValidationErrors({});
     setIsLoading(true);
 
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/otbm`, {...formData,Pan:capturedData.pan,Folio:capturedData.folio},
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/otbm`, {...formData,Pan:capturedData.pan,Folio:capturedData.folio,inv_id:capturedData.inv_id},
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {

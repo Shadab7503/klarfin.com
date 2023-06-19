@@ -54,7 +54,7 @@ const App = () => {
             setUser(response.data);
             setIsLoggedIn(true);
             setChecking(false);
-
+            console.log(response.data);
           } else {
             localStorage.removeItem("tokens");
             // window.location.href = "/";
