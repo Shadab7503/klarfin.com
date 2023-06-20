@@ -14,7 +14,6 @@ import Popup from './model';
 export default function Redeems(props: any) {
 
     const [tranx, setTranx] = useState([]);
-
     const [refno,setRefno] = useState();
     const [popup,setPopup] = useState(false);
 
@@ -84,7 +83,6 @@ export default function Redeems(props: any) {
             .then(({ data }) => {
                 setTranx(data.redeem);
                 setLoading(false);
-
             });
 
     }
@@ -142,11 +140,7 @@ export default function Redeems(props: any) {
                    
                     return { ...each }
                 })}
-
             />
         </div>
-
-      
-
     </Grid>
 }

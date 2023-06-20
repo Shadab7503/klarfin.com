@@ -136,8 +136,6 @@ console.log('capturedData',capturedData);
                 activeStep == 1 && <RedeemCreate capturedDataHandler={dataCapture} capturedData={capturedData} handleNext={handleNext} accessToken={accessToken} />
 
               }
-             
-
             </div>
 
           </div>

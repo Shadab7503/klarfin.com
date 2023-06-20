@@ -293,7 +293,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Investment Already Exist !
+            Investment Already Exist!
           </Alert>
       </Snackbar>
       

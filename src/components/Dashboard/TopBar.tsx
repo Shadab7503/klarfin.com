@@ -42,7 +42,7 @@ const TopBar = (props: TopBarProps) => {
               // onClick={() => props.setSelectedItem("Settings")}
             >
 
-              <Link to='/dashboard/settings' >
+              <Link to='/dashboardAdmin/settings' >
                   <img src={settings} alt="settings" />
               
               </Link>
