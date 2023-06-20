@@ -42,7 +42,7 @@ import {
 } from "../../utils/interface";
 import axios from "axios";
 import { Box, IconButton, TableFooter, TablePagination } from "@mui/material";
-import Loading from "./Loading";
+import Loading from "../Dashboard/Loading";
 import { DataGrid } from "@mui/x-data-grid";
 import { GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid/models";
 

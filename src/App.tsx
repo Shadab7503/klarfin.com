@@ -3,12 +3,12 @@ import Login from "./components/UserEntry/Login";
 import LoginSuper from "./components/SuperAdmin/LoginSuper";
 import DashboardSuper from "./components/SuperAdmin/DashboardSuper";
 import SignUp from "./components/UserEntry/SignUp";
-import Dashboard from "./components/Dashboard/Dashboard";
+import DashboardAdmin from "./components/Admin/DashboardAdmin";
 import Verify from "./components/Verify/Verify";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./styles/styles.css";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { User } from "./utils/interface";
 
@@ -86,7 +86,7 @@ const App = () => {
   let jsx;
   if (isLoggedIn) {
     jsx =  (
-      <Dashboard accessToken={accessToken} user={user} />
+      <DashboardAdmin accessToken={accessToken} user={user} />
     );
   }
 

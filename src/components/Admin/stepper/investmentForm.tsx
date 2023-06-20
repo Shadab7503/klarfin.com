@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
 import axios from 'axios';
 import { Alert } from '../../../utils/components';
-import { createFolio } from '../../../services/nippon.service';
-import { parseError } from '../../../utils/common';
 
 const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   const [formData, setFormData] = useState({
@@ -19,6 +17,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   const [existInvester,setExitInvester] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
 
+
   const [users, setUsers] = useState<any>([]);
   const [funds, setFunds] = useState<any>([]);
 
@@ -30,7 +29,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
     if (accessToken) {
       axios
         .get(
-          process.env.REACT_APP_BACKEND_HOST + "v1/super/get-all-un-approved",
+          process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/get-admin",
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
@@ -38,12 +37,10 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
         .then((response) => {
           if (
             "message" in response.data &&
-            response.data.message === "UnApproved Admin"
+            response.data.message === "Admin"
           ) {
 
             setUsers([...response.data.admin]);
-
-
           }
 
 
@@ -56,12 +53,9 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   }
 
   const getFunds = () => {
-
-
-
     axios
       .get(
-        process.env.REACT_APP_BACKEND_HOST + "v1/super/funds",
+        process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/funds",
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -111,15 +105,15 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
 
     setIsLoading(true);
     console.log(formData)
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`, formData,
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
         const { data } = res;
-        // navigate(`/dashboardSuper/investment`)
+        console.log(data);
         setIsLoading(false);
         if (!data.succ) {
-          if(data.public_msg == "Invester Already Exist"){
+          if(data.public_msg == "Investor Already Exist"){
             setExitInvester(true);
             return;
           }
@@ -299,7 +293,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Investor Already Exist !
+            Investment Already Exist !
           </Alert>
       </Snackbar>
       

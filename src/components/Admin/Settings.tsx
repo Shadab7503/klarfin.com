@@ -2,10 +2,10 @@ import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Categories from "./Categories";
-import CompanyManagement from "./Company_Management";
-import UserManagement from "./UserManagement";
-import Security from "./Security";
+import Categories from "../Dashboard/Categories";
+import CompanyManagement from "../Dashboard/Company_Management";
+import UserManagement from "../Dashboard/UserManagement";
+import Security from "../Dashboard/Security";
 import { SettingsProps } from "../../utils/interface";
 
 const Settings = (props: SettingsProps) => {

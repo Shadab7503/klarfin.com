@@ -13,7 +13,7 @@ import NorthEastIcon from "@mui/icons-material/NorthEast";
 import SouthEastIcon from '@mui/icons-material/SouthEast';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import TextField from "@mui/material/TextField";
-import Loading from "./Loading";
+import Loading from "../Dashboard/Loading";
 import SearchIcon from "@mui/icons-material/Search";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
