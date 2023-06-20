@@ -15,7 +15,7 @@ const Scheme = (props) => {
     const getSchemeData = () => {
         setLoading(true);
         axios
-            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/scheme`,{acno:props.folio_id,plan:props.filter.plan,scheme:props.filter.scheme},
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/scheme`,{acno:props.folio_id,plan:props.filter.plan,scheme:props.filter.scheme},
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` }
                 })

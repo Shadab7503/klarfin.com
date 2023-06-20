@@ -45,7 +45,7 @@ export default function Transactions(props: any) {
         setLoading(true);
   
         axios
-            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/transaction`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/transaction`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` }
                 })

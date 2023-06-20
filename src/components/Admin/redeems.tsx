@@ -77,7 +77,7 @@ export default function Redeems(props: any) {
         setLoading(true);
   
         axios
-            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/redeems`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeems`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` }
                 })
@@ -88,9 +88,6 @@ export default function Redeems(props: any) {
             });
 
     }
-
-  
-
     const today = new Date();
     const formattedToday = format(today, 'MM/dd/yyyy');
 

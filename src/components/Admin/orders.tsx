@@ -54,7 +54,7 @@ export default function Orders(props: any) {
         setLoading(true);
         const { page, limit } = filter;
         axios
-            .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/orders`,
+            .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/orders`,
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` },
                     params: {
@@ -92,13 +92,13 @@ export default function Orders(props: any) {
 
             <div>
                 <Button style={{marginRight:'2rem'}} variant="contained" color="primary" onClick={() => { }}>
-                    <Link to={`/dashboardSuper/investment/tranx/${folio_id}`} >
+                    <Link to={`/dashboardAdmin/investment/tranx/${folio_id}`} >
                     Transactions
                     </Link>
                 </Button>
                 <Button variant="contained" color="primary" onClick={() => { }}>
                     
-                    <Link to={`/dashboardSuper/investment/redeem/${folio_id}`} >
+                    <Link to={`/dashboardAdmin/investment/redeem/${folio_id}`} >
                     Redeems
                     </Link>
                 </Button>

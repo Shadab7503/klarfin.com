@@ -21,7 +21,7 @@ const Popup = ({refno,isOpen,accessToken,handleClose}) => {
     setLoading(true);
 
     axios
-        .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/redeem/status`,{refno,fund:'RMF'},
+        .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeem/status`,{refno,fund:'RMF'},
             {
                 headers: { Authorization: `Bearer ${accessToken}` }
             })
