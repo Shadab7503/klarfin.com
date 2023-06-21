@@ -12,9 +12,6 @@ import { Paper, Typography } from '@mui/material';
 import { List, ListItem, ListItemText } from '@mui/material';
 import Scheme from './Scheme';
 
-
-
-
 export default function Orders(props: any) {
 
     const today = new Date();

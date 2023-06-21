@@ -25,8 +25,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   const [validationErrors, setValidationErrors] = useState<any>({});
 
   const getAdmins = () => {
-
-
     if (accessToken) {
       axios
         .get(
@@ -40,25 +38,16 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             "message" in response.data &&
             response.data.message === "UnApproved Admin"
           ) {
-
             setUsers([...response.data.admin]);
-
-
           }
-
-
         })
         .catch((err) => {
           console.log(err);
-
         });
     }
   }
 
   const getFunds = () => {
-
-
-
     axios
       .get(
         process.env.REACT_APP_BACKEND_HOST + "v1/super/funds",
@@ -70,21 +59,14 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
         if (
           response.data.succ
         ) {
-
           setFunds([...response.data.funds]);
-
-
         }
-
-
       })
       .catch((err) => {
         console.log(err);
-
       });
 
   }
-
   useEffect(() => {
     getAdmins()
     getFunds()
@@ -110,7 +92,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
     setValidationErrors({});
 
     setIsLoading(true);
-    console.log(formData)
     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
