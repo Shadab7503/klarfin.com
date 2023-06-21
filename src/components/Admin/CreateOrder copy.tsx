@@ -228,8 +228,8 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.EUINDecFlag}
               helperText={validationErrors.EUINDecFlag}
-            /> */}
-
+            />
+ */}
             <TextField
               label="Cheque Bank"
               name="ChqBank"

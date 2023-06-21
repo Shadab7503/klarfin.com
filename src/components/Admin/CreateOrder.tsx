@@ -193,7 +193,7 @@ const CreateOrder = ({ accessToken }) => {
 
      
 
-{/*             <TextField
+            <TextField
               label="SubBroker"
               name="SubBroker"
               value={formData.SubBroker}
@@ -228,7 +228,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.EUINDecFlag}
               helperText={validationErrors.EUINDecFlag}
-            /> */}
+            />
 
             <TextField
               label="Cheque Bank"

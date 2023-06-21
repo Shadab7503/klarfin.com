@@ -39,7 +39,7 @@ import {
 import axios from "axios";
 import { CashflowTable, CashinFlow, CashoutFlow, ExpenseBreakdown, Inflow, InflowData, Journal, JournalType, Outflow, OutflowData, Payments, Purchase, PurchaseType, StringDict } from "../../utils/interface";
 import moment from "moment";
-import Loading from "./Loading";
+import Loading from "../Dashboard/Loading";
 import { Button } from "@mui/material";
 
 ChartJS.register(

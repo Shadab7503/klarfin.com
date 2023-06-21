@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import KYCCheck from './KycCheck';
 import Folio from './FolioCreate';
 import OTBM from './OTBM';
-import Investment from './investment';
+import Investment from './investmentForm';
 import { useNavigate, useParams } from 'react-router-dom';
 import SendOTP from './sendOTP';
 import RedeemCreate from './RedeemCreate';
@@ -136,6 +136,8 @@ console.log('capturedData',capturedData);
                 activeStep == 1 && <RedeemCreate capturedDataHandler={dataCapture} capturedData={capturedData} handleNext={handleNext} accessToken={accessToken} />
 
               }
+             
+
             </div>
 
           </div>

@@ -3,11 +3,9 @@ import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typog
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
 import { format } from 'date-fns';
-import { DatePicker } from '@mui/x-date-pickers';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
-  
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
@@ -45,7 +43,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     let { name, value } = event.target;
     if(name == 'dob') {
       const date = new Date(value);
-      value = format(date, 'dd/mm/yyyy');
+      value = format(date, 'dd/MM/yyyy');
     }
     setFormData((prevData) => ({
       ...prevData,
@@ -59,7 +57,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     setValidationErrors({});
     setIsLoading(true);
 
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/folio`, formData,
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/folio`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
         params: {
@@ -173,7 +171,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             label="Date of Birth"
             type='date'
             name="dob"
-            //value={formData.dob}
+            // value={formData.dob}
             onChange={handleChange}
             variant="standard"
             margin="normal"

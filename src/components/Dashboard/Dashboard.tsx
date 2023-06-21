@@ -1,8 +1,8 @@
-import CashFlows from "./CashFlows";
-import Insights from "./Insights";
-import Receivables from "./Receivables";
-import Bills from "./Bills";
-import Settings from "./Settings";
+import CashFlows from "../Admin/CashFlows";
+import Insights from "../Admin/Insights";
+import Receivables from "../Admin/Receivables";
+import Bills from "../Admin/Bills";
+import Settings from "../Admin/Settings";
 // import CreditManagement from "./CreditManagement";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "../Layout/adminLayout";
@@ -30,4 +30,4 @@ const Dashboard = (props: any) => {
   );
 };
 
-export default Dashboard;
+export default {};

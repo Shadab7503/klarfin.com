@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
-import SideBar from "../Dashboard/SideBar";
+import SideBar from "../Admin/SideBar";
 import TopBar from "../Dashboard/TopBar";
 
 
@@ -8,6 +8,7 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
  
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<string>("investing");
+    const [name,setName] = useState(props.user.companyName)
 
     return (
       <div className="dashboard">
@@ -32,7 +33,7 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
                 <TopBar
                   setDrawerOpen={setDrawerOpen}
                   setSelectedItem={setSelectedItem}
-                  companyName={props.user.companyName}
+                  companyName={name}
                 />
               </Grid>
               <Grid item xs={12}>

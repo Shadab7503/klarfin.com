@@ -1,55 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
-import { DataGrid } from "@mui/x-data-grid";
-import Box from '@mui/material/Box';
-import { Alert, Button, Grid, Modal, Snackbar, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
-import axios from 'axios';
-import Loading from './Loading';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { Grid } from "@mui/material";
+import { DataGrid, GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid";
+import axios from "axios";
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+import React, { useEffect, useState } from "react";
+import Form from "./Form";
+import { Link, useNavigate } from "react-router-dom";
+import Loading from "../Dashboard/Loading";
 
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-export default function InvestmentScreen(props) {
-  const navigate = useNavigate();
+export default function Investment(props: any) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [statusOfinvestMentList, setstatusOfinvestMentList] = useState(1);
+
+  const navigate = useNavigate();
+
   const [investmentList, setInvestmentList] = useState([]);
   const [invtType,setInvtType] = useState(["Individual","Proprietorship","Partnership","Company"])
-  //Investment from superAdmin
+  const [statusOfinvestMentList, setstatusOfinvestMentList] = useState(1);
+
+  const actionHandler = (type, id) => {
+    setLoading(true);
+
+    if (type == "delete") {
+      axios
+        .delete(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment`, {
+          headers: { Authorization: `Bearer ${props.accessToken}` },
+          data: {
+            id: id,
+          },
+        })
+        .then(({ data }) => {
+          // setInvestmentList(data.investments);
+          getReceivablesData({ page: 1, limit: 20 });
+
+          setLoading(false);
+        });
+    }
+
+    if (type == "edit") {
+      axios
+        .patch(
+          `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment`,
+          {
+            id: id,
+          },
+          {
+            headers: { Authorization: `Bearer ${props.accessToken}` },
+          }
+        )
+        .then(({ data }) => {
+          // setInvestmentList(data.investments);
+          setLoading(false);
+        });
+    }
+  };
+
   const [columns, setColumns] = useState([
     { field: "idx", headerName: "SN", width: 100 },
     { field: "org", headerName: "Name", width: 180 },
@@ -76,7 +86,7 @@ export default function InvestmentScreen(props) {
                   px={2}
                   style={{ marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(`/dashboardSuper/add-investment/${params.id}`);
+                    navigate(`/dashboardAdmin/add-investment/${params.id}`);
                   }}
                 >
                   Edit
@@ -88,7 +98,7 @@ export default function InvestmentScreen(props) {
                   px={2}
                   style={{ background: "green", marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(`/dashboardSuper/order/${params.row.folio.Folio}`);
+                    navigate(`/dashboardAdmin/order/${params.row.folio.Folio}`);
                   }}
                 >
                   Create Order
@@ -101,7 +111,7 @@ export default function InvestmentScreen(props) {
                   style={{ background: "orange", marginRight: "1rem" }}
                   onClick={() => {
                     navigate(
-                      `/dashboardSuper/investment/details/${params.row.folio.Folio}`
+                      `/dashboardAdmin/investment/details/${params.row.folio.Folio}`
                     );
                   }}
                 >
@@ -115,7 +125,7 @@ export default function InvestmentScreen(props) {
                   style={{ marginRight: "1rem" }}
                   onClick={() => {
                     navigate(
-                      `/dashboardSuper/redeem/${params.row.folio.Folio}`
+                      `/dashboardAdmin/redeem/${params.row.folio.Folio}`
                     );
                   }}
                 >
@@ -129,7 +139,7 @@ export default function InvestmentScreen(props) {
                     px={2}
                     style={{ background: "orange", marginRight: "1rem" }}
                     onClick={() => {
-                      navigate(`/dashboardSuper/add-investment`, {
+                      navigate(`/dashboardAdmin/add-investment`, {
                         state: params.row,
                       });
                     }}
@@ -149,7 +159,7 @@ export default function InvestmentScreen(props) {
                   px={2}
                   style={{ marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(`/dashboardSuper/add-investment`, {
+                    navigate(`/dashboardAdmin/add-investment`, {
                       state: params.row,
                     });
                   }}
@@ -158,42 +168,51 @@ export default function InvestmentScreen(props) {
                 </Grid>
               </>
             )}
+
+            {/* <Grid
+                        item
+                        className="bills-pay"
+                        style={{ background: 'red' }}
+                        py={1}
+                        px={2}
+                        onClick={()=>{
+                            if(!window.confirm('Are you sure to delete the investment?')) return;
+                            actionHandler('delete',params.id)
+                        }}
+
+                    >
+                        Delete
+                    </Grid> */}
+            <span></span>
           </div>
         );
       },
     },
   ]);
+
   const [loading, setLoading] = useState(false);
-  //previous code
-  const getData = async () => {
 
+  const getReceivablesData = (filter: { page: number; limit: number }) => {
     setLoading(true);
+    const { page, limit } = filter;
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, {
+        headers: { Authorization: `Bearer ${props.accessToken}` },
+        params: {
+          limit,
+          page,
+        },
+      })
+      .then(({ data }) => {
+        setInvestmentList(data.investments);
+        setLoading(false);
+      });
+  };
 
-    const [investmentRes, promoterRes] = await Promise.all([
-
-      axios
-        .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/index",
-
-          {
-            headers: { Authorization: `Bearer ${props.accessToken}` },
-            params: { type: 0 }
-          }),
-      axios
-        .get(process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/index",
-
-          {
-            headers: { Authorization: `Bearer ${props.accessToken}` },
-            params: { type: 1 }
-          })
-
-    ]);
-
-    const investmentDataRes = investmentRes.data;
-  }
-
-  useEffect(()=>{
-    getData();
-  },[]);
+  useEffect(() => {
+    getReceivablesData({ page: 1, limit: 20 });
+    console.log(investmentList);
+  }, []);
 
   const style = {
     position: "absolute",
@@ -206,10 +225,11 @@ export default function InvestmentScreen(props) {
     boxShadow: 24,
     p: 4,
   };
+
   if (loading) return <Loading />;
+
   return (
-    <div style={{ fontFamily: 'Montserrat' }}>
-      <Grid
+    <Grid
       item
       xs={12}
       px={10}
@@ -231,7 +251,7 @@ export default function InvestmentScreen(props) {
           },
         }}
         onClick={() => {
-          navigate(`/dashboardSuper/add-investment`, { state: { status: 0 } });
+          navigate(`/dashboardAdmin/add-investment`, { state: { status: 0 } });
         }}
       >
         Add Investor
@@ -273,6 +293,5 @@ export default function InvestmentScreen(props) {
         />
       </div>
     </Grid>
-    </div>
   );
 }

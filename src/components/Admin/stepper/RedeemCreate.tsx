@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
-import { useNavigate } from 'react-router-dom';
 
 const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
@@ -29,7 +28,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
   const [validationErrors, setValidationErrors] = useState<any>({});
-  const Navigate = useNavigate();
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -54,12 +53,13 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         setIsLoading(false);
         if (!data.succ) return;
         // handleNext();
-        Navigate(`/dashboardSuper/investment/redeem/${formData.acno}`)
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
+
+
   };
 
 
@@ -254,7 +254,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             fullWidth
             error={!!validationErrors.OTPReference}
             helperText={validationErrors.OTPReference}
-            // disabled
+            disabled
           />
 
           <TextField
