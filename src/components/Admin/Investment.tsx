@@ -79,7 +79,7 @@ export default function Investment(props: any) {
             {params.row.status >= 2 && (
               <>
                 {" "}
-                <Grid
+                {/* <Grid
                   item
                   className="bills-pay"
                   py={1}
@@ -90,7 +90,7 @@ export default function Investment(props: any) {
                   }}
                 >
                   Edit
-                </Grid>
+                </Grid> */}
                 <Grid
                   item
                   className="bills-pay"
