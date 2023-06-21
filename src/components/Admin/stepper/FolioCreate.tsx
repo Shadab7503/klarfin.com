@@ -173,11 +173,12 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             name="dob"
             // value={formData.dob}
             onChange={handleChange}
-            variant="outlined"
+            variant="standard"
             margin="normal"
             fullWidth
             error={!!validationErrors.dob} // Check if the field has an error
             helperText={validationErrors.dob} // Display the error message
+            focused
           />
 
           <TextField

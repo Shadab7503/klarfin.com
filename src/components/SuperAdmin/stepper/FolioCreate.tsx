@@ -3,9 +3,11 @@ import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typog
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
 import { format } from 'date-fns';
+import { DatePicker } from '@mui/x-date-pickers';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
+  
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
@@ -43,7 +45,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     let { name, value } = event.target;
     if(name == 'dob') {
       const date = new Date(value);
-      value = format(date, 'dd/MM/yyyy');
+      value = format(date, 'dd/mm/yyyy');
     }
     setFormData((prevData) => ({
       ...prevData,
@@ -171,13 +173,14 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             label="Date of Birth"
             type='date'
             name="dob"
-            // value={formData.dob}
+            //value={formData.dob}
             onChange={handleChange}
-            variant="outlined"
+            variant="standard"
             margin="normal"
             fullWidth
             error={!!validationErrors.dob} // Check if the field has an error
             helperText={validationErrors.dob} // Display the error message
+            focused
           />
 
           <TextField
