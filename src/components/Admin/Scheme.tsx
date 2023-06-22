@@ -32,7 +32,7 @@ const Scheme = (props) => {
     }, [props.filter])
 
 
-    const { BankName, Folio, Nav, Nav_Date, Plan_code, SchemeCategory, SchemeDescription,Totalunits,InvestedAmt,FreeAmt } = scheme;
+    const { BankName, Folio, Nav, Nav_Date, Plan_code/*, SchemeCategory*/, SchemeDescription,Totalunits,InvestedAmt,FreeAmt } = scheme;
     if (loading) return <Loading />;
     return (
       <Grid container spacing={2}>
@@ -76,18 +76,18 @@ const Scheme = (props) => {
             <Typography variant="body1">{Plan_code}</Typography>
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
+        {/* <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" component="div" sx={{ mb: 1 }}>
               Scheme Category
             </Typography>
             <Typography variant="body1">{SchemeCategory}</Typography>
           </Paper>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                Total Units
+                Free Units
             </Typography>
             <Typography variant="body1">{Totalunits}</Typography>
           </Paper>
@@ -108,7 +108,7 @@ const Scheme = (props) => {
             <Typography variant="body1">{FreeAmt}</Typography>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" component="div" sx={{ mb: 1 }}>
               Scheme Description

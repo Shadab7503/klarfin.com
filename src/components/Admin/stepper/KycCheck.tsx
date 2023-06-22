@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { checkKYC } from '../../../services/nippon.service';
@@ -40,6 +40,28 @@ const KYCCheck = ({handleNext,capturedDataHandler,capturedData,accessToken}) => 
   const [isFailure, setIsFailure] = useState(false);
   const [msg,setMsg] = useState('');
   const [validationErrors, setValidationErrors] = useState<any>({});
+
+  const getInvestor = () => {
+    axios
+      .get(
+        process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/user/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: { id : capturedData.inv_id },
+        }
+      )
+      .then((response) => {
+        if (response.data.succ) {
+          capturedDataHandler('invtorInf',[response.data.user.email,response.data.user.mobileNumber])
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  useEffect(()=>{
+    getInvestor()
+  },[])
 
 
   const handlePanChange = (event) => {

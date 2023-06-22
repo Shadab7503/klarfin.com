@@ -34,7 +34,7 @@ const Investment = ({ accessToken }) => {
     if (accessToken) {
       return await axios
         .get(
-          process.env.REACT_APP_BACKEND_HOST + "v1/super/get-all-un-approved",
+          process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/get-admin",
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
@@ -42,7 +42,7 @@ const Investment = ({ accessToken }) => {
         .then((response) => {
           if (
             "message" in response.data &&
-            response.data.message === "UnApproved Admin"
+            response.data.message === "Admin"
           ) {
 
             setUsers([...response.data.admin]);
@@ -65,7 +65,7 @@ const Investment = ({ accessToken }) => {
 
     return await axios
       .get(
-        process.env.REACT_APP_BACKEND_HOST + "v1/super/funds",
+        process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/funds",
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -94,7 +94,7 @@ const Investment = ({ accessToken }) => {
   const getInvestmentData = async () => {
 
     return await axios
-      .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/single-investment`,
+      .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/single-investment`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
           params: {
@@ -131,16 +131,11 @@ const Investment = ({ accessToken }) => {
       getAdmins(),
       getFunds()
     ])
-
     setIsLoading(false)
   }
 
   useEffect(() => {
-
-
     getFullData();
-
-
   }, [])
 
 
@@ -163,7 +158,7 @@ const Investment = ({ accessToken }) => {
     setValidationErrors({});
 
     axios
-      .patch(`${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`, { ...formData, id },
+      .patch(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/investment`, { ...formData, id },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
 
@@ -171,6 +166,7 @@ const Investment = ({ accessToken }) => {
       .then(({ data }) => {
         if(data.succ) {
           setIsSuccess(true)
+
         }
 
       }).catch(({ response }) => {
@@ -206,7 +202,7 @@ const Investment = ({ accessToken }) => {
           >
             {users.map((option) => (
               <MenuItem key={option.apiKey} value={option.id}>
-                {option.companyName}
+                {option.name}
               </MenuItem>
             ))}
           </TextField>
@@ -225,11 +221,17 @@ const Investment = ({ accessToken }) => {
             helperText={validationErrors.type} // Display the error message
             value={formData.type}
           >
-            <MenuItem key='org name' value={1}>
-              Organization
+            <MenuItem key='org name' value={0}>
+              Individual
             </MenuItem>
-            <MenuItem key='promoter' value={0}>
-              Promoter
+            <MenuItem key='Proprietorship' value={1}>
+              Proprietorship
+            </MenuItem>
+            <MenuItem key='Partnership' value={2}>
+            Partnership
+            </MenuItem>
+            <MenuItem key='Proprietorship' value={3}>
+            Company
             </MenuItem>
           </TextField>
 

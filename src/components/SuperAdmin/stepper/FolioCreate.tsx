@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
@@ -7,14 +7,13 @@ import { DatePicker } from '@mui/x-date-pickers';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
-  
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
     plan: 'IG',
     option: 'G',
-    email: '',
-    mobile: '',
+    email: capturedData.invtorInf[0],
+    mobile:capturedData.invtorInf[1],
     dob: '23/11/1991',
     RI: 'Y',
     PEP: 'N',
@@ -80,8 +79,6 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
 
 
   };
-
-
 
   const handleCloseSnackbar = () => {
     setIsFailure(false);
@@ -228,3 +225,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
 };
 
 export default Folio;
+
+function getInvestor() {
+  throw new Error('Function not implemented.');
+}
