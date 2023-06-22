@@ -249,11 +249,11 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
             >
+               <MenuItem defaultChecked value="OTBM">
+                OTBM
+              </MenuItem>
               <MenuItem  value="NEFT">
                 NEFT
-              </MenuItem>
-              <MenuItem defaultChecked value="OTBM">
-                OTBM
               </MenuItem>
             </TextField>
             <Button
