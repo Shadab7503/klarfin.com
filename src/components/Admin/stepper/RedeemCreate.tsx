@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, CircularProgress, Snackbar,Alert, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
+import { useNavigate } from 'react-router-dom';
 
 const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
@@ -28,7 +29,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
   const [validationErrors, setValidationErrors] = useState<any>({});
-
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -40,17 +41,15 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     setValidationErrors({});
     setIsLoading(true);
 
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/redeem`, formData,
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeem`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        // navigate(`/dashboardSuper/investment`)
         const { data } = res;
-        setIsLoading(false);
+        setIsSuccess(true);
         if (!data.succ) return;
         // handleNext();
       }).catch(({ response }) => {
@@ -58,11 +57,13 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
-
-
+      setTimeout(()=>{
+          setIsLoading(false);
+          navigate(`/dashboardAdmin/investment/redeem/${capturedData.folio_id}`)
+        },3000);
   };
 
-
+  
 
   const handleCloseSnackbar = () => {
     setIsFailure(false);
@@ -268,9 +269,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             error={!!validationErrors.SelfValidate}
             helperText={validationErrors.SelfValidate}
           />
-
-
-
+          
           <Button
             variant="contained"
             color="primary"
@@ -287,9 +286,8 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         open={isSuccess}
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
-        message="Redeem submitted successfully!"
         sx={{ marginBottom: 2 }}
-      />
+      ><Alert severity="success">Redeem submitted successfully!</Alert></Snackbar>
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}

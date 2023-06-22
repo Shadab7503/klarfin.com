@@ -5,14 +5,14 @@ import { createFolio } from '../../../services/nippon.service';
 import { format } from 'date-fns';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
-  console.log(capturedData);
+  //console.log(capturedData);
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
     plan: 'IG',
     option: 'G',
-    email: '',
-    mobile: '',
+    email: capturedData.invtorInf[0],
+    mobile:capturedData.invtorInf[1].toString(),
     dob: '23/11/1991',
     RI: 'Y',
     PEP: 'N',

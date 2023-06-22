@@ -53,7 +53,7 @@ const SendOTP = ({ handleNext, capturedDataHandler, capturedData, accessToken })
     setValidationErrors({});
     setIsLoading(true);
 
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/send-OTP`, { Folio: capturedData.folio_id },
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Folio: capturedData.folio_id },
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {

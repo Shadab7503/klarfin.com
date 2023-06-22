@@ -32,7 +32,7 @@ const useStyles = makeStyles({
 });
 
 const KYCCheck = ({handleNext,capturedDataHandler,capturedData,accessToken}) => {
-  console.log('capturedData',capturedData)
+  //console.log('capturedData',capturedData)
   const classes = useStyles();
   const [pan, setPan] = useState(capturedData.pan);
   const [isLoading, setIsLoading] = useState(false);

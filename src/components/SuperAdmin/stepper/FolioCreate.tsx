@@ -6,14 +6,14 @@ import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
-  console.log(capturedData);
+  //console.log(capturedData);
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
     plan: 'IG',
     option: 'G',
     email: capturedData.invtorInf[0],
-    mobile:capturedData.invtorInf[1],
+    mobile:capturedData.invtorInf[1].toString(),
     dob: '23/11/1991',
     RI: 'Y',
     PEP: 'N',
@@ -225,7 +225,3 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
 };
 
 export default Folio;
-
-function getInvestor() {
-  throw new Error('Function not implemented.');
-}

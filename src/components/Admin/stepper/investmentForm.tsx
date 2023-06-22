@@ -104,13 +104,13 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
     setValidationErrors({});
 
     setIsLoading(true);
-    console.log(formData)
+    //console.log(formData)
     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
         const { data } = res;
-        console.log(data);
+        //console.log(data);
         setIsLoading(false);
         if (!data.succ) {
           if(data.public_msg == "Investor Already Exist"){
@@ -119,7 +119,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           }
         };
         capturedDataHandler([{ inv_id: data.invData.id }, { pan: data.invData.pan }]);
-        console.log('data', data);
         handleNext()
       }).catch(({ response }) => {
         setIsLoading(false);
