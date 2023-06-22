@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button,MenuItem ,CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -44,24 +44,19 @@ const CreateOrder = ({ accessToken }) => {
 
     setIsLoading(true);
     console.log(formData)
-    // return;
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/create-order`, formData,
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        navigate(`/dashboardSuper/investment`)
+        navigate(`/dashboardAdmin/investment`)
         setIsLoading(false);
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
-
-
   };
-
-
-
+  
   const handleCloseSnackbar = () => {
     setIsFailure(false);
   };
@@ -245,17 +240,22 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Payment Mode"
               name="PayMode"
-              value={formData.PayMode}
+              select
               onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
+              defaultValue="OTBM"
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
-            />
-
-       
-         
+            >
+               <MenuItem defaultChecked value="OTBM">
+                OTBM
+              </MenuItem>
+              <MenuItem  value="NEFT">
+                NEFT
+              </MenuItem>
+            </TextField>
             <Button
               variant="contained"
               color="primary"

@@ -106,7 +106,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           }
         };
         capturedDataHandler([{ inv_id: data.invData.id }, { pan: data.invData.pan }]);
-        console.log('data', data);
+        //console.log('data', data);
         handleNext()
       }).catch(({ response }) => {
         setIsLoading(false);
@@ -223,7 +223,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             defaultValue="SAVINGS"
             error={!!validationErrors.ACTYPE} // Check if the field has an error
             helperText={validationErrors.ACTYPE} // Display the error message
-            
           >
             {AccTypes.map((each) => (
               <MenuItem key={each} value={each}>

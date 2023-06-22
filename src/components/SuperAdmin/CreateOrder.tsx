@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button,MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -245,14 +245,22 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Payment Mode"
               name="PayMode"
-              value={formData.PayMode}
+              select
               onChange={handleChange}
               variant="outlined"
               margin="normal"
+              defaultValue="OTBM"
               fullWidth
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
-            />
+            >
+              <MenuItem value="OTBM">
+                OTBM
+              </MenuItem>
+              <MenuItem  value="NEFT">
+                NEFT
+              </MenuItem>
+            </TextField>
 
        
          
