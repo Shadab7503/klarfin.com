@@ -49,7 +49,7 @@ const CreateOrder = ({ accessToken }) => {
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        navigate(`/dashboardSuper/investment`)
+        navigate(`/dashboardSuper/investment/details/${folio}`)
         setIsLoading(false);
       }).catch(({ response }) => {
         setIsLoading(false);
