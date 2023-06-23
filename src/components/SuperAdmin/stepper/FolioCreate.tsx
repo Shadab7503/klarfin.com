@@ -14,7 +14,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     option: 'G',
     email: capturedData.invtorInf[0],
     mobile:capturedData.invtorInf[1].toString(),
-    dob: '23/11/1991',
+    dob: '',
     RI: 'Y',
     PEP: 'N',
     RPEP: 'N',
@@ -39,12 +39,21 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
   const [isFailure, setIsFailure] = useState(false);
   const [validationErrors, setValidationErrors] = useState<any>({});
 
+  const dateConverter = (str) =>{
+    var date = new Date(str);
+    var mnth = ("0" + (date.getMonth()+1)).slice(-2);
+    var day  = ("0" + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+    return `${day}/${mnth}/${year}`;
+ }
+
 
   const handleChange = (event) => {
     let { name, value } = event.target;
     if(name == 'dob') {
-      const date = new Date(value);
-      value = format(date, 'dd/mm/yyyy');
+      const date = dateConverter(value);
+      value = date;
+      //value = format(date, 'dd/mm/yyyy');
     }
     setFormData((prevData) => ({
       ...prevData,

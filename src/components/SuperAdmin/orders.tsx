@@ -34,10 +34,10 @@ export default function Orders(props: any) {
         { field: 'Amount', headerName: 'Amount', width: 180 },
         { field: 'TrType', headerName: 'TrType', width: 180 },
         { field: 'Agent', headerName: 'Agent', width: 180 },
-        { field: 'SubBroker', headerName: 'SubBroker', width: 180 },
-        { field: 'SubArnCode', headerName: 'SubArnCode', width: 180 },
+       // { field: 'SubBroker', headerName: 'SubBroker', width: 180 },
+       // { field: 'SubArnCode', headerName: 'SubArnCode', width: 180 },
         { field: 'EUIN', headerName: 'EUIN', width: 180 },
-        { field: 'EUINDecFlag', headerName: 'EUINDecFlag', width: 180 },
+       // { field: 'EUINDecFlag', headerName: 'EUINDecFlag', width: 180 },
         { field: 'ChqBank', headerName: 'ChqBank', width: 180 },
         { field: 'PayMode', headerName: 'PayMode', width: 180 },
         { field: 'REFNO', headerName: 'REFNO', width: 180 }

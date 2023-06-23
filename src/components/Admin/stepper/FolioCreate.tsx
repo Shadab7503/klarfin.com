@@ -38,12 +38,19 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
   const [isFailure, setIsFailure] = useState(false);
   const [validationErrors, setValidationErrors] = useState<any>({});
 
+  const dateConverter = (str) =>{
+    var date = new Date(str);
+    var mnth = ("0" + (date.getMonth()+1)).slice(-2);
+    var day  = ("0" + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+    return `${day}/${mnth}/${year}`;
+ }
 
   const handleChange = (event) => {
     let { name, value } = event.target;
     if(name == 'dob') {
-      const date = new Date(value);
-      value = format(date, 'dd/MM/yyyy');
+      const date = dateConverter(value);
+      value = date;
     }
     setFormData((prevData) => ({
       ...prevData,
