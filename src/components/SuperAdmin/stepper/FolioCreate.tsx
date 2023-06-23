@@ -1,5 +1,5 @@
 import React, { useState ,useEffect } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button,Alert, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
 import { format } from 'date-fns';
@@ -7,6 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   //console.log(capturedData);
+  const [message,setMessage] = useState("");
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
@@ -77,7 +78,11 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
         // navigate(`/dashboardSuper/investment`)
         const { data } = res;
         setIsLoading(false);
-        if (!data.succ) return;
+        if (!data.succ){
+          setMessage(data.message)
+          setIsFailure(true)
+          return;
+        }
         capturedDataHandler('folio', data.folio)
         handleNext();
       }).catch(({ response }) => {
@@ -226,9 +231,8 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Failed to submit PAN. Please try again."
         sx={{ marginBottom: 2 }}
-      />
+      ><Alert severity="error" >{message}</Alert></Snackbar>
     </Card>
   );
 };

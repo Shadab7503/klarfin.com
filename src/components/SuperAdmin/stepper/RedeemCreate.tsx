@@ -53,7 +53,10 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         const { data } = res;
         setIsSuccess(true)
         setIsLoading(false);
-        if (!data.succ) return;
+        if (!data.succ){
+          setIsFailure(true);
+          return;
+        }
         // handleNext();
         
       }).catch(({ response }) => {
@@ -297,9 +300,8 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Failed to submit Redeem. Please try again."
         sx={{ marginBottom: 2 }}
-      />
+      ><Alert severity="error">Failed to submit Redeem. Please try again.</Alert></Snackbar>
     </Card>
   );
 };

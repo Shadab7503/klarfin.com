@@ -71,6 +71,8 @@ const SendOTP = ({ handleNext, capturedDataHandler, capturedData, accessToken })
 
       }).catch(({ response }) => {
         setIsLoading(false);
+        setIsFailure(true);
+        setMsg('OTP sending failed')
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })

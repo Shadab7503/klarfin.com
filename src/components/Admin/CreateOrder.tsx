@@ -48,6 +48,12 @@ const CreateOrder = ({ accessToken }) => {
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
+        const {data} = res;
+        if(!data.succ){
+          setIsLoading(false);
+          setIsFailure(true);
+          return;
+        }
         navigate(`/dashboardAdmin/investment/details/${folio}`)
         setIsLoading(false);
       }).catch(({ response }) => {
@@ -272,14 +278,14 @@ const CreateOrder = ({ accessToken }) => {
           open={isSuccess}
           autoHideDuration={3000}
           onClose={() => setIsSuccess(false)}
-          message="PAN submitted successfully!"
+          message="Order created successfully!"
           sx={{ marginBottom: 2 }}
         />
         <Snackbar
           open={isFailure}
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          message="Failed to submit PAN. Please try again."
+          message="Failed to Create Order. Please try again."
           sx={{ marginBottom: 2 }}
         />
       </Card>
