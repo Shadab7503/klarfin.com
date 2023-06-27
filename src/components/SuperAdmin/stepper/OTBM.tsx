@@ -40,6 +40,7 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
         const { data } = res;
         if (!data.succ){ 
           setMessage(data.message);
+          setIsLoading(false);
           setIsFailure(true);
           return;}
         setIsLoading(false);
@@ -97,11 +98,11 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
             onChange={handleChange}
             variant="outlined"
             margin="normal"
+           // inputProps={{ inputMode: 'numeric', pattern: '[100-100000]*' }} 
             fullWidth
             error={!!validationErrors.Amount} // Check if the field has an error
             helperText={validationErrors.Amount} // Display the error message
           />
-
 
           <Button
             variant="contained"

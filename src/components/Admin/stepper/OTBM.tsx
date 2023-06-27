@@ -40,6 +40,7 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
         const { data } = res;
         if (!data.succ){ 
           setMessage(data.message)
+          setIsLoading(false);
           setIsFailure(true)
           return;}
         setIsLoading(false);

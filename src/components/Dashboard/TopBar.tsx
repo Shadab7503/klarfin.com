@@ -44,7 +44,6 @@ const TopBar = (props: TopBarProps) => {
 
               <Link to='/dashboardAdmin/settings' >
                   <img src={settings} alt="settings" />
-              
               </Link>
               
             </Grid>

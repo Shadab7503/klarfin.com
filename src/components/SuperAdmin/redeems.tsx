@@ -16,6 +16,7 @@ export default function Redeems(props: any) {
     const [tranx, setTranx] = useState([]);
     const [refno,setRefno] = useState();
     const [popup,setPopup] = useState(false);
+    
 
     const  { folio_id } = useParams();
     const [columns, setColumns] = useState([
@@ -58,11 +59,6 @@ export default function Redeems(props: any) {
                     >
                         Check status
                     </Grid>
-                   
-
-                    <span>
-
-                    </span>
                 </div>
             }
         }
@@ -70,8 +66,6 @@ export default function Redeems(props: any) {
 
 
     const [loading, setLoading] = useState(false);
-
-
     const getTranxData = () => {
         setLoading(true);
   
@@ -90,23 +84,20 @@ export default function Redeems(props: any) {
   
 
     const today = new Date();
-    const formattedToday = format(today, 'MM/dd/yyyy');
-
+    
+    const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
     const [filter, setFilter] = useState({
         plan: 'IG',
         scheme: 'LF',
-        date: formattedToday
+        date: date
     });
 
     const filterHandler = (data) => {
         console.log(data);
         setFilter({ ...data });
     }
-
-
     useEffect(() => {
         getTranxData()
-
     }, [filter])
 
 
@@ -115,10 +106,7 @@ export default function Redeems(props: any) {
     return    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
 
 <Popup handleClose={setPopup} accessToken={props.accessToken} isOpen={popup} refno={refno} ></Popup>
-
-
-<SearchBar filter={filter} filterDataHandler={filterHandler} />
-
+<SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate}/>
 
         <h2 style={{ marginBottom: '20px' }}>Redeems</h2>
 

@@ -255,6 +255,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             label="OTP Reference"
             name="OTPReference"
             value={formData.OTPReference}
+            disabled
             onChange={handleChange}
             variant="outlined"
             margin="normal"
