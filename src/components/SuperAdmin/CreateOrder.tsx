@@ -49,15 +49,19 @@ const CreateOrder = ({ accessToken }) => {
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        navigate(`/dashboardSuper/investment/details/${folio}`)
         setIsLoading(false);
+        const {data} = res;
+        if(!data.succ){
+          setIsLoading(false)
+          setIsFailure(true);
+          return;
+        }
+        navigate(`/dashboardSuper/investment/details/${folio}`)
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
-
-
   };
 
 
@@ -280,14 +284,14 @@ const CreateOrder = ({ accessToken }) => {
           open={isSuccess}
           autoHideDuration={3000}
           onClose={() => setIsSuccess(false)}
-          message="PAN submitted successfully!"
+          message="Order is created successfully!"
           sx={{ marginBottom: 2 }}
         />
         <Snackbar
           open={isFailure}
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          message="Failed to submit PAN. Please try again."
+          message="Failed to Create Order. Please try again."
           sx={{ marginBottom: 2 }}
         />
       </Card>

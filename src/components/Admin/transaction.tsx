@@ -13,6 +13,7 @@ import SearchBar from './searchBar';
 export default function Transactions(props: any) {
 
     const [tranx, setTranx] = useState([]);
+    const [Lasttranx , setLasttranx] = useState([]);
 
     const  { folio_id } = useParams();
     const [columns, setColumns] = useState([
@@ -38,34 +39,15 @@ export default function Transactions(props: any) {
     ]);
 
 
-    const [loading, setLoading] = useState(false);
-
-
-    const getTranxData = () => {
-        setLoading(true);
-  
-        axios
-            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/transaction`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
-                {
-                    headers: { Authorization: `Bearer ${props.accessToken}` }
-                })
-            .then(({ data }) => {
-                setTranx(data.tranxData);
-                setLoading(false);
-
-            });
-
-    }
-
-  
-
     const today = new Date();
-    const formattedToday = format(today, 'MM/dd/yyyy');
+    const [loading, setLoading] = useState(false);
+    const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
+    
 
     const [filter, setFilter] = useState({
         plan: 'IG',
         scheme: 'LF',
-        date: formattedToday
+        date: date
     });
 
     const filterHandler = (data) => {
@@ -74,18 +56,44 @@ export default function Transactions(props: any) {
     }
 
 
+    const getTranxData = () => {
+        setLoading(true);
+        axios
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/transaction`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
+                {
+                    headers: { Authorization: `Bearer ${props.accessToken}` }
+                })
+            .then(({ data }) => {
+                setTranx(data.tranxData);
+                setLoading(false);
+            });
+    }
+
+    const getLastTwentyTransaction = () =>{
+        setLoading(true);
+      axios
+          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/lasttransaction`,{Folio:folio_id,plan:"GP",scheme:"ON"},
+              {
+                  headers: { Authorization: `Bearer ${props.accessToken}`}
+              })
+          .then(({ data }) => {
+              setLasttranx(data.tranxData);
+              setLoading(false);
+          });
+    }
+
+
     useEffect(() => {
         getTranxData()
-
     }, [filter])
 
-
-    if (loading) return <Loading />;
-
+    useEffect(()=>{
+      getLastTwentyTransaction()
+    },[])
     return    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
 
 
-<SearchBar filter={filter} filterDataHandler={filterHandler} />
+<SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate} />
 
 
         <h2 style={{ marginBottom: '20px' }}>Transactions</h2>
@@ -93,26 +101,34 @@ export default function Transactions(props: any) {
 
         <div style={{ height: '100vh', width: '100%' }}>
 
-            <DataGrid
+            {  loading? <Loading />:<DataGrid
                 //  hideFooter={true}
                 rowsPerPageOptions={[50, 100, 1000]}
              
-                rows={tranx.map((each: any, idx: number) => {
+                 rows={tranx.map((each: any, idx: number) => {
                     console.log(each);
-                  
                     return {...each,id:idx+1};
-                  
                 })}
-
                 columns={columns.map(each => {
-                   
                     return { ...each }
                 })}
-
-            />
+            />}
         </div>
+        {/* <h2>Last 20 Transactions</h2>
+        <div style={{ height: '100vh', width: '100%' }}>
 
-      
+            <DataGrid
+                hideFooter={true}
+                rowsPerPageOptions={[20]}
+                rows={Lasttranx.slice(0,20).map((each: any, idx: number) => {
+                    console.log(each);
+                    return {...each,id:idx+1};
+                })}
+                columns={columns.map(each => {
+                    return { ...each }
+                })}
+            />
+        </div> */}
 
     </Grid>
 }

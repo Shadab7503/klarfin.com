@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button,Alert,CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
+  const [message,setMessage] = useState("");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     "Pan": capturedData.pan,
@@ -37,7 +38,11 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
       }).then(res => {
         // navigate(`/dashboardSuper/investment`)
         const { data } = res;
-        if (!data.succ) return;
+        if (!data.succ){ 
+          setMessage(data.message)
+          setIsLoading(false);
+          setIsFailure(true)
+          return;}
         setIsLoading(false);
         handleNext();
       }).catch(({ response }) => {
@@ -133,9 +138,9 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Failed to submit OTBM. Please try again."
+        //message="Failed to submit OTBM. Please try again."
         sx={{ marginBottom: 2 }}
-      />
+      ><Alert severity='error' >{message}</Alert></Snackbar>
     </Card>
   );
 };

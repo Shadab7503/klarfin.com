@@ -1,151 +1,246 @@
-import { Button, Grid } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import axios from 'axios';
-
-import React, { useEffect, useState } from 'react';
-import Loading from '../Dashboard/Loading';
-import { Link, useParams } from 'react-router-dom';
-import Transactions from './transaction';
-import SearchBar from './searchBar';
-import { format } from 'date-fns';
-import { Paper, Typography } from '@mui/material';
-import { List, ListItem, ListItemText } from '@mui/material';
-import Scheme from './Scheme';
-
-
-
+import {Button, Grid, Tab, Tabs} from "@mui/material";
+import {DataGrid} from "@mui/x-data-grid";
+import axios from "axios";
+import {useEffect, useState} from "react";
+import Loading from "../Dashboard/Loading";
+import {Link, useParams} from "react-router-dom";
+import SearchBar from "./searchBar";
+import {format} from "date-fns";
+import Scheme from "./Scheme";
+import Popup from "./model";
 
 export default function Orders(props: any) {
+  const [showRedeem, setShowRedeem] = useState(false);
+  const [tranx, setTranx] = useState([]);
+  const [refno, setRefno] = useState();
+  const [popup, setPopup] = useState(false);
+  const {folio_id} = useParams();
+  const [investmentList, setInvestmentList] = useState([]);
+  
+  const today = new Date();
+  const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
+  const [filter, setFilter] = useState({
+    plan: "IG",
+    scheme: "LF",
+    date: date,
+  });
 
-    const today = new Date();
-    const formattedToday = format(today, 'MM/dd/yyyy');
-    const [investmentList, setInvestmentList] = useState([]);
-    const [filter, setFilter] = useState({
-        plan: 'IG',
-        scheme: 'LF',
-        date: formattedToday
-    });
+  const [columnsRedeem, setColumnsRedeem] = useState([
+    {field: "id", headerName: "Id", width: 180},
+    {field: "fund", headerName: "Fund", width: 180},
+    {field: "acno", headerName: "Acno", width: 180},
+    {field: "scheme", headerName: "Scheme", width: 180},
+    {field: "plan", headerName: "Plan", width: 180},
+    {field: "options", headerName: "Options", width: 180},
+    {field: "RedFlag", headerName: "RedFlag", width: 180},
+    {field: "UnitamtFlag", headerName: "UnitAmtFlag", width: 180},
+    {field: "UnitAmtValue", headerName: "UnitAmtValue", width: 180},
+    {field: "Tpin", headerName: "Tpin", width: 180},
+    {field: "bank", headerName: "Bank", width: 180},
+    {field: "oldihno", headerName: "Oldihno", width: 180},
+    {field: "trdate", headerName: "Trdate", width: 180},
+    {field: "entdate", headerName: "Entdate", width: 180},
+    {field: "ShowInstaStatus", headerName: "ShowInstaStatus", width: 180},
+    {field: "OTP", headerName: "OTP", width: 180},
+    {field: "OTPReference", headerName: "OTPReference", width: 180},
+    {field: "SelfValidate", headerName: "SelfValidate", width: 180},
+    {field: "Return_code", headerName: "Return_code", width: 180},
+    {field: "REFNO", headerName: "REFNO", width: 180},
+    {field: "Date_Time", headerName: "Date_Time", width: 180},
+    {
+      field: "Actions",
+      headerName: "action",
+      width: 420,
+      renderCell: (params: any) => {
+        return (
+          <div style={{display: "flex", justifyContent: "space-between"}}>
+            <Grid
+              item
+              className="bills-pay"
+              py={1}
+              px={2}
+              style={{marginRight: "1rem"}}
+              onClick={() => {
+                setRefno(params.row.REFNO);
+                setPopup(true);
+              }}
+            >
+              Check status
+            </Grid>
+          </div>
+        );
+      },
+    },
+  ]);
 
-    const { folio_id } = useParams();
-    const [columns, setColumns] = useState([
-        { field: 'id', headerName: 'Id', width: 180 },
-        { field: 'Fund', headerName: 'Fund', width: 180 },
-        { field: 'Scheme', headerName: 'Scheme', width: 180 },
-        { field: 'Plan', headerName: 'Plan', width: 180 },
-        { field: 'Options', headerName: 'Options', width: 180 },
-        { field: 'AcNo', headerName: 'AcNo', width: 180 },
-        { field: 'Amount', headerName: 'Amount', width: 180 },
-        { field: 'TrType', headerName: 'TrType', width: 180 },
-        { field: 'Agent', headerName: 'Agent', width: 180 },
-       // { field: 'SubBroker', headerName: 'SubBroker', width: 180 },
-       //{ field: 'SubArnCode', headerName: 'SubArnCode', width: 180 },
-        { field: 'EUIN', headerName: 'EUIN', width: 180 },
-       //{ field: 'EUINDecFlag', headerName: 'EUINDecFlag', width: 180 },
-        { field: 'ChqBank', headerName: 'ChqBank', width: 180 },
-        { field: 'PayMode', headerName: 'PayMode', width: 180 },
-        { field: 'REFNO', headerName: 'REFNO', width: 180 }
-    ]);
+  const [columns, setColumns] = useState([
+    {field: "id", headerName: "Id", width: 180},
+    {field: "Fund", headerName: "Fund", width: 180},
+    {field: "Scheme", headerName: "Scheme", width: 180},
+    {field: "Plan", headerName: "Plan", width: 180},
+    {field: "Options", headerName: "Options", width: 180},
+    {field: "AcNo", headerName: "AcNo", width: 180},
+    {field: "Amount", headerName: "Amount", width: 180},
+    {field: "TrType", headerName: "TrType", width: 180},
+    {field: "Agent", headerName: "Agent", width: 180},
+    // { field: 'SubBroker', headerName: 'SubBroker', width: 180 },
+    // { field: 'SubArnCode', headerName: 'SubArnCode', width: 180 },
+    {field: "EUIN", headerName: "EUIN", width: 180},
+    // { field: 'EUINDecFlag', headerName: 'EUINDecFlag', width: 180 },
+    {field: "ChqBank", headerName: "ChqBank", width: 180},
+    {field: "PayMode", headerName: "PayMode", width: 180},
+    {field: "REFNO", headerName: "REFNO", width: 180},
+  ]);
 
+  const [loading, setLoading] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+  const getReceivablesData = (filter: {page: number; limit: number}) => {
+    setLoading(true);
+    const {page, limit} = filter;
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/orders`, {
+        headers: {Authorization: `Bearer ${props.accessToken}`},
+        params: {
+          folio: folio_id,
+        },
+      })
+      .then(({data}) => {
+        setInvestmentList(data.orders);
+        setLoading(false);
+      });
+  };
 
+  const getTranxData = () => {
+    console.log(filter);
+    setLoading(true);
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeems`,
+        {
+          acno: folio_id,
+          plan: filter.plan,
+          scheme: filter.scheme,
+          trdate: filter.date,
+        },
+        {
+          headers: {Authorization: `Bearer ${props.accessToken}`},
+        }
+      )
+      .then(({data}) => {
+        setTranx(data.redeem);
+        setLoading(false);
+      });
+  };
 
-    const getReceivablesData = (filter: { page: number, limit: number }) => {
-        setLoading(true);
-        const { page, limit } = filter;
-        axios
-            .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/orders`,
-                {
-                    headers: { Authorization: `Bearer ${props.accessToken}` },
-                    params: {
-                        folio: folio_id
-                    }
-                })
-            .then(({ data }) => {
-                setInvestmentList(data.orders);
-                setLoading(false);
+  useEffect(() => {
+    getTranxData();
+  }, [filter]);
 
-            });
+  useEffect(() => {
+    getReceivablesData({page: 1, limit: 20});
+  }, []);
 
-    }
+  const ShowHandler = () => {
+    setShowRedeem(!showRedeem);
+  };
 
-    useEffect(() => {
-        getReceivablesData({ page: 1, limit: 20 })
-
-    }, [])
-
-
-    const filterHandler = (data) => {
-        console.log(data);
-        setFilter({ ...data });
-    }
-
-
-    if (loading) return <Loading />;
-
-
-    return <div>
-
-
-
-        <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
-
-            <div>
-                <Button style={{marginRight:'2rem'}} variant="contained" color="primary" onClick={() => { }}>
-                    <Link to={`/dashboardAdmin/investment/tranx/${folio_id}`} >
-                    Transactions
-                    </Link>
-                </Button>
-                <Button variant="contained" color="primary" onClick={() => { }}>
-                    
-                    <Link to={`/dashboardAdmin/investment/redeem/${folio_id}`} >
-                    Redeems
-                    </Link>
-                </Button>
-              
-            </div>
-
-
-            <SearchBar filter={filter} filterDataHandler={filterHandler} />
-
-
-
-            <Scheme folio_id={folio_id} filter={filter} accessToken={props.accessToken} />
-
-
-
-            <h2 style={{ marginBottom: '20px' }}>Orders</h2>
-
-
-            <div style={{ height: '100vh', width: '100%' }}>
-
-                <DataGrid
-                    //  hideFooter={true}
-                    rowsPerPageOptions={[50, 100, 1000]}
-
-                    rows={investmentList.map((each: any, idx: number) => {
-                        console.log(each);
-
-                        return { ...each, id: idx + 1 };
-
-                    })}
-
-                    columns={columns.map(each => {
-
-                        return { ...each }
-                    })}
-
-                />
-            </div>
-
-
-            {/* <Transactions filter={filter} accessToken={props.accessToken} /> */}
-
-
-        </Grid>
-        <div style={{ marginTop: '10rem' }}>
-
+  const filterHandler = data => {
+    setFilter({...data});
+  };
+  return (
+    <div>
+  
+      <Grid
+        item
+        xs={12}
+        px={10}
+        mt={5}
+        sx={{maxWidth: "95vw", height: "100vh"}}
+      >
+        <div>
+          <Button
+            style={{marginRight: "2rem"}}
+            variant="contained"
+            color="primary"
+            onClick={() => {}}
+          >
+            <Link to={`/dashboardAdmin/investment/tranx/${folio_id}`}>
+              Transactions
+            </Link>
+          </Button>
         </div>
-    </div>
+        <Popup
+          handleClose={setPopup}
+          accessToken={props.accessToken}
+          isOpen={popup}
+          refno={refno}
+        ></Popup>
+        <SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate} />
 
+        <Scheme
+          folio_id={folio_id}
+          filter={filter}
+          accessToken={props.accessToken}
+        />
+        <div style={{marginBottom: "1rem"}}>
+          <Button
+            variant="contained"
+            style={
+              !showRedeem
+                ? {backgroundColor: "#1976d2", marginRight: "2rem"}
+                : {
+                    backgroundColor: "white",
+                    color: "black",
+                    marginRight: "2rem",
+                  }
+            }
+            onClick={ShowHandler}
+          >
+            Orders
+          </Button>
+          <Button
+            variant="contained"
+            style={
+              showRedeem
+                ? {backgroundColor: "#1976d2"}
+                : {backgroundColor: "white", color: "black"}
+            }
+            onClick={ShowHandler}
+          >
+            Redeems
+          </Button>
+        </div>
+
+        {showRedeem ? (
+          <div style={{height: "100vh", width: "100%"}}>
+            <DataGrid
+              //hideFooter={true}
+              rowsPerPageOptions={[50, 100, 1000]}
+              rows={tranx.map((each: any, idx: number) => {
+                console.log(each);
+                return {...each, id: idx + 1};
+              })}
+              columns={columnsRedeem.map(each => {
+                return {...each};
+              })}
+            />
+          </div>
+        ) : (
+          <div style={{height: "100vh", width: "100%"}}>
+            <DataGrid
+              //hideFooter={true}
+              rowsPerPageOptions={[50, 100, 1000]}
+              rows={investmentList.map((each: any, idx: number) => {
+                console.log(each);
+                return {...each, id: idx + 1};
+              })}
+              columns={columns.map(each => {
+                return {...each};
+              })}
+            />
+          </div>
+        )}
+      </Grid>
+    </div> 
+  );
 }

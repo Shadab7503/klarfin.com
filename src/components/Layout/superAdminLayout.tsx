@@ -29,16 +29,10 @@ const SuperAdminLayout = (props:{children:JSX.Element,user:any}) => {
             style={{ maxHeight: "100vh", overflow: "auto" }}
           >
             <Grid container>
-              {/* {
-                !props.superAdmin && 
               <Grid item xs={12}>
-                <TopBar
-                  setDrawerOpen={setDrawerOpen}
-                  setSelectedItem={setSelectedItem}
-                  companyName={props.user?.companyName}
-                />
+                <h2 style={{marginLeft:"85%",padding:'0px', height:'20px'}} >SuperAdmin</h2><hr/>
               </Grid>
-              } */}
+
               <Grid item xs={12}>
                  {
                     props.children

@@ -3,25 +3,30 @@ import { AppBar, Toolbar, Typography, Button, FormControl, InputLabel, Select, M
 import { format } from 'date-fns';
 
 
-const FilterBar = ({filterDataHandler,filter:defaultValues}) => {
+const FilterBar = ({filterDataHandler,filter:defaultValues,setDate}) => {
   const [filter, setFilter] = useState({
     ...defaultValues
   });
-
-
+  
+  
   const filterHandler = (key,value)=>{
     setFilter({...filter,[key]:value});
   }
-
-
-
+  
+  const DateConverter = (str) =>{
+    var date = new Date(str);
+    var mnth = ("0" + (date.getMonth()+1)).slice(-2);
+    var day  = ("0" + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+    return `${mnth}/${day}/${year}`;
+  }
+  
   const handleSearchClick = () => {
-
-  filterDataHandler(filter)
+    filterDataHandler(filter)
   };
-
-
-
+  
+  
+  
   const getCurrentDate = () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
@@ -30,11 +35,10 @@ const FilterBar = ({filterDataHandler,filter:defaultValues}) => {
     month = month < 10 ? `0${month}` : month;
     let day = currentDate.getDate();
     //@ts-ignore
-
+    
     day = day < 10 ? `0${day}` : day;
     return `${year}-${month}-${day}`;
   };
-
   return (
     <AppBar style={{backgroundColor:'white'}} position="static" elevation={0}>
       <Toolbar>
@@ -65,7 +69,8 @@ const FilterBar = ({filterDataHandler,filter:defaultValues}) => {
           onChange={(e)=>{
             const inputDate = e.target.value;
             const dateObj = new Date(inputDate);
-            const formattedDate = format(dateObj, 'MM/dd/yyyy');
+            const formattedDate = DateConverter(dateObj);
+            setDate(formattedDate);
             filterHandler('date',  formattedDate)}
         }
 

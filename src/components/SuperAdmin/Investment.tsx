@@ -144,7 +144,7 @@ export default function Investment(props: any) {
                       });
                     }}
                       >
-                    OBTM
+                    OTBM
                   </Grid>
                 </>}
               </>

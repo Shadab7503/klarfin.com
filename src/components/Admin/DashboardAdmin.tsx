@@ -16,6 +16,7 @@ import Bills from "./Bills";
 import Settings from "./Settings";
 // import CreditManagement from "./CreditManagement";
 import Investment from "../Admin/Investment";
+import NipponBank from "./NipponBank";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -36,18 +37,23 @@ const DashboardAdmin = (props) => {
           user={{}} >
           <CreateOrder accessToken={accessToken} />
         </AdminLayout>} />
-        <Route path="/dashboardAdmin/add-investment" element={<AdminLayout
+
+        <Route path="/dashboardAdmin/nippon-bank" element={<AdminLayout
+          user={{}} >
+          <NipponBank />
+        </AdminLayout>} />
+        {/* <Route path="/dashboardAdmin/add-investment" element={<AdminLayout
           user={{}} >
           <HorizontalLinearStepper  accessToken={accessToken} />
-        </AdminLayout>} />
+        </AdminLayout>} /> */}
         <Route path="/dashboardAdmin/redeem/:folio_id" element={<AdminLayout
           user={{}} >
           <RedeemStepper accessToken={accessToken} />
         </AdminLayout>} />
-        <Route path="/dashboardAdmin/add-investment/:id" element={<AdminLayout
+        {/* <Route path="/dashboardAdmin/add-investment/:id" element={<AdminLayout
           user={{}} >
           <Form accessToken={accessToken} />
-        </AdminLayout>} />
+        </AdminLayout>} /> */}
         <Route path="/dashboardAdmin/investment/details/:folio_id" element={<AdminLayout
           user={{}} >
           <Orders accessToken={accessToken} />

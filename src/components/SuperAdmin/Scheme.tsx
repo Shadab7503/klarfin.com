@@ -4,10 +4,11 @@ import { Grid } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Loading from '../Dashboard/Loading';
+import { stringify } from 'querystring';
 
 const Scheme = (props) => {
 
-    const [scheme,setScheme] = useState({ BankName:'', Folio:'', Nav:'', Nav_Date:'', Plan_code:'', SchemeCategory:'', SchemeDescription:'',Totalunits:'',InvestedAmt:'',FreeAmt:'' });
+    const [scheme,setScheme] = useState({ BankName:'', Folio:'', Nav:'', Nav_Date:'', Plan_code:'', SchemeCategory:'', SchemeDescription:'',Totalunits:'',InvestedAmt:'',FreeAmt:'',InProcessAmt:'' });
 
     const [loading, setLoading] = useState(false);
   
@@ -21,6 +22,7 @@ const Scheme = (props) => {
                 })
             .then(({ data }) => {
                 setScheme(data.schemeData);
+                console.log(data.schemeData)
                 setLoading(false);
             });
 
@@ -28,11 +30,10 @@ const Scheme = (props) => {
 
     useEffect(() => {
         getSchemeData()
-
     }, [props.filter])
 
 
-    const { BankName, Folio, Nav, Nav_Date, Plan_code/*, SchemeCategory*/, SchemeDescription,Totalunits,InvestedAmt,FreeAmt } = scheme;
+    const { BankName, Folio, Nav, Nav_Date, Plan_code/*, SchemeCategory*/, SchemeDescription,Totalunits,InvestedAmt,FreeAmt,InProcessAmt } = scheme;
     if (loading) return <Loading />;
     return (
       <Grid container spacing={2}>
@@ -95,17 +96,17 @@ const Scheme = (props) => {
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                 Invested Amount
+                 Actual Amount Invested
             </Typography>
-            <Typography variant="body1">{InvestedAmt}</Typography>
+            <Typography variant="body1">{ parseInt(InvestedAmt) - parseInt(InProcessAmt)}</Typography>
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                    Free Amount
+                    InProcess Amount
             </Typography>
-            <Typography variant="body1">{FreeAmt}</Typography>
+            <Typography variant="body1">{InProcessAmt}</Typography>
           </Paper>
         </Grid>
         <Grid  item xs={12} sm={6} md={4}>

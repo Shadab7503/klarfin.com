@@ -53,24 +53,27 @@ const SendOTP = ({ handleNext, capturedDataHandler, capturedData, accessToken })
     setValidationErrors({});
     setIsLoading(true);
 
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Folio: capturedData.folio_id },
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Acno: capturedData.folio_id,Folio: capturedData.folio_id  },
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        const data = res.data.OTPData;
-
+        const data = res.data;
+        if(!data.succ){
+          setIsLoading(false);
+          setIsSuccess(false);
+          setMsg(data.message);
+          return;
+        }
         setIsLoading(false);
-        setPan('');
-
+        setPan("");
         setIsSuccess(true);
-
-
-        setMsg('OTP sent successfully!');
-        capturedDataHandler('refNo', data.RefNo);
-        handleNext()
-
+        setMsg("OTP sent successfully!");
+        capturedDataHandler("refNo", data.OTPData.RefNo);
+        handleNext();
       }).catch(({ response }) => {
         setIsLoading(false);
+        setIsFailure(true);
+        setMsg("OTP sending failed!")
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })

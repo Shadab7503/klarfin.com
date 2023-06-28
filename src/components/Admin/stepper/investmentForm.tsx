@@ -218,7 +218,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             error={!!validationErrors.IFSC} // Check if the field has an error
             helperText={validationErrors.IFSC} // Display the error message
             required
-            onPaste={(e)=>{e.preventDefault()}}
+            // onPaste={(e)=>{e.preventDefault()}}
             autoComplete="off"
           />
 
