@@ -223,6 +223,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
           <TextField
             label="Transaction Date"
             name="trdate"
+            disabled
             value={formData.trdate}
             onChange={handleChange}
             variant="outlined"
@@ -236,6 +237,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             label="Entry Date"
             name="entdate"
             value={formData.entdate}
+            disabled
             onChange={handleChange}
             variant="outlined"
             margin="normal"

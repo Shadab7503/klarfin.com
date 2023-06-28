@@ -5,9 +5,10 @@ import {useEffect, useState} from "react";
 import Loading from "../Dashboard/Loading";
 import {Link, useParams} from "react-router-dom";
 import SearchBar from "./searchBar";
-import {format} from "date-fns";
+import {format, formatISO} from "date-fns";
 import Scheme from "./Scheme";
 import Popup from "./model";
+import moment from "moment";
 
 export default function Orders(props: any) {
   const [showRedeem, setShowRedeem] = useState(false);
@@ -25,6 +26,15 @@ export default function Orders(props: any) {
     date: date,
   });
 
+  function convertToISOString(dateString) {
+    const formattedDate = moment(dateString, 'MM/DD/YYYY').format('YYYY-MM-DD[T]00:00:00');
+    return formattedDate;
+  }
+  function incrementOneDay(dateString) {
+    const formattedDate = moment(dateString, 'MM/DD/YYYY').add(1, 'day').format('MM/DD/YYYY');
+    return formattedDate;
+  }
+  
   const [columnsRedeem, setColumnsRedeem] = useState([
     {field: "id", headerName: "Id", width: 180},
     {field: "scheme", headerName: "Scheme", width: 180},
@@ -99,13 +109,15 @@ export default function Orders(props: any) {
 
   const getReceivablesData = () => {
     setLoading(true);
-
     axios
       .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/orders`, {
         headers: {Authorization: `Bearer ${props.accessToken}`},
         params: {
           folio: folio_id,
-          ...filter
+          fromDate:convertToISOString(filter.date),
+          toDate: convertToISOString((incrementOneDay(filter.date))),
+          plan:filter.plan,
+          scheme:filter.scheme
         },
       })
       .then(({data}) => {
@@ -115,7 +127,7 @@ export default function Orders(props: any) {
   };
 
   const getTranxData = () => {
-    console.log(filter);
+    console.log("Filter Redeems",filter);
     setLoading(true);
     axios
       .post(

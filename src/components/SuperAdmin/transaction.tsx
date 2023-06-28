@@ -72,7 +72,7 @@ export default function Transactions(props: any) {
     const getLastTwentyTransaction = () =>{
         setLoading(true);
       axios
-          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:filter.plan,scheme:filter.scheme},
+          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
               {
                   headers: { Authorization: `Bearer ${props.accessToken}`}
               })

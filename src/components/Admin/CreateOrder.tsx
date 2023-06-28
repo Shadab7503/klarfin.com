@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, MenuItem, CircularProgress,Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ const schemes = [
 ]
 
 const CreateOrder = ({ accessToken }) => {
-
+  const [msg,setMsg] = useState("");
   const { folio } = useParams();
   const navigate = useNavigate();
 
@@ -86,6 +86,7 @@ const CreateOrder = ({ accessToken }) => {
         const { data } = res;
         if (!data.succ) {
           setIsLoading(false);
+          setMsg(data.message)
           setIsFailure(true);
           return;
         }
@@ -306,9 +307,8 @@ const CreateOrder = ({ accessToken }) => {
           open={isFailure}
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          message="Failed to Create Order. Please try again."
           sx={{ marginBottom: 2 }}
-        />
+          ><Alert severity='error' >{msg}</Alert></Snackbar>
       </Card>
     </div>
   );

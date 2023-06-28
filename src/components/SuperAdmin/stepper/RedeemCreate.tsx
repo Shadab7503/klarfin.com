@@ -244,9 +244,9 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             variant="outlined"
             margin="normal"
             fullWidth
+            disabled
             error={!!validationErrors.trdate}
             helperText={validationErrors.trdate}
-            disabled
           />
 
           <TextField

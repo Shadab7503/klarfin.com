@@ -8,6 +8,7 @@ import SearchBar from "./searchBar";
 import {format} from "date-fns";
 import Scheme from "./Scheme";
 import Popup from "./model";
+import moment from "moment";
 
 export default function Orders(props: any) {
   const [showRedeem, setShowRedeem] = useState(false);
@@ -16,7 +17,7 @@ export default function Orders(props: any) {
   const [popup, setPopup] = useState(false);
   const {folio_id} = useParams();
   const [investmentList, setInvestmentList] = useState([]);
-  
+  console.log("folio Id :",folio_id)
   const today = new Date();
   const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
   const [filter, setFilter] = useState({
@@ -24,6 +25,15 @@ export default function Orders(props: any) {
     scheme: "LF",
     date: date,
   });
+
+  function convertToISOString(dateString) {
+    const formattedDate = moment(dateString, 'MM/DD/YYYY').format('YYYY-MM-DD[T]00:00:00');
+    return formattedDate;
+  }
+  function incrementOneDay(dateString) {
+    const formattedDate = moment(dateString, 'MM/DD/YYYY').add(1, 'day').format('MM/DD/YYYY');
+    return formattedDate;
+  }
 
   const [columnsRedeem, setColumnsRedeem] = useState([
     {field: "id", headerName: "Id", width: 180},
@@ -94,14 +104,17 @@ export default function Orders(props: any) {
 
   const [loading, setLoading] = useState(false);
 
-  const getReceivablesData = (filter: {page: number; limit: number}) => {
+  const getReceivablesData = () => {
     setLoading(true);
-    const {page, limit} = filter;
     axios
       .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/orders`, {
         headers: {Authorization: `Bearer ${props.accessToken}`},
         params: {
           folio: folio_id,
+          fromDate:convertToISOString(filter.date),
+          toDate: convertToISOString((incrementOneDay(filter.date))),
+          plan:filter.plan,
+          scheme:filter.scheme
         },
       })
       .then(({data}) => {
@@ -134,11 +147,8 @@ export default function Orders(props: any) {
 
   useEffect(() => {
     getTranxData();
+    getReceivablesData();
   }, [filter]);
-
-  useEffect(() => {
-    getReceivablesData({page: 1, limit: 20});
-  }, []);
 
   const ShowHandler = () => {
     setShowRedeem(!showRedeem);

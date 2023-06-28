@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button,MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button,MenuItem, CircularProgress, Snackbar, Alert,Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ const CreateOrder = ({ accessToken }) => {
 
   const { folio } = useParams();
   const navigate = useNavigate();
+  const [msg,setMsg] = useState("");
 
   const [formData, setFormData] = useState({
     "Fund": "RMF",
@@ -54,6 +55,7 @@ const CreateOrder = ({ accessToken }) => {
         if(!data.succ){
           setIsLoading(false)
           setIsFailure(true);
+          setMsg(data.message)
           return;
         }
         navigate(`/dashboardSuper/investment/details/${folio}`)
@@ -291,9 +293,8 @@ const CreateOrder = ({ accessToken }) => {
           open={isFailure}
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          message="Failed to Create Order. Please try again."
           sx={{ marginBottom: 2 }}
-        />
+        ><Alert severity='error' >{msg}</Alert></Snackbar>
       </Card>
     </div>
   );
