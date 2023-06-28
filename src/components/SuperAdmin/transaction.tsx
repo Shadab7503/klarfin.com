@@ -72,7 +72,7 @@ export default function Transactions(props: any) {
     const getLastTwentyTransaction = () =>{
         setLoading(true);
       axios
-          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:"GP",scheme:"ON"},
+          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:filter.plan,scheme:filter.scheme},
               {
                   headers: { Authorization: `Bearer ${props.accessToken}`}
               })
@@ -85,11 +85,10 @@ export default function Transactions(props: any) {
 
     useEffect(() => {
         getTranxData()
+        getLastTwentyTransaction()
     }, [filter])
 
-    useEffect(()=>{
-      getLastTwentyTransaction()
-    },[])
+   
     return    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
 
 

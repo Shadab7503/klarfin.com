@@ -40,6 +40,8 @@ export default function Redeems(props: any) {
         { field: 'Return_code', headerName: 'Return_code', width: 180 },
         { field: 'REFNO', headerName: 'REFNO', width: 180 },
         { field: 'Date_Time', headerName: 'Date_Time', width: 180 },
+    {field: "createdAt", headerName: "Created At", width: 230},
+
         {
             field: 'Actions', headerName: 'action', width: 420, renderCell: (params: any) => {
             

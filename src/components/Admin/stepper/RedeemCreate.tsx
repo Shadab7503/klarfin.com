@@ -1,11 +1,31 @@
 import React, { useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar,Alert, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, CircularProgress, Snackbar, Alert, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
 import { useNavigate } from 'react-router-dom';
 
 const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
+
+  const getDate = () => {
+
+    // Create a new Date object
+    var currentDate = new Date();
+
+    // Get the day, month, and year components
+    var day = String(currentDate.getDate()).padStart(2, '0');
+    var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+    var year = currentDate.getFullYear();
+
+    // Combine the components into the desired format
+    return month + '/' + day + '/' + year;
+
+  }
+
+
+
+
+
   const [formData, setFormData] = useState({
     "fund": "RMF",
     "acno": capturedData.folio_id,
@@ -18,8 +38,8 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
     "Tpin": "A",
     "bank": "",
     "oldihno": 0,
-    "trdate": "05/23/2023",
-    "entdate": "05/23/2023",
+    "trdate": getDate(),
+    "entdate": getDate(),
     "ShowInstaStatus": "Y",
     "OTP": "",
     "OTPReference": capturedData.refNo,
@@ -50,22 +70,23 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
       }).then(res => {
         const { data } = res;
         setIsSuccess(true);
-        if (!data.succ){
+        if (!data.succ) {
           setIsFailure(true)
-          return;}
+          return;
+        }
         // handleNext();
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
-      setTimeout(()=>{
-          setIsLoading(false);
-          navigate(`/dashboardAdmin/investment/redeem/${capturedData.folio_id}`)
-        },3000);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate(`/dashboardAdmin/investment/redeem/${capturedData.folio_id}`)
+    }, 3000);
   };
 
-  
+
 
   const handleCloseSnackbar = () => {
     setIsFailure(false);
@@ -271,7 +292,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             error={!!validationErrors.SelfValidate}
             helperText={validationErrors.SelfValidate}
           />
-          
+
           <Button
             variant="contained"
             color="primary"
@@ -296,7 +317,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         onClose={handleCloseSnackbar}
         //message="Failed to submit Redeem. Please try again."
         sx={{ marginBottom: 2 }}
-        ><Alert severity="error">Failed to submit Redeem. Please try again.</Alert></Snackbar>
+      ><Alert severity="error">Failed to submit Redeem. Please try again.</Alert></Snackbar>
     </Card>
   );
 };

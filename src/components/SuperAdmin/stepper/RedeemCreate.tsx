@@ -6,6 +6,22 @@ import { useNavigate } from 'react-router-dom';
 
 const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   console.log(capturedData);
+
+
+  const getDate = () => {
+
+    // Create a new Date object
+    var currentDate = new Date();
+
+    // Get the day, month, and year components
+    var day = String(currentDate.getDate()).padStart(2, '0');
+    var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+    var year = currentDate.getFullYear();
+
+    // Combine the components into the desired format
+    return month + '/' + day + '/' + year;
+
+  }
   const [formData, setFormData] = useState({
     "fund": "RMF",
     "acno": capturedData.folio_id,
@@ -18,8 +34,8 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
     "Tpin": "A",
     "bank": "",
     "oldihno": 0,
-    "trdate": "05/23/2023",
-    "entdate": "05/23/2023",
+    "trdate": getDate(),
+    "entdate": getDate(),
     "ShowInstaStatus": "Y",
     "OTP": "",
     "OTPReference": capturedData.refNo,
@@ -28,6 +44,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
+  const [failureMsg, setFailureMsg] = useState('');
   const [validationErrors, setValidationErrors] = useState<any>({});
   const Navigate = useNavigate();
 
@@ -55,8 +72,13 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         setIsLoading(false);
         if (!data.succ){
           setIsFailure(true);
+          setFailureMsg(data.message)
           return;
         }
+
+         setTimeout(() => {
+        Navigate(`/dashboardSuper/investment/details/${formData.acno}`)
+      }, 2000);
         // handleNext();
         
       }).catch(({ response }) => {
@@ -64,9 +86,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
-      setTimeout(() => {
-        Navigate(`/dashboardSuper/investment/redeem/${formData.acno}`)
-      }, 2000);
+     
   };
 
 
@@ -107,6 +127,18 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             disabled
           />
 
+          <TextField
+            label="Scheme"
+            name="scheme"
+            value={formData.scheme}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.scheme}
+            helperText={validationErrors.scheme}
+          />
+          
           <TextField
             label="Plan"
             name="plan"
@@ -165,6 +197,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             fullWidth
             error={!!validationErrors.UnitAmtValue}
             helperText={validationErrors.UnitAmtValue}
+            type='number'
           />
 
           <TextField
@@ -213,6 +246,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             fullWidth
             error={!!validationErrors.trdate}
             helperText={validationErrors.trdate}
+            disabled
           />
 
           <TextField
@@ -225,6 +259,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             fullWidth
             error={!!validationErrors.entdate}
             helperText={validationErrors.entdate}
+            disabled
           />
 
           <TextField
@@ -296,13 +331,13 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
         sx={{ marginBottom: 2 }}
-      ><Alert severity="success">Redeem submitted successfully!</Alert></Snackbar>
+      ><Alert severity="success">Redeem request submitted successfully!</Alert></Snackbar>
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
         sx={{ marginBottom: 2 }}
-      ><Alert severity="error">Failed to submit Redeem. Please try again.</Alert></Snackbar>
+      ><Alert severity="error">{failureMsg}</Alert></Snackbar>
     </Card>
   );
 };

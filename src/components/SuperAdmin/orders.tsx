@@ -27,14 +27,15 @@ export default function Orders(props: any) {
 
   const [columnsRedeem, setColumnsRedeem] = useState([
     {field: "id", headerName: "Id", width: 180},
+    {field: "scheme", headerName: "Scheme", width: 180},
+    {field: "UnitAmtValue", headerName: "UnitAmtValue", width: 180},
+    {field: "createdAt", headerName: "Created At", width: 230},
     {field: "fund", headerName: "Fund", width: 180},
     {field: "acno", headerName: "Acno", width: 180},
-    {field: "scheme", headerName: "Scheme", width: 180},
     {field: "plan", headerName: "Plan", width: 180},
     {field: "options", headerName: "Options", width: 180},
     {field: "RedFlag", headerName: "RedFlag", width: 180},
     {field: "UnitamtFlag", headerName: "UnitAmtFlag", width: 180},
-    {field: "UnitAmtValue", headerName: "UnitAmtValue", width: 180},
     {field: "Tpin", headerName: "Tpin", width: 180},
     {field: "bank", headerName: "Bank", width: 180},
     {field: "oldihno", headerName: "Oldihno", width: 180},
@@ -47,6 +48,7 @@ export default function Orders(props: any) {
     {field: "Return_code", headerName: "Return_code", width: 180},
     {field: "REFNO", headerName: "REFNO", width: 180},
     {field: "Date_Time", headerName: "Date_Time", width: 180},
+
     {
       field: "Actions",
       headerName: "action",
@@ -75,12 +77,14 @@ export default function Orders(props: any) {
 
   const [columns, setColumns] = useState([
     {field: "id", headerName: "Id", width: 180},
-    {field: "Fund", headerName: "Fund", width: 180},
     {field: "Scheme", headerName: "Scheme", width: 180},
+    {field: "Amount", headerName: "Amount", width: 180},
+    {field: "PayMode", headerName: "PayMode", width: 180},
+    {field: "createdAt", headerName: "Date Time", width: 230},
+    {field: "Fund", headerName: "Fund", width: 180},
     {field: "Plan", headerName: "Plan", width: 180},
     {field: "Options", headerName: "Options", width: 180},
     {field: "AcNo", headerName: "AcNo", width: 180},
-    {field: "Amount", headerName: "Amount", width: 180},
     {field: "TrType", headerName: "TrType", width: 180},
     {field: "Agent", headerName: "Agent", width: 180},
     // { field: 'SubBroker', headerName: 'SubBroker', width: 180 },
@@ -88,20 +92,20 @@ export default function Orders(props: any) {
     {field: "EUIN", headerName: "EUIN", width: 180},
     // { field: 'EUINDecFlag', headerName: 'EUINDecFlag', width: 180 },
     {field: "ChqBank", headerName: "ChqBank", width: 180},
-    {field: "PayMode", headerName: "PayMode", width: 180},
     {field: "REFNO", headerName: "REFNO", width: 180},
   ]);
 
   const [loading, setLoading] = useState(false);
 
-  const getReceivablesData = (filter: {page: number; limit: number}) => {
+  const getReceivablesData = () => {
     setLoading(true);
-    const {page, limit} = filter;
+
     axios
       .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/orders`, {
         headers: {Authorization: `Bearer ${props.accessToken}`},
         params: {
           folio: folio_id,
+          ...filter
         },
       })
       .then(({data}) => {
@@ -134,11 +138,8 @@ export default function Orders(props: any) {
 
   useEffect(() => {
     getTranxData();
+    getReceivablesData();
   }, [filter]);
-
-  useEffect(() => {
-    getReceivablesData({page: 1, limit: 20});
-  }, []);
 
   const ShowHandler = () => {
     setShowRedeem(!showRedeem);

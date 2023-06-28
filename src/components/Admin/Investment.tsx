@@ -78,7 +78,7 @@ export default function Investment(props: any) {
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {params.row.status >= 2 && (
               <>
-                {" "}
+              
                 {/* <Grid
                   item
                   className="bills-pay"
@@ -131,7 +131,7 @@ export default function Investment(props: any) {
                 >
                   Redeem
                 </Grid>
-                { params.row.is_OTBM == 0 && <>
+                {/* { params.row.is_OTBM == 0 && <>
                   <Grid
                     item
                     className="bills-pay"
@@ -146,7 +146,7 @@ export default function Investment(props: any) {
                       >
                     OBTM
                   </Grid>
-                </>}
+                </>} */}
               </>
             )}
              
@@ -236,7 +236,7 @@ export default function Investment(props: any) {
       mt={5}
       sx={{ maxWidth: "95vw", height: "100vh" }}
     >
-      <Button
+      {/* <Button
         type="submit"
         sx={{
           background: "#231955",
@@ -255,7 +255,7 @@ export default function Investment(props: any) {
         }}
       >
         Add Investor
-      </Button>
+      </Button> */}
 
       <h2 style={{ marginBottom: "20px" }}>All Investments</h2>
 

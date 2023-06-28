@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   Typography,
+  Alert,
 } from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {checkKYC} from "../../../services/nippon.service";
@@ -67,7 +68,7 @@ const SendOTP = ({
     axios
       .post(
         `${process.env.REACT_APP_BACKEND_HOST}v1/super/send-OTP`,
-        {Acno: capturedData.folio_id ,Folio: capturedData.folio_id},
+        {Acno: capturedData.folio_id},
         {
           headers: {Authorization: `Bearer ${accessToken}`},
         }
@@ -77,6 +78,7 @@ const SendOTP = ({
         if(!data.succ){
           setIsLoading(false);
           setIsSuccess(false);
+          setIsFailure(true);
           setMsg(data.message);
           return;
         }
@@ -149,9 +151,12 @@ const SendOTP = ({
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message={msg}
+    
         className={classes.snackbar}
-      />
+      >
+
+<Alert severity="error">{msg}</Alert>
+      </Snackbar>
     </Card>
   );
 };

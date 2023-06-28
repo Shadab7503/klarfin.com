@@ -114,7 +114,7 @@ export default function Transactions(props: any) {
                 })}
             />}
         </div>
-        <h2>Last 20 Transactions</h2>
+        {/* <h2>Last 20 Transactions</h2>
         <div style={{ height: '100vh', width: '100%' }}>
 
             <DataGrid
@@ -128,7 +128,7 @@ export default function Transactions(props: any) {
                     return { ...each }
                 })}
             />
-        </div>
+        </div> */}
 
     </Grid>
 }

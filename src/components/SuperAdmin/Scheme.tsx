@@ -96,7 +96,7 @@ const Scheme = (props) => {
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                 Actual Amount
+                 Actual Amount Invested
             </Typography>
             <Typography variant="body1">{ parseInt(InvestedAmt) - parseInt(InProcessAmt)}</Typography>
           </Paper>

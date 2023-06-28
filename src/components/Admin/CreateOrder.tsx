@@ -1,7 +1,29 @@
 import React, { useState } from 'react';
-import { TextField, Button,MenuItem ,CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+
+
+const schemes = [
+  {
+    value: "ON",
+    name: "OVERNIGHT FUND",
+    plan: "GP",
+    opt: "G"
+  },
+  {
+    value: "LF",
+    name: "LIQUID FUND",
+    plan: "IG",
+    opt: "G"
+  },
+  {
+    value: "LP",
+    name: "LOW DURATION FUND",
+    plan: "RG",
+    opt: "G"
+  },
+]
 
 const CreateOrder = ({ accessToken }) => {
 
@@ -31,8 +53,21 @@ const CreateOrder = ({ accessToken }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
 
+
+
   const handleChange = (event) => {
     const { name, value } = event.target;
+    if (name == 'Scheme') {
+      const data = schemes.find(each=>each.value == value);
+      if(!data) return;
+      setFormData((prevData) => ({
+        ...prevData,
+        Scheme: data.value,
+        Plan: data.plan,
+        Options: data.opt
+      }));
+      return;
+    }
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -48,59 +83,34 @@ const CreateOrder = ({ accessToken }) => {
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        const {data} = res;
-        if(!data.succ){
+        const { data } = res;
+        if (!data.succ) {
           setIsLoading(false);
           setIsFailure(true);
           return;
         }
-        navigate(`/dashboardAdmin/investment/details/${folio}`)
+
         setIsLoading(false);
+        if(formData.PayMode == 'NEFT') {
+          navigate(`/dashboardAdmin/nippon-bank`)
+          return;
+        }
+        navigate(`/dashboardAdmin/investment/details/${folio}`)
+        
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
   };
-  
+
   const handleCloseSnackbar = () => {
     setIsFailure(false);
   };
 
   return (
     <div style={{ margin: "4rem" }}>
-       <Card>
-      <CardContent>
-        <h2>Nippon Bank Details </h2>
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Account Number
-        </Typography>
-        <Typography variant="body1">
-          2203ALFPD9462P
-        </Typography>
-
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Bank IFSC code
-        </Typography>
-        <Typography variant="body1">
-          ICIC0000104
-        </Typography>
-
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Bank Name
-        </Typography>
-        <Typography variant="body1">
-          ICICI Bank
-        </Typography>
-
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Name
-        </Typography>
-        <Typography variant="body1">
-          NIPPON INDIA MUTUAL FUND VIRTUAL POOL ACCOUNT
-        </Typography>
-      </CardContent>
-    </Card>
+   
       <Card sx={{ maxWidth: 600, margin: '0 auto' }}>
         <CardContent>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -117,6 +127,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.Fund}
               helperText={validationErrors.Fund}
+              disabled
             />
 
             <TextField
@@ -129,9 +140,19 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.Scheme}
               helperText={validationErrors.Scheme}
-            />
+              select
+            >
 
-            <TextField
+              {
+                schemes.map(each=>{
+                 return <MenuItem key={each.value} defaultChecked value={each.value}>
+                  {each.name}
+                </MenuItem>
+                })
+              }
+            </TextField>
+
+            {/* <TextField
               label="Plan"
               name="Plan"
               value={formData.Plan}
@@ -153,7 +174,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.Options}
               helperText={validationErrors.Options}
-            />
+            /> */}
 
             <TextField
               label="Account Number"
@@ -180,7 +201,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.Amount}
             />
 
-            <TextField
+            {/* <TextField
               label="Transaction Type"
               name="TrType"
               value={formData.TrType}
@@ -190,9 +211,9 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.TrType}
               helperText={validationErrors.TrType}
-            />
+            /> */}
 
-     
+
 
             {/* <TextField
               label="SubBroker"
@@ -255,10 +276,10 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
             >
-               <MenuItem defaultChecked value="OTBM">
+              <MenuItem defaultChecked value="OTBM">
                 OTBM
               </MenuItem>
-              <MenuItem  value="NEFT">
+              <MenuItem value="NEFT">
                 NEFT
               </MenuItem>
             </TextField>
