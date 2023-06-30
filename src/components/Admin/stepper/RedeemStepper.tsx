@@ -64,7 +64,7 @@ export default function RedeemStepper({accessToken}) {
   };
 
   const handleReset = () => {
-    navigate('/dashboardSuper/investment');
+    navigate('/dashboardAdmin/investment');
   };
 
 
@@ -80,8 +80,6 @@ return;
     setCapturedData({...capturedData,[key]:value})
   }
 
-
-console.log(capturedData)
 console.log('capturedData',capturedData);
 
   return (
