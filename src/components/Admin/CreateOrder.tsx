@@ -136,6 +136,7 @@ const CreateOrder = ({ accessToken }) => {
               name="Scheme"
               value={formData.Scheme}
               onChange={handleChange}
+              defaultValue={schemes[0].value}
               variant="outlined"
               margin="normal"
               fullWidth
