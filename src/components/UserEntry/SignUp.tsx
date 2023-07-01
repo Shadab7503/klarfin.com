@@ -13,13 +13,16 @@ import axios from "axios";
 import { user } from "../../utils/interface";
 import { industries } from "../../utils/variables";
 import { Alert } from "../../utils/components";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SignUp = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [validating, setValidating] = useState<boolean>(false);
   const [registerStatus, setRegisterStatus] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [isPasswordMatch, SetisPasswordMatch] = useState(true);
+  const [confirmPassword,SetConfirmPassword] = useState<String>("");
+  const Navigate = useNavigate();
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
   const [newUser, setNewUser] = useState<user>({
     name: "",
@@ -27,21 +30,25 @@ const SignUp = () => {
     panNumber: "",
     mobileNumber: "",
     email: "",
-    industryName: "",
+   // industryName: "",
     password: "",
     token:''
   });
 
-
   const [searchParams, setSearchParams] = useSearchParams();
  
-
   const isDisabled = (type:string)=>{
     const id = searchParams.get("code");
     if(id) {
       return true;
     }
     return false;
+  }
+
+  const handleChangeConfirmPassword =(event:any)=>{
+    event.preventDefault();
+    SetisPasswordMatch(true);
+    SetConfirmPassword(event.target.value);
   }
 
   useEffect(() => {
@@ -67,12 +74,18 @@ const SignUp = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     if (name === "mobileNumber" && value.length > 10) return;
+    if(name==="password"){SetisPasswordMatch(true)}
     setNewUser({ ...newUser, [name]: value });
   };
-
+  
   const signUpUser = (user: user) => {
     console.log(user)
-  
+    
+    if(user.password !== confirmPassword){
+      SetisPasswordMatch(false);
+      return;
+    }
+
     let url = "v1/admin/register";
 
     if(searchParams.get("code")) {
@@ -85,7 +98,7 @@ const SignUp = () => {
       !validators.validatePAN(user.panNumber) ||
       !validators.validateMobile(user.mobileNumber) ||
       !validators.validateEmail(user.email) ||
-      !validators.validateNotEmpty(user.industryName) ||
+      //!validators.validateNotEmpty(user.industryName) ||
       !validators.validatePassword(user.password)
     )
       return;
@@ -101,9 +114,13 @@ const SignUp = () => {
       .post(process.env.REACT_APP_BACKEND_HOST + url, {...payload})
       .then((response) => {
         setWaitingForResponse(false);
-        if (response.data.success) {
+        const {data} = response;
+        if (data.success) {
+          console.log("setRegister is success")
           setRegisterStatus("success");
-
+          setTimeout(() => {
+            Navigate("/")
+          }, 3000);
           if(searchParams.get("code")) {
             window.location.href = '/login';
           }
@@ -132,7 +149,7 @@ const SignUp = () => {
             panNumber: "",
             mobileNumber: "",
             email: "",
-            industryName: "",
+         //   industryName: "",
             password: "",
             token:''
           });
@@ -159,7 +176,6 @@ const SignUp = () => {
     if (reason === "clickaway") {
       return;
     }
-
     setRegisterStatus("");
     setErrorMsg("");
   };
@@ -167,7 +183,7 @@ const SignUp = () => {
     return (
       <div className="signup-page">
         {
-          registerStatus && 
+          registerStatus ==="success" && 
          <Alert
             onClose={handleSnackClose}
             severity="success"
@@ -192,11 +208,11 @@ const SignUp = () => {
                     <div className="signup-heading">Sign Up</div>
                   </Grid>
                   <Grid item xs={12}>
-                    <InputLabel className="form-label">Name*</InputLabel>
+                    <InputLabel className="form-label">User Name*</InputLabel>
                     <TextField
                     disabled={isDisabled('name')}
                       className="form-label"
-                      placeholder="Name"
+                      placeholder="User Name"
                       error={
                         validating && !validators.validateNotEmpty(newUser.name)
                       }
@@ -369,7 +385,7 @@ const SignUp = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <InputLabel className="form-label">Industry*</InputLabel>
                     <TextField
                     disabled={isDisabled('industry')}
@@ -409,7 +425,7 @@ const SignUp = () => {
                         </MenuItem>
                       ))}
                     </TextField>
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12}>
                     <InputLabel className="form-label">Password*</InputLabel>
                     <TextField
@@ -444,6 +460,36 @@ const SignUp = () => {
                         },
                       }}
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                  <InputLabel className="form-label">
+                    Confirm New Password*
+                  </InputLabel>
+                  <TextField
+                    className="form-label"
+                    placeholder="Set Password"
+                   // error={!validators.validatePassword(newUser.password)}
+                    helperText={
+                      isPasswordMatch ? "":<Alert severity="error" >Password Not Match</Alert> 
+                    }
+                    variant="outlined"
+                    fullWidth
+                    name="confirmpassword"
+                    type="password"
+                    onChange={handleChangeConfirmPassword}
+                    InputProps={{
+                      style: {
+                        fontSize: "0.8rem",
+                      },
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root:hover": {
+                        "& > fieldset": {
+                          borderColor: "#186090",
+                        },
+                      },
+                    }}
+                  />
                   </Grid>
                   <Grid item xs={12}>
                     <Button

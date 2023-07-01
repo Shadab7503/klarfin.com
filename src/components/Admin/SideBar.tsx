@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -10,47 +10,49 @@ import receivables from "../../images/receivables.png";
 import bills from "../../images/bills.png";
 import banking from "../../images/banking.png";
 import logout from "../../images/logout.png";
-import { sidebarUtils } from "../../utils/interface";
+import {sidebarUtils} from "../../utils/interface";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 const sidebarData = {
   sections: [
     {
       name: "Cash Management",
+      items: [{icon: banking, text: "Investments",isClickable:true, url: "investing"}],
+    },
+    {
+      name: "Upcoming Features",
       items: [
-        { icon: banking, text: "Investments", url:"investing" },
-        { icon: cashflows, text: "Cash Flows", url:"cashflow" },
-        { icon: receivables, text: "Receivables", url:"receivables" },
-        { icon: insights, text: "Insights", url:"insights" },
-        { icon: bills, text: "Bills to Pay", url:"bills-to-pay" },
-        { icon: banking, text: "Banking Transactions", url:"banking-transactions" },
+        {icon: cashflows, text: "Cash Flows",isClickable:false, url: "cashflow"},
+        {icon: receivables, text: "Receivables",isClickable:false, url: "receivables"},
+        {icon: insights, text: "Insights",isClickable:false, url: "insights"},
+        {icon: bills, text: "Bills to Pay",isClickable:false, url: "bills-to-pay"},
+        {
+          icon: banking,
+          text: "Banking Transactions",isClickable:false,
+          url: "banking-transactions",
+        },
       ],
     },
-    { name: "Credit Management", items: [] },
+    {name: "Credit Management", items: []},
   ],
 };
 
 const SideBar = (props: sidebarUtils) => {
-
   const url = window.location.href;
-  const lastSegment = url.split('/').pop();
- 
-  useEffect(()=>{
+  const lastSegment = url.split("/").pop();
 
-
+  useEffect(() => {
     const sections = sidebarData.sections;
 
-    sections.forEach((each)=>{
-      each.items.forEach((each)=>{
-          if(each.url == lastSegment) {
-            props.setSelectedItem(each.text)
-          }
-
-      })
-    })
-
-  },[lastSegment])
+    sections.forEach(each => {
+      each.items.forEach(each => {
+        if (each.url == lastSegment) {
+          props.setSelectedItem(each.text);
+        }
+      });
+    });
+  }, [lastSegment]);
   const Logout = () => {
     if (localStorage.getItem("tokens")) {
       const tokensObj = JSON.parse(localStorage.getItem("tokens")!);
@@ -75,16 +77,16 @@ const SideBar = (props: sidebarUtils) => {
           <Grid container alignItems="center">
             <div>
               <span className="sidebar-logo logo">KLARFIN</span>
-              {sidebarData.sections.map((section) => {
+              {sidebarData.sections.map((section)=> {
                 return (
                   <React.Fragment key={section.name}>
-                    <Grid
+                    <Grid 
                       container
                       px={1}
                       py={1}
                       className="dashboard-section-heading"
                       style={{
-                        cursor: "pointer",
+                        cursor:"pointer",
                         borderRadius: "4px",
                         background:
                           section.name === props.selectedItem
@@ -104,54 +106,97 @@ const SideBar = (props: sidebarUtils) => {
                           ? (props.setSelectedItem(section.name),
                             props.setDrawerOpen(false))
                           : null
-                      }
+                      }  
                     >
                       {section.name}
                     </Grid>
                     <Grid container pl={1}>
-                      <List className="section-items">
-                        {section.items.map((item) => {
+                      <List className="section-items" >
+                        
+                        {section.items.map(item => {
                           return (
                             <React.Fragment key={item.text}>
-                              <Link to={'/dashboardAdmin/'+ item.url}>
-                              <ListItem
-                                style={{
-                                  padding: "0rem",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => {
-                                  // props.setSelectedItem(item.text);
-                                  // props.setDrawerOpen(false);
-                                }}
-                              >
-                                <img
-                                  src={item.icon}
-                                  alt={item.text}
-                                  className="section-item-icon"
-                                  />
+                              {item.isClickable ?
+                              <Link to={"/dashboardAdmin/" + item.url} >
+                                <ListItem
                                   
-                                <Paper
-                                  elevation={0}
-                                  className="section-item-text"
                                   style={{
-                                    background:
-                                      item.text === props.selectedItem
-                                        ? "white"
-                                        : "inherit",
-                                    color:
-                                      item.text === props.selectedItem
-                                        ? "#3594d4"
-                                        : "white",
-                                    boxShadow:
-                                      item.text === props.selectedItem
-                                        ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
-                                        : "0px 0px",
+                                    padding: "0rem",
+                                    cursor: "pointer",
+                        
+                                  }}
+                                  onClick={() => {
+                                    // props.setSelectedItem(item.text);
+                                    // props.setDrawerOpen(false);
                                   }}
                                 >
-                                  {item.text}
-                                </Paper>
-                              </ListItem>
-                              </Link>
+                                  <img
+                                    src={item.icon}
+                                    alt={item.text}
+                                    className="section-item-icon"
+                                  />
+
+                                  <Paper
+                                    elevation={0}
+                                    className="section-item-text"
+                                    style={{
+                                      background:
+                                        item.text === props.selectedItem
+                                          ? "white"
+                                          : "inherit",
+                                      color:
+                                        item.text === props.selectedItem
+                                          ? "#3594d4"
+                                          : "white",
+                                      boxShadow:
+                                        item.text === props.selectedItem
+                                          ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                                          : "0px 0px",
+                                    }}
+                                  
+                                  >
+                                    {item.text}
+                                  </Paper>
+                                </ListItem>
+                              </Link>:<ListItem
+                                  
+                                  style={{
+                                    padding: "0rem",
+                                  }}
+                                  onClick={() => {
+                                    // props.setSelectedItem(item.text);
+                                    // props.setDrawerOpen(false);
+                                  }}
+                                >
+                                  <img
+                                    src={item.icon}
+                                    alt={item.text}
+                                    className="section-item-icon"
+                                  />
+
+                                  <Paper
+                                    elevation={0}
+                                    className="section-item-text"
+                                    style={{
+                                      background:
+                                        item.text === props.selectedItem
+                                          ? "white"
+                                          : "inherit",
+                                      color:
+                                        item.text === props.selectedItem
+                                          ? "#3594d4"
+                                          : "white",
+                                      boxShadow:
+                                        item.text === props.selectedItem
+                                          ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                                          : "0px 0px",
+                                    }}
+                                  
+                                  >
+                                    {item.text}
+                                  </Paper>
+                                </ListItem>
+                              }
                             </React.Fragment>
                           );
                         })}
@@ -175,12 +220,12 @@ const SideBar = (props: sidebarUtils) => {
               src={logout}
               alt="logout"
               height="100%"
-              style={{ cursor: "pointer" }}
+              style={{cursor: "pointer"}}
               onClick={() => Logout()}
             />
             <span
               className="logout"
-              style={{ cursor: "pointer" }}
+              style={{cursor: "pointer"}}
               onClick={() => Logout()}
             >
               Logout
@@ -201,7 +246,7 @@ const SideBar = (props: sidebarUtils) => {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { sm: "block", md: "none" },
+          display: {sm: "block", md: "none"},
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             margin: "0rem",
@@ -213,7 +258,7 @@ const SideBar = (props: sidebarUtils) => {
       <Grid
         item
         xs={12}
-        sx={{ display: { md: "flex", xs: "none" } }}
+        sx={{display: {md: "flex", xs: "none"}}}
         className="show-sidebar"
       >
         {sidebar}

@@ -7,19 +7,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 const schemes = [
   {
     value: "ON",
-    name: "OVERNIGHT FUND",
+    name: "OVERNIGHT FUND ( < 5 DAYS)",
     plan: "GP",
     opt: "G"
   },
   {
     value: "LF",
-    name: "LIQUID FUND",
+    name: "LIQUID FUND (5-15 DAYS)",
     plan: "IG",
     opt: "G"
   },
   {
     value: "LP",
-    name: "LOW DURATION FUND",
+    name: "LOW DURATION FUND (> 2 WEEKS)",
     plan: "RG",
     opt: "G"
   },
@@ -32,7 +32,7 @@ const CreateOrder = ({ accessToken }) => {
 
   const [formData, setFormData] = useState({
     "Fund": "RMF",
-    "Scheme": "ON",
+    "Scheme": "LP",
     "Plan": "GP",
     "Options": "G",
     "AcNo": folio,
@@ -121,13 +121,13 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Fund"
               name="Fund"
-              value={formData.Fund}
+              value="Nippon India"
               onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
-              error={!!validationErrors.Fund}
-              helperText={validationErrors.Fund}
+              // error={!!validationErrors.Fund}
+              // helperText={validationErrors.Fund}
               disabled
             />
 
