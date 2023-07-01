@@ -58,7 +58,11 @@ const CreateOrder = ({ accessToken }) => {
           setMsg(data.message)
           return;
         }
-        navigate(`/dashboardSuper/investment/details/${folio}`)
+        setMsg(data.message);
+        setIsSuccess(true);
+        setTimeout(() => {
+          navigate(`/dashboardSuper/investment/details/${folio}`)
+        }, 2000);
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
@@ -70,6 +74,7 @@ const CreateOrder = ({ accessToken }) => {
 
   const handleCloseSnackbar = () => {
     setIsFailure(false);
+    setIsSuccess(false)
   };
 
   return (
@@ -115,7 +120,7 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Fund"
               name="Fund"
-              value={formData.Fund}
+              value="Nippon India"
               onChange={handleChange}
               variant="outlined"
               margin="normal"
@@ -285,10 +290,9 @@ const CreateOrder = ({ accessToken }) => {
         <Snackbar
           open={isSuccess}
           autoHideDuration={3000}
-          onClose={() => setIsSuccess(false)}
-          message="Order is created successfully!"
+          onClose={handleCloseSnackbar}
           sx={{ marginBottom: 2 }}
-        />
+        ><Alert severity='success' >{msg}</Alert></Snackbar>
         <Snackbar
           open={isFailure}
           autoHideDuration={3000}
