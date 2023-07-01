@@ -4,7 +4,7 @@ export interface user {
   panNumber: string;
   mobileNumber: string;
   email: string;
-  industryName: string;
+ // industryName: string;
   password: string;
   token: string;
 }

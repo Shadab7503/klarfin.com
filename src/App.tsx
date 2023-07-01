@@ -14,6 +14,8 @@ import { User } from "./utils/interface";
 
 //@ts-ignore
 import {Helmet} from "react-helmet";
+import ForgotPasswordAdmin from "./components/SuperAdmin/ForgotPassword";
+import ForgotPasswordUser from "./components/Admin/ForgotPasswordAdmin";
 
 
 
@@ -102,7 +104,8 @@ const App = () => {
       {/* <Route path="/contact" element={<Contact />} /> */}
       {/* <Route path="/home" element={<Home />} /> */}
       <Route path="/loginSuper" element={<LoginSuper />} />
-
+      <Route path="/loginSuper/forgot-password" element={<ForgotPasswordAdmin/>} />
+      <Route path="/user/forgot-password"  element={<ForgotPasswordUser/>} />
       <Route path="/register" element={<SignUp />} />
       <Route path="/verify" element={<Verify />} />
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -46,7 +46,7 @@ const SendOTP = ({
   capturedData,
   accessToken,
 }) => {
-  console.log("capturedData", capturedData);
+  console.log("captureData from sendOTP : ", capturedData);
   const classes = useStyles();
   const [pan, setPan] = useState(capturedData.pan);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +75,7 @@ const SendOTP = ({
       )
       .then(res => {
         const data = res.data;
-        if(!data.succ){
+        if (!data.succ) {
           setIsLoading(false);
           setIsSuccess(false);
           setIsFailure(true);
@@ -144,18 +144,17 @@ const SendOTP = ({
         open={isSuccess}
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
-        message={msg}
         className={classes.snackbar}
-      />
+        >
+        <Alert severity="success">{msg}</Alert>
+      </Snackbar>
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-    
         className={classes.snackbar}
       >
-
-<Alert severity="error">{msg}</Alert>
+        <Alert severity="error">{msg}</Alert>
       </Snackbar>
     </Card>
   );

@@ -18,24 +18,23 @@ export default function Transactions(props: any) {
     const  { folio_id } = useParams();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'Id', width: 180 },
+        { field: 'Transaction_type', headerName: 'Transaction_type', width: 180 },
         { field: 'Amount', headerName: 'Amount', width: 180 },
-        { field: 'Bankacno', headerName: 'Bankacno', width: 180 },
-        { field: 'Bankname', headerName: 'Bankname', width: 180 },
         { field: 'Cramt', headerName: 'Cramt', width: 180 },
         { field: 'DBamt', headerName: 'DBamt', width: 180 },
-        { field: 'Entdt', headerName: 'Entdt', width: 180 },
-        { field: 'IHno', headerName: 'IHno', width: 180 },
         { field: 'Modeofpayment', headerName: 'Modeofpayment', width: 180 },
+        { field: 'Transaction_Date', headerName: 'Transaction_Date', width: 180 },
+        { field: 'dd_trdate', headerName: 'dd_trdate', width: 180 },
+        { field: 'Entdt', headerName: 'Entdt', width: 180 },
+        { field: 'Status', headerName: 'Status', width: 180 },
+        { field: 'Bankacno', headerName: 'Bankacno', width: 180 },
+        { field: 'Bankname', headerName: 'Bankname', width: 180 },
+        { field: 'IHno', headerName: 'IHno', width: 180 },
         { field: 'Remarks', headerName: 'Remarks', width: 180 },
         { field: 'Return_Code', headerName: 'Return_Code', width: 180 },
         { field: 'Return_Msg', headerName: 'Return_Msg', width: 180 },
-        { field: 'Status', headerName: 'Status', width: 180 },
-        { field: 'Transaction_Date', headerName: 'Transaction_Date', width: 180 },
-        { field: 'Transaction_type', headerName: 'Transaction_type', width: 180 },
         { field: 'Txntype', headerName: 'Txntype', width: 180 },
         { field: 'Typeoftrxn', headerName: 'Typeoftrxn', width: 180 },
-        { field: 'dd_trdate', headerName: 'dd_trdate', width: 180 },
-       
     ]);
 
 
@@ -72,7 +71,7 @@ export default function Transactions(props: any) {
     const getLastTwentyTransaction = () =>{
         setLoading(true);
       axios
-          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:filter.plan,scheme:filter.scheme},
+          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
               {
                   headers: { Authorization: `Bearer ${props.accessToken}`}
               })

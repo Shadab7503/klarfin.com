@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, MenuItem, CircularProgress,Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -7,32 +7,32 @@ import { useNavigate, useParams } from 'react-router-dom';
 const schemes = [
   {
     value: "ON",
-    name: "OVERNIGHT FUND",
+    name: "OVERNIGHT FUND ( < 5 DAYS)",
     plan: "GP",
     opt: "G"
   },
   {
     value: "LF",
-    name: "LIQUID FUND",
+    name: "LIQUID FUND (5-15 DAYS)",
     plan: "IG",
     opt: "G"
   },
   {
     value: "LP",
-    name: "LOW DURATION FUND",
+    name: "LOW DURATION FUND (> 2 WEEKS)",
     plan: "RG",
     opt: "G"
   },
 ]
 
 const CreateOrder = ({ accessToken }) => {
-
+  const [msg,setMsg] = useState("");
   const { folio } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     "Fund": "RMF",
-    "Scheme": "ON",
+    "Scheme": "LP",
     "Plan": "GP",
     "Options": "G",
     "AcNo": folio,
@@ -86,6 +86,7 @@ const CreateOrder = ({ accessToken }) => {
         const { data } = res;
         if (!data.succ) {
           setIsLoading(false);
+          setMsg(data.message)
           setIsFailure(true);
           return;
         }
@@ -120,13 +121,13 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Fund"
               name="Fund"
-              value={formData.Fund}
+              value="Nippon India"
               onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
-              error={!!validationErrors.Fund}
-              helperText={validationErrors.Fund}
+              // error={!!validationErrors.Fund}
+              // helperText={validationErrors.Fund}
               disabled
             />
 
@@ -306,9 +307,8 @@ const CreateOrder = ({ accessToken }) => {
           open={isFailure}
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          message="Failed to Create Order. Please try again."
           sx={{ marginBottom: 2 }}
-        />
+          ><Alert severity='error' >{msg}</Alert></Snackbar>
       </Card>
     </div>
   );

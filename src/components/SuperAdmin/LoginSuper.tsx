@@ -13,13 +13,14 @@ import axios from "axios";
 import { loginDetails } from "../../utils/interface";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Alert } from "../../utils/components";
-
+import { Link } from "react-router-dom";
 const LoginSuper = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
   const [loginStatus, setLoginStatus] = useState<"error" | "success" | "">("");
   const [validating, setValidating] = useState<boolean>(false);
+  const [message,setMessage] = useState<String>("");
   const [loginInfo, setLoginInfo] = useState<loginDetails>({
     email: "",
     password: "",
@@ -66,8 +67,9 @@ const LoginSuper = () => {
       })
       .then((response) => {
         setWaitingForResponse(false);
-        console.log(response.data);
+        console.log(response);
         if (response.data.success) {
+          setMessage(response.data.message);
           setLoginStatus("success");
           setLoginInfo({
             email: "",
@@ -97,11 +99,13 @@ const LoginSuper = () => {
             window.location.href = "/dashboardSuper";
           }, 1000);
         } else {
+          setMessage(response.data.message);
           setLoginStatus("error");
         }
       })
       .catch((err) => {
         console.log(err);
+        setMessage(err.response.data.message);
         setWaitingForResponse(false);
         setLoginStatus("error");
       });
@@ -195,7 +199,9 @@ const LoginSuper = () => {
                         label="Remember Me"
                         className="remember-me"
                       />
+                      <Link to="/loginSuper/forgot-password" >
                       <span className="forgot-password">Forgot Password?</span>
+                      </Link>
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
@@ -258,7 +264,7 @@ const LoginSuper = () => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Successfully Logged In!
+            {message}
           </Alert>
         </Snackbar>
         <Snackbar
@@ -272,7 +278,7 @@ const LoginSuper = () => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Error: Failed to Login
+            {message}
           </Alert>
         </Snackbar>
         <Backdrop

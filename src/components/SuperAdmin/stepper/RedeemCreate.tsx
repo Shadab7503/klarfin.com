@@ -5,20 +5,11 @@ import { createFolio } from '../../../services/nippon.service';
 import { useNavigate } from 'react-router-dom';
 
 const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
-  console.log(capturedData);
-
-
   const getDate = () => {
-
-    // Create a new Date object
     var currentDate = new Date();
-
-    // Get the day, month, and year components
     var day = String(currentDate.getDate()).padStart(2, '0');
     var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
     var year = currentDate.getFullYear();
-
-    // Combine the components into the desired format
     return month + '/' + day + '/' + year;
 
   }
@@ -66,19 +57,17 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
-        // navigate(`/dashboardSuper/investment`)
         const { data } = res;
-        setIsSuccess(true)
-        setIsLoading(false);
         if (!data.succ){
           setIsFailure(true);
           setFailureMsg(data.message)
           return;
         }
-
-         setTimeout(() => {
+        setIsSuccess(true)
+        setIsLoading(false);
+        setTimeout(() => {
         Navigate(`/dashboardSuper/investment/details/${formData.acno}`)
-      }, 2000);
+        }, 2000);
         // handleNext();
         
       }).catch(({ response }) => {
@@ -244,9 +233,9 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             variant="outlined"
             margin="normal"
             fullWidth
+            disabled
             error={!!validationErrors.trdate}
             helperText={validationErrors.trdate}
-            disabled
           />
 
           <TextField

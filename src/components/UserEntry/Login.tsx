@@ -13,9 +13,11 @@ import axios from "axios";
 import { loginDetails } from "../../utils/interface";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Alert } from "../../utils/components";
+import { Link } from "react-router-dom";
 
 const Login = (props:any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [message,setMessage] = useState<String>("");
   const [waitingForResponse, setWaitingForResponse] = useState<boolean>(false);
   const [loginStatus, setLoginStatus] = useState<"error" | "success" | "">("");
   const [validating, setValidating] = useState<boolean>(false);
@@ -66,9 +68,10 @@ const Login = (props:any) => {
       })
       .then((response) => {
         setWaitingForResponse(false);
-        console.log(response.data);
+        console.log(response);
         if (response.data.success) {
           setLoginStatus("success");
+          setMessage(response.data.message);
           if ("token" in response.data.detail.member.token)
             localStorage.setItem(
               "tokens",
@@ -97,11 +100,13 @@ const Login = (props:any) => {
             window.location.href = "/dashboard/investing";
           }, 1000);
         } else {
+          setMessage(response.data.message);
           setLoginStatus("error");
         }
       })
       .catch((err) => {
         console.log(err);
+        setMessage(err.response.data.message);
         setWaitingForResponse(false);
         setLoginStatus("error");
       });
@@ -204,8 +209,9 @@ const Login = (props:any) => {
                         }
                         label="Remember Me"
                         className="remember-me"
-                      />
+                      /><Link to="/user/forgot-password" >
                       <span className="forgot-password">Forgot Password?</span>
+                      </Link>
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
@@ -268,7 +274,7 @@ const Login = (props:any) => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Successfully Logged In!
+           {message}
           </Alert>
         </Snackbar>
         <Snackbar
@@ -282,7 +288,7 @@ const Login = (props:any) => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Error: Failed to Login
+           {message}
           </Alert>
         </Snackbar>
         <Backdrop

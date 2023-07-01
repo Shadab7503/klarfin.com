@@ -1,31 +1,17 @@
 import React, { useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Alert, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, CircularProgress, Alert,Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
 import { useNavigate } from 'react-router-dom';
 
 const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
-  console.log(capturedData);
-
   const getDate = () => {
-
-    // Create a new Date object
     var currentDate = new Date();
-
-    // Get the day, month, and year components
     var day = String(currentDate.getDate()).padStart(2, '0');
     var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
     var year = currentDate.getFullYear();
-
-    // Combine the components into the desired format
     return month + '/' + day + '/' + year;
-
   }
-
-
-
-
-
   const [formData, setFormData] = useState({
     "fund": "RMF",
     "acno": capturedData.folio_id,
@@ -48,8 +34,9 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
+  const [failureMsg, setFailureMsg] = useState('');
   const [validationErrors, setValidationErrors] = useState<any>({});
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -68,25 +55,27 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
+        // navigate(`/dashboardSuper/investment`)
         const { data } = res;
-        setIsSuccess(true);
-        if (!data.succ) {
-          setIsFailure(true)
+        if (!data.succ){
+          setIsFailure(true);
+          setIsLoading(false)
+          setFailureMsg(data.message)
           return;
         }
-        // handleNext();
+        setIsSuccess(true)
+        setIsLoading(false);
+        setTimeout(() => {
+          Navigate(`/dashboardSuper/investment/details/${formData.acno}`)
+          }, 2000);
+  
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setValidationErrors(data.validationErrors);
       })
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate(`/dashboardAdmin/investment/redeem/${capturedData.folio_id}`)
-    }, 3000);
+     
   };
-
-
 
   const handleCloseSnackbar = () => {
     setIsFailure(false);
@@ -124,6 +113,18 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             disabled
           />
 
+          <TextField
+            label="Scheme"
+            name="scheme"
+            value={formData.scheme}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.scheme}
+            helperText={validationErrors.scheme}
+          />
+          
           <TextField
             label="Plan"
             name="plan"
@@ -182,6 +183,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             fullWidth
             error={!!validationErrors.UnitAmtValue}
             helperText={validationErrors.UnitAmtValue}
+            type='number'
           />
 
           <TextField
@@ -228,6 +230,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             variant="outlined"
             margin="normal"
             fullWidth
+            disabled
             error={!!validationErrors.trdate}
             helperText={validationErrors.trdate}
           />
@@ -242,6 +245,7 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             fullWidth
             error={!!validationErrors.entdate}
             helperText={validationErrors.entdate}
+            disabled
           />
 
           <TextField
@@ -272,13 +276,14 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             label="OTP Reference"
             name="OTPReference"
             value={formData.OTPReference}
+            disabled
             onChange={handleChange}
             variant="outlined"
             margin="normal"
             fullWidth
             error={!!validationErrors.OTPReference}
             helperText={validationErrors.OTPReference}
-            disabled
+            // disabled
           />
 
           <TextField
@@ -292,6 +297,8 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
             error={!!validationErrors.SelfValidate}
             helperText={validationErrors.SelfValidate}
           />
+
+
 
           <Button
             variant="contained"
@@ -310,14 +317,13 @@ const RedeemCreate = ({ handleNext, accessToken, capturedData, capturedDataHandl
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
         sx={{ marginBottom: 2 }}
-      ><Alert severity="success">Redeem submitted successfully!</Alert></Snackbar>
+      ><Alert severity="success">Redeem request submitted successfully!</Alert></Snackbar>
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        //message="Failed to submit Redeem. Please try again."
         sx={{ marginBottom: 2 }}
-      ><Alert severity="error">Failed to submit Redeem. Please try again.</Alert></Snackbar>
+      ><Alert severity="error">{failureMsg}</Alert></Snackbar>
     </Card>
   );
 };
