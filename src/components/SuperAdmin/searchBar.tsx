@@ -24,19 +24,19 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
   const schemes = [
     {
       value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS)",
+      name: "OVERNIGHT FUND",
       plan: "GP",
       opt: "G",
     },
     {
       value: "LF",
-      name: "LIQUID FUND (5-15 DAYS)",
+      name: "LIQUID FUND",
       plan: "IG",
       opt: "G",
     },
     {
       value: "LP",
-      name: "LOW DURATION FUND (> 2 WEEKS)",
+      name: "LOW DURATION FUND",
       plan: "RG",
       opt: "G",
     },
@@ -95,7 +95,7 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
           {schemes.map((each, idx) => {
             return (
               <MenuItem key={idx} value={each.value}>
-                {each.value}
+                {each.name}
               </MenuItem>
             );
           })}

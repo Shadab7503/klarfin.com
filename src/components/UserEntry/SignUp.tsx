@@ -208,11 +208,11 @@ const SignUp = () => {
                     <div className="signup-heading">Sign Up</div>
                   </Grid>
                   <Grid item xs={12}>
-                    <InputLabel className="form-label">User Name*</InputLabel>
+                    <InputLabel className="form-label">Name as per Pancard*</InputLabel>
                     <TextField
                     disabled={isDisabled('name')}
                       className="form-label"
-                      placeholder="User Name"
+                      placeholder="Name as per Pancard"
                       error={
                         validating && !validators.validateNotEmpty(newUser.name)
                       }
