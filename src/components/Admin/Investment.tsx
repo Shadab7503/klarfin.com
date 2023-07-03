@@ -257,7 +257,35 @@ export default function Investment(props: any) {
         Add Investor
       </Button> */}
 
-      <h2 style={{ marginBottom: "20px" }}>All Investments</h2>
+      <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",width:"70vw",marginBottom:"10px",height:"60px"}} >
+      <h2 style={{
+          fontFamily: "Work Sans",
+          fontWeight: "bold",
+          padding: "0.1rem 0.4rem",
+          borderRadius: "0.5rem",
+          fontSize: "1.4rem", }}>All Investments</h2>
+      <Button
+        type="submit"
+        style={{height:"50px"}}
+        sx={{
+          background: "#231955",
+          fontFamily: "Work Sans",
+          fontWeight: "bold",
+          padding: "0.01rem 0.6rem",
+          borderRadius: "1rem",
+          fontSize: "0.8rem",
+          color: "#fff",
+          "&:hover": {
+            backgroundColor: "#231955",
+          },
+        }}
+        onClick={() => {
+          navigate(`/dashboardAdmin/upload-doc`, { state: { status: 0 } });
+        }}
+      >
+        Upload Documents
+      </Button>
+      </div>
 
       <div style={{ height: "100vh", width: "100%" }}>
         <DataGrid
