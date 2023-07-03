@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const CreateOrder = ({ accessToken }) => {
-
   const { folio } = useParams();
   const navigate = useNavigate();
   const [msg,setMsg] = useState("");
