@@ -30,6 +30,39 @@ const CreateOrder = ({ accessToken }) => {
   const { folio } = useParams();
   const navigate = useNavigate();
 
+  const bankNames = [
+    "KOTAK MAHINDRA BANK LTD",
+    "YES BANK",
+    "IDFC FIRST BANK LTD",
+    "PUNJAB NATIONAL BANK",
+    "INDUSIND BANK",
+    "ICICI BANK LTD",
+    "EQUITAS SMALL FINANCE BANK LTD",
+    "SOUTH INDIAN BANK",
+    "HDFC BANK LTD",
+    "RBL BANK LIMITED",
+    "BANK OF MAHARASHTRA",
+    "DEUTSCHE BANK AG",
+    "FEDERAL BANK",
+    "KARNATAKA BANK LTD",
+    "STATE BANK OF INDIA",
+    "DHANALAXMI BANK",
+    "TAMILNAD MERCANTILE BANK LTD",
+    "AXIS BANK",
+    "BANK OF BARODA",
+    "CSB BANK LTD",
+    "STANDARD CHARTERED BANK",
+    "UNION BANK OF INDIA",
+    "CANARA BANK",
+    "IDBI BANK",
+    "CITY UNION BANK LTD",
+    "THE HONGKONG AND SHANGHAI BANKING CORPORATION LTD",
+    "KARUR VYSA BANK",
+    "BANDHAN BANK LTD",
+    "INDIAN BANK",
+    "AU SMALL FINANCE BANK",  
+  ];
+
   const [formData, setFormData] = useState({
     "Fund": "RMF",
     "Scheme": "LP",
@@ -42,10 +75,11 @@ const CreateOrder = ({ accessToken }) => {
     "SubArnCode": "",
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
-    "ChqBank": "",
+    "ChqBank": "KOTAK MAHINDRA BANK LTD",
     "PayMode": "OTBM",
     "AppName": "Klarfin"
   });
+
 
   const [validationErrors, setValidationErrors] = useState<any>({});
 
@@ -72,6 +106,7 @@ const CreateOrder = ({ accessToken }) => {
       ...prevData,
       [name]: value,
     }));
+    console.log(formData)
   };
 
   const handleSubmit = async (event) => {
@@ -136,6 +171,7 @@ const CreateOrder = ({ accessToken }) => {
               name="Scheme"
               value={formData.Scheme}
               onChange={handleChange}
+              defaultValue={schemes[0].value}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -256,14 +292,19 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Cheque Bank"
               name="ChqBank"
-              value={formData.ChqBank}
+              defaultValue={bankNames[0]}
               onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
               error={!!validationErrors.ChqBank}
               helperText={validationErrors.ChqBank}
-            />
+              select
+            >
+              {bankNames.map((ele,index)=>{
+                return<MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
+              })}
+            </TextField>
 
             <TextField
               label="Payment Mode"

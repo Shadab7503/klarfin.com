@@ -142,7 +142,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           >
             {users.map((option) => (
               <MenuItem key={option.apiKey} value={option.id}>
-                {option.name}
+                {`${option.name}  (${option.email})`}
               </MenuItem>
             ))}
           </TextField>
