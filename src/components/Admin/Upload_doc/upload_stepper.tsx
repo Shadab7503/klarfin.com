@@ -5,20 +5,19 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Page1 from "./Page1";
-import Page2 from "./Page2";
-import Page3 from "./Page3";
-import Page4 from "./Page4";
+import CompanyDetails from "./CompanyDetails";
+import DirectorsDetails from "./DirectorsDetails";
+import ListShareHolders from "./ListShareHolders";
+import CompanyDocument from "./CompanyDocument";
 import {useLocation, useNavigate} from "react-router-dom";
-const steps = ["Doc1", "Doc2", "Doc 3", "Doc4"];
-export default function Upload_stepper({accessToken}) {
+const steps = ["1.Details of Company", "2.Deatails of Director", "3.List of Shareholders as on<Date>","4.Company Related Documents"];
+export default function Upload_stepper({user,accessToken}) {
   const location: any = useLocation().state;
   const [activeStep, setActiveStep] = React.useState(0);
   const [capturedData, setCapturedData] = React.useState({
-    inv_id: location._id,
-    pan: location.folio?.pan,
-    folio: location.folio?.Folio,
+    doc_id:""
   });
+  console.log("Location",user)
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const navigate = useNavigate();
   const isStepOptional = (step: number) => {
@@ -51,7 +50,6 @@ export default function Upload_stepper({accessToken}) {
       // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.");
     }
-
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     setSkipped(prevSkipped => {
       const newSkipped = new Set(prevSkipped.values());
@@ -115,10 +113,10 @@ export default function Upload_stepper({accessToken}) {
           <React.Fragment>
             <div style={{minHeight: "80vh"}}>
               <div style={{marginTop: "4rem"}}>
-                {activeStep == 0 && <Page1 handleNext={handleNext} accessToken={accessToken} />}
-                {activeStep == 1 && <Page2 handleNext={handleNext} accessToken={accessToken} />}
-                {activeStep == 2 && <Page3 handleNext={handleNext} accessToken={accessToken} />}
-                {activeStep == 3 && <Page4 handleNext={handleNext} accessToken={accessToken} />}
+                {activeStep == 0 && <CompanyDetails setCapturedData={setCapturedData} user={user} handleNext={handleNext} accessToken={accessToken} />}
+                {activeStep == 1 && <DirectorsDetails capturedData={capturedData} user={user} handleNext={handleNext} accessToken={accessToken} />}
+                {activeStep == 2 && <ListShareHolders capturedData={capturedData} user={user} handleNext={handleNext} accessToken={accessToken} />}
+                {activeStep == 3 && <CompanyDocument capturedData={capturedData} user={user} handleNext={handleNext} accessToken={accessToken} />}
               </div>
             </div>
           </React.Fragment>

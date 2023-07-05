@@ -11,22 +11,22 @@ import {
   Typography,
   MenuItem,
 } from "@mui/material";
-import {json} from "node:stream/consumers";
-import {error} from "node:console";
 
-function Page1({accessToken, handleNext}) {
+
+function CompanyDetails({accessToken, handleNext, user, setCapturedData}) {
+  const [validationErrors, setValidationErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
   const [message, setMessage] = useState("");
-  const [formData, SetFormData] = useState({
-    name: "pancard",
-    pancard: "",
-  });
+  const [formData,SetFormData] = useState({
+    name:user.companyName,
+    phone:user.mobileNumber,
+    email:user.email,
+  })
 
   const handleChange = event => {
     const {name, value} = event.target;
-    console.log(name,value)
     SetFormData(prevData => ({
       ...prevData,
       [name]: value,
@@ -34,14 +34,16 @@ function Page1({accessToken, handleNext}) {
   };
 
   const handleSubmit = async (event: any) => {
-    event.preventDefaults();
+    event.preventDefault();
     setIsLoading(true);
     axios
       .post(
-        `${process.env.REACT_APP_BACKEND_HOST}/v1/user/investment/upload/pancard`,
+        `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/companydetails`,
         formData,
         {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       )
       .then(res => {
@@ -50,18 +52,21 @@ function Page1({accessToken, handleNext}) {
           setIsLoading(false);
           setIsFailure(true);
           setMessage(data.message);
+          return;
         }
+        setCapturedData(data.id)
         setIsLoading(false);
         setIsSuccess(true);
-        setTimeout(()=>{
-          setMessage(data.message);
-        },2000)
-        //handleNext();
+        setMessage(data.message);
+        setTimeout(() => {
+          handleNext();
+        }, 2000);
       })
       .catch(error => {
         setIsLoading(false);
         setIsFailure(true);
         setMessage(error);
+        return;
       });
   };
 
@@ -69,25 +74,47 @@ function Page1({accessToken, handleNext}) {
     <Card sx={{maxWidth: 600, margin: "0 auto"}}>
       <CardContent>
         <form onSubmit={handleSubmit} style={{width: "100%"}}>
-          <Typography variant="subtitle1" gutterBottom>
-            Upload Your Pan Card
-          </Typography>
-
+          <Typography variant="subtitle1">Details of Company</Typography>
           <TextField
-            label="Upload Pan Card"
+            label="Company Name"
             onChange={handleChange}
-            name="pancard"
-            type="file"
+            value={formData.name}
+            name='name'
             required
             variant="outlined"
-            hidden
-            focused
             margin="normal"
             fullWidth
-            //error={!!validationErrors.ACTYPE} // Check if the field has an error
-            //helperText={validationErrors.ACTYPE} // Display the error message
-          ></TextField>
+            disabled
+            error={!!validationErrors.Name} // Check if the field has an error
+            helperText={validationErrors.Name} /// Display the error message
+          />
+          <TextField
+            label="Company Contact No"
+            onChange={handleChange}
+            value={formData.phone}
+            name='phone'
+            required
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            disabled
+            error={!!validationErrors.phone} // Check if the field has an error
+            helperText={validationErrors.phone} // Display the error message
+          />
 
+          <TextField
+            label="Company Email"
+            onChange={handleChange}
+            name='email'
+            required
+            disabled
+            value={formData.email}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.email} // Check if the field has an error
+            helperText={validationErrors.email} // Display the error message
+          ></TextField>
           <Button
             variant="contained"
             color="primary"
@@ -112,7 +139,7 @@ function Page1({accessToken, handleNext}) {
         sx={{marginBottom: 2}}
       >
         <Alert severity="success" sx={{width: "100%"}} className="snack">
-          { message.length > 1? message :"File is uploading..."}
+          {message.length > 1 ? message : "File is uploading..."}
         </Alert>
       </Snackbar>
 
@@ -123,11 +150,11 @@ function Page1({accessToken, handleNext}) {
         sx={{marginBottom: 2}}
       >
         <Alert severity="error" sx={{width: "100%"}} className="snack">
-          Failed to Upload File !!!
+          {message}
         </Alert>
       </Snackbar>
     </Card>
   );
 }
 
-export default Page1;
+export default CompanyDetails;
