@@ -24,8 +24,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   const [validationErrors, setValidationErrors] = useState<any>({});
 
   const getAdmins = () => {
-
-
     if (accessToken) {
       axios
         .get(
@@ -39,15 +37,11 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             "message" in response.data &&
             response.data.message === "Admin"
           ) {
-
             setUsers([...response.data.admin]);
           }
-
-
         })
         .catch((err) => {
           console.log(err);
-
         });
     }
   }
@@ -64,19 +58,12 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
         if (
           response.data.succ
         ) {
-
           setFunds([...response.data.funds]);
-
-
         }
-
-
       })
       .catch((err) => {
         console.log(err);
-
       });
-
   }
 
   useEffect(() => {
@@ -92,8 +79,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
       [name]: value,
     }));
   };
-
-
 
   const handleCloseSnackbar = () => {
     setIsFailure(false);
@@ -154,7 +139,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           >
             {users.map((option) => (
               <MenuItem key={option.apiKey} value={option.id}>
-                {option.name}
+                {`${option.name} (${option.email})`}
               </MenuItem>
             ))}
           </TextField>

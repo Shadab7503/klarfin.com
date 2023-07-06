@@ -14,6 +14,7 @@ import Insights from "./Insights";
 import Receivables from "./Receivables";
 import Bills from "./Bills";
 import Settings from "./Settings";
+import Upload_stepper from "./Upload_doc/upload_stepper";
 // import CreditManagement from "./CreditManagement";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
@@ -75,9 +76,8 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/settings" element={<AdminLayout user={user} ><Settings role={user.role} email={user.email} accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboardAdmin/receivables" element={<AdminLayout user={user} ><Receivables name={user.name} accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboardAdmin/bills-to-pay" element={<AdminLayout user={user} ><Bills /></AdminLayout>} />
+        <Route path="/dashboardAdmin/upload-doc" element={<AdminLayout user={user} ><Upload_stepper user={user} accessToken={accessToken} /></AdminLayout>}/>
         <Route path="*" element={<Navigate to="/dashboardAdmin/investing" replace />} />
-
-
       </Routes>
 
     </BrowserRouter>
