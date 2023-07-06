@@ -108,7 +108,7 @@ function DirectorsDetails({accessToken, handleNext, user, capturedData}) {
     <Card sx={{maxWidth: 600, margin: "0 auto"}}>
       <CardContent>
         <form onSubmit={handleSubmit} style={{width: "100%"}}>
-          <Typography variant="subtitle1">Details of Company</Typography>
+          <Typography variant="subtitle1">Details of Director</Typography>
           <TextField
             label="Name"
             onChange={handleChange}
@@ -193,7 +193,7 @@ function DirectorsDetails({accessToken, handleNext, user, capturedData}) {
             Upload Related Docs
           </Typography>
           <TextField
-            label="Upload Pan Card"
+            label="Upload Pan Card of Director"
             onChange={fileChangeHandler}
             name="pancard"
             type="file"
@@ -205,7 +205,7 @@ function DirectorsDetails({accessToken, handleNext, user, capturedData}) {
             fullWidth
           ></TextField>
           <TextField
-            label="Upload Aadhar Card"
+            label="Upload Aadhar Card of Director"
             onChange={fileChangeHandler}
             name="aadharcard"
             type="file"

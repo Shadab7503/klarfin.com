@@ -84,7 +84,6 @@ function CompanyDetails({accessToken, handleNext, user, setCapturedData}) {
             variant="outlined"
             margin="normal"
             fullWidth
-            disabled
             error={!!validationErrors.Name} // Check if the field has an error
             helperText={validationErrors.Name} /// Display the error message
           />
@@ -97,7 +96,6 @@ function CompanyDetails({accessToken, handleNext, user, setCapturedData}) {
             variant="outlined"
             margin="normal"
             fullWidth
-            disabled
             error={!!validationErrors.phone} // Check if the field has an error
             helperText={validationErrors.phone} // Display the error message
           />
@@ -107,7 +105,6 @@ function CompanyDetails({accessToken, handleNext, user, setCapturedData}) {
             onChange={handleChange}
             name='email'
             required
-            disabled
             value={formData.email}
             variant="outlined"
             margin="normal"

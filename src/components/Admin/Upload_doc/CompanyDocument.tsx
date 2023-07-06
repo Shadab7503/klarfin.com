@@ -21,7 +21,8 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
   const [certificate_incorporation,setcertificate_incorporation] = useState<any>(null)
   const [article_association,setarticle_association] = useState<any>(null)
   const [memorandum_association,setmemorandum_association] = useState<any>(null)
-  const [balancesheet,setbalancesheet] = useState<any>(null)
+  const [balancesheet21,setbalancesheet21] = useState<any>(null)
+  const [balancesheet22,setbalancesheet22] = useState<any>(null)
   const [cancel_cheque,setcancel_cheque] = useState<any>([]); 
 
   const fileChangeHandler = event => {
@@ -34,9 +35,12 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
       setarticle_association(event.target.files[0]);
     }else if (name == "memorandum_association") {
       setmemorandum_association(event.target.files[0]);
-    }else if (name == "balancesheet") {
-      setbalancesheet(event.target.files[0]);
-    }else if (name == "cancel_cheque") {
+    }else if (name == "balancesheet21") {
+      setbalancesheet21(event.target.files[0]);
+    }else if (name == "balancesheet22") {
+      setbalancesheet22(event.target.files[0]);
+    }
+    else if (name == "cancel_cheque") {
       setcancel_cheque(event.target.files[0]);
     }
   };
@@ -44,7 +48,8 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("balancesheet",balancesheet)
+    formData.append("balancesheet21",balancesheet21)
+    formData.append("balancesheet22",balancesheet22)
     formData.append("memorandum_association",memorandum_association)
     formData.append("article_association",article_association)
     formData.append("certificate_incorporation",certificate_incorporation)
@@ -74,9 +79,9 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
         setIsLoading(false);
         setIsSuccess(true);
         setMessage(data.message);
-        setTimeout(() => {
-          handleNext();
-        }, 2000);
+        // setTimeout(() => {
+        //   handleNext();
+        // }, 2000);
       })
       .catch(error => {
         setIsLoading(false);
@@ -140,9 +145,21 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             fullWidth
           ></TextField>
           <TextField
-            label="Upload Balance Sheet & P&L for FY'23 ,FY'22"
+            label="Upload Balance Sheet & P&L for FY'21"
             onChange={fileChangeHandler}
-            name="balancesheet"
+            name="balancesheet21"
+            type="file"
+            required
+            variant="outlined"
+            hidden
+            focused
+            margin="normal"
+            fullWidth
+          ></TextField>
+          <TextField
+            label="Upload Balance Sheet & P&L for FY'22"
+            onChange={fileChangeHandler}
+            name="balancesheet22"
             type="file"
             required
             variant="outlined"

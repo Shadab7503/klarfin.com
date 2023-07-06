@@ -11,32 +11,62 @@ import {
   CardContent,
   Typography,
   MenuItem,
+  Grid
 } from "@mui/material";
 
 function ListShareHolders({accessToken, handleNext, user, capturedData}) {
   const [validationErrors, setValidationErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isFailure, setIsFailure] = useState(false);
+  const [isFailure, setIsFailure] = useState<boolean>(false);
   const [message, setMessage] = useState("");
-  const [shareholder, setShareholders] = useState([{}]);
   const [formData, SetFormData] = useState({
     name: "",
     no_share_held: "",
-    percentage_holding: "",
+    percentage_shareholding: "",
     pancard: "",
   });
+  const [shareholder, setShareholders] = useState([formData]);
+
+  const EditDataHandler=(data)=>{
+    const updateShareHolder = shareholder.filter((e)=> (e.pancard !== data.pancard))
+    setShareholders(updateShareHolder);
+    SetFormData({...data});
+  }
 
   const [columns, setColumns] = useState([
     {field: "id", headerName: "ID", width: 80},
     {field: "name", headerName: "Name of Shareholder", width: 240},
     {field: "no_share_held", headerName: "No. of Shares Held", width: 240},
     {
-      field: "percentage_holding",
+      field: "percentage_shareholding",
       headerName: "Percentage Shareholding",
       width: 240,
     },
     {field: "pancard", headerName: "Pan Number", width: 200},
+    {
+      field: "Actions",
+      headerName: "action",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <div style={{display: "flex", justifyContent: "space-between"}}>
+            <Grid
+              item
+              className="bills-pay"
+              py={1}
+              px={2}
+              style={{marginRight: "1rem"}}
+              onClick={() => {
+                EditDataHandler(params.row);
+              }}
+            >
+              EDIT
+            </Grid>
+          </div>
+        );
+      },
+    },
   ]);
 
   const handleChange = event => {
@@ -49,28 +79,43 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
 
   const AddShareHolderHandler = (event: any) => {
     event.preventDefault();
+    const value = formData.percentage_shareholding;
     shareholder.push(formData);
     setShareholders(shareholder);
     SetFormData({
       name: "",
       no_share_held: "",
-      percentage_holding: "",
+      percentage_shareholding: "",
       pancard: "",
     });
   };
 
   const handleSubmit = async (event: any) => {
-    console.log("submit clicked");
     event.preventDefault();
-    console.log("captureData : ",capturedData)
     setIsLoading(true);
+    let total = 0;
+    console.log("total : ", total);
+    shareholder.forEach(ele => {
+      Object.entries(ele).forEach(([key, value]) => {
+        if (key == "percentage_shareholding") {
+          total += Number(value);
+        }
+      });
+    });
+    console.log("total : ", total);
+    if (total > 100 || total < 100) {
+      setIsFailure(true);
+      setIsLoading(false);
+      setMessage("Sum of Share Holding should be 100%");
+      return;
+    }
     axios
       .post(
         `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/shareholders`,
-        {data:shareholder.slice(1),id:capturedData},
+        {data: shareholder.slice(1), id: capturedData},
         {
           headers: {Authorization: `Bearer ${accessToken}`},
-        },
+        }
       )
       .then(res => {
         const {data} = res;
@@ -94,7 +139,6 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
         return;
       });
   };
-
   return (
     <>
       <Card sx={{maxWidth: 600, margin: "0 auto"}}>
@@ -130,10 +174,10 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
             <TextField
               label="Percentage Shareholding"
               onChange={handleChange}
-              name="percentage_holding"
+              name="percentage_shareholding"
               required
               type="Number"
-              value={formData.percentage_holding}
+              value={formData.percentage_shareholding}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -188,7 +232,7 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
           sx={{marginBottom: 2}}
         >
           <Alert severity="error" sx={{width: "100%"}} className="snack">
-            Failed to Upload File !!!
+            {message}
           </Alert>
         </Snackbar>
       </Card>
@@ -223,7 +267,10 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
             >
               <DataGrid
                 rows={shareholder.slice(1).map((each: any, idx: number) => {
-                  return {...each, id: idx + 1};
+                  return {
+                    ...each,
+                    id: idx + 1,
+                  };
                 })}
                 columns={columns.map(each => {
                   return {...each};
@@ -233,20 +280,22 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
               />
             </form>
           </Card>
-          {shareholder.length>2 && <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={isLoading}
-            sx={{marginTop: 2}}
-            onClick={handleSubmit}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "SUBMIT"
-            )}
-          </Button>}
+          {shareholder.length > 2 && (
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={isLoading}
+              sx={{marginTop: 2}}
+              onClick={handleSubmit}
+            >
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "SUBMIT"
+              )}
+            </Button>
+          )}
         </div>
       )}
     </>

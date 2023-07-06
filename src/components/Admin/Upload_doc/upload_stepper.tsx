@@ -10,14 +10,13 @@ import DirectorsDetails from "./DirectorsDetails";
 import ListShareHolders from "./ListShareHolders";
 import CompanyDocument from "./CompanyDocument";
 import {useLocation, useNavigate} from "react-router-dom";
-const steps = ["1.Details of Company", "2.Deatails of Director", "3.List of Shareholders as on<Date>","4.Company Related Documents"];
+const steps = ["1.Details of Company", "2.Details of Director", `3.List of Shareholders as on ${new Date().toISOString().slice(0, 10)}`,"4.Company Related Documents"];
 export default function Upload_stepper({user,accessToken}) {
   const location: any = useLocation().state;
   const [activeStep, setActiveStep] = React.useState(0);
   const [capturedData, setCapturedData] = React.useState({
     doc_id:""
   });
-  console.log("Location",user)
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const navigate = useNavigate();
   const isStepOptional = (step: number) => {
