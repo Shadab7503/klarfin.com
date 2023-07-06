@@ -79,7 +79,7 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
 
   const AddShareHolderHandler = (event: any) => {
     event.preventDefault();
-    const value = formData.percentage_shareholding;
+    
     shareholder.push(formData);
     setShareholders(shareholder);
     SetFormData({
