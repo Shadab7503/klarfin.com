@@ -79,9 +79,9 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
         setIsLoading(false);
         setIsSuccess(true);
         setMessage(data.message);
-        // setTimeout(() => {
-        //   handleNext();
-        // }, 2000);
+        setTimeout(() => {
+          handleNext();
+        }, 2000);
       })
       .catch(error => {
         setIsLoading(false);

@@ -84,8 +84,8 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
     setShareholders(shareholder);
     SetFormData({
       name: "",
-      no_share_held: "",
-      percentage_shareholding: "",
+      no_share_held: '',
+      percentage_shareholding: '',
       pancard: "",
     });
   };
