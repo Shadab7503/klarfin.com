@@ -11,19 +11,19 @@ const CreateOrder = ({ accessToken }) => {
   const schemes = [
     {
       value: "ON",
-      name: "OVERNIGHT FUND (<5 DAYS )",
+      name: "OVERNIGHT FUND ( < 5 DAYS )",
       plan: "GP",
       opt: "G",
     },
     {
       value: "LF",
-      name: "LIQUID FUND (5-15 DAYS)",
+      name: "LIQUID FUND ( 5-15 DAYS )",
       plan: "IG",
       opt: "G",
     },
     {
       value: "LP",
-      name: "LOW DURATION FUND (> 2 WEEKS)",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
       plan: "RG",
       opt: "G",
     },

@@ -24,10 +24,32 @@ const Folio = ({
   //console.log(capturedData);
   const [message, setMessage] = useState("");
   const [isNomOpt, setIsNomOpt] = useState<boolean>(false);
+
+  const schemes = [
+    {
+      value: "ON",
+      name: "OVERNIGHT FUND ( < 5 DAYS )",
+      plan: "GP",
+      opt: "G",
+    },
+    {
+      value: "LF",
+      name: "LIQUID FUND ( 5-15 DAYS )",
+      plan: "IG",
+      opt: "G",
+    },
+    {
+      value: "LP",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
+      plan: "RG",
+      opt: "G",
+    },
+  ];
+
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
-    scheme: "LF",
-    plan: "IG",
+    scheme: schemes[0].value,
+    plan:schemes[0].plan,
     option: "G",
     email: capturedData.invtorInf[0],
     mobile: capturedData.invtorInf[1].toString(),
@@ -76,7 +98,11 @@ const Folio = ({
     if (name == "dob") {
       const date = dateConverter(value);
       value = date;
-      //value = format(date, 'dd/mm/yyyy');
+    }
+    if(name=="scheme"){
+      const data = schemes.find((each)=>each.value == value);
+      if(!data) return;
+      setFormData({...formData,plan:data.plan,scheme:data.value});
     }
     if(name=="isNomOpt"){
       if( value == "YES") setIsNomOpt(true);
@@ -145,6 +171,23 @@ const Folio = ({
           />
 
           <TextField
+              label="Scheme"
+              name="scheme"
+              onChange={handleChange}
+              defaultValue={schemes[0].value}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!!validationErrors.Scheme}
+              helperText={validationErrors.Scheme}
+              select
+            >
+              {schemes.map((ele)=>{
+                return <MenuItem value={ele.value} defaultChecked key={ele.value}>{ele.name}</MenuItem>
+              })}
+            </TextField>
+{/* 
+          <TextField
             label="Scheme"
             name="scheme"
             value={formData.scheme}
@@ -166,7 +209,7 @@ const Folio = ({
             fullWidth
             error={!!validationErrors.plan} // Check if the field has an error
             helperText={validationErrors.plan} // Display the error message
-          />
+          /> */}
 
           <TextField
             label="Option"

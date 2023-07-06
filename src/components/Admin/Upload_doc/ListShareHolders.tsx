@@ -253,7 +253,7 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
               alignContent: "center",
               justifyContent: "center",
               height: "40vh",
-              width: "80%",
+              width: "85%",
             }}
           >
             <form
