@@ -128,7 +128,7 @@ const CreateOrder = ({ accessToken }) => {
 
         setIsLoading(false);
         if(formData.PayMode == 'NEFT') {
-          navigate(`/dashboardAdmin/nippon-bank`)
+          navigate(`/dashboardAdmin/nippon-bank/${folio}`)
           return;
         }
         navigate(`/dashboardAdmin/investment/details/${folio}`)
@@ -214,7 +214,7 @@ const CreateOrder = ({ accessToken }) => {
             /> */}
 
             <TextField
-              label="Account Number"
+              label="Folio Number"
               name="AcNo"
               value={formData.AcNo}
               onChange={handleChange}
@@ -319,7 +319,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.PayMode}
             >
               <MenuItem defaultChecked value="OTBM">
-                OTBM
+                  OTBM (One Time Bank Mandate)
               </MenuItem>
               <MenuItem value="NEFT">
                 NEFT

@@ -39,9 +39,9 @@ const DashboardAdmin = (props) => {
           <CreateOrder accessToken={accessToken} />
         </AdminLayout>} />
 
-        <Route path="/dashboardAdmin/nippon-bank" element={<AdminLayout
+        <Route path="/dashboardAdmin/nippon-bank/:folio_id" element={<AdminLayout
           user={{}} >
-          <NipponBank />
+          <NipponBank  accessToken={accessToken} />
         </AdminLayout>} />
         {/* <Route path="/dashboardAdmin/add-investment" element={<AdminLayout
           user={{}} >
