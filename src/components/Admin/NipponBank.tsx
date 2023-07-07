@@ -15,7 +15,7 @@ import Loading from "./Loading";
 
 function NipponBank({accessToken}) {
   const [loading, setLoading] = useState(false);
-  const {folio} = useParams();
+  const {folio } = useParams();
   const [data,setData] = useState();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function NipponBank({accessToken}) {
         setData(data.data);
         setLoading(false);
       });
-  }, []);
+  },[]);
 
   return (
     <Card>

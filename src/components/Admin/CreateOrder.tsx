@@ -65,7 +65,7 @@ const CreateOrder = ({ accessToken }) => {
 
   const [formData, setFormData] = useState({
     "Fund": "RMF",
-    "Scheme": "LP",
+    "Scheme": "ON",
     "Plan": "GP",
     "Options": "G",
     "AcNo": folio,
