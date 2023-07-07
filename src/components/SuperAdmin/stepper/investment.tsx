@@ -19,7 +19,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
     IFSC: "",
     ACTYPE: "SAVINGS",
     ACNUM: "",
-    CONMACNUM:""
+    CONMACNUM: "",
   });
 
   const AccTypes = ["SAVINGS", "CURRENT"];
@@ -89,46 +89,47 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
   };
 
   const saveHandler = e => {
+    console.log(formData);
     e.preventDefault();
     setValidationErrors({});
     setIsLoading(true);
 
-    if (formData.ACNUM !== formData.CONMACNUM) {
+    if (formData.ACNUM != formData.CONMACNUM) {
       setIsLoading(false);
       setisConfirm(true);
       return;
-    }
-
-    axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,
-        formData,
-        {
-          headers: {Authorization: `Bearer ${accessToken}`},
-        }
-      )
-      .then(res => {
-        const {data} = res;
-        // navigate(`/dashboardSuper/investment`)
-        setIsLoading(false);
-        if (!data.succ) {
-          if (data.public_msg == "Invester Already Exist") {
-            setExitInvester(true);
-            return;
+    } else {
+      axios
+        .post(
+          `${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,
+          formData,
+          {
+            headers: {Authorization: `Bearer ${accessToken}`},
           }
-        }
-        capturedDataHandler([
-          {inv_id: data.invData.id},
-          {pan: data.invData.pan},
-        ]);
-        //console.log('data', data);
-        handleNext();
-      })
-      .catch(({response}) => {
-        setIsLoading(false);
-        const {data} = response;
-        setValidationErrors(data.validationErrors);
-      });
+        )
+        .then(res => {
+          const {data} = res;
+          // navigate(`/dashboardSuper/investment`)
+          setIsLoading(false);
+          if (!data.succ) {
+            if (data.public_msg == "Invester Already Exist") {
+              setExitInvester(true);
+              return;
+            }
+          }
+          capturedDataHandler([
+            {inv_id: data.invData.id},
+            {pan: data.invData.pan},
+          ]);
+          //console.log('data', data);
+          handleNext();
+        })
+        .catch(({response}) => {
+          setIsLoading(false);
+          const {data} = response;
+          setValidationErrors(data.validationErrors);
+        });
+    }
   };
 
   return (
@@ -299,7 +300,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
       <Snackbar
         open={isConfirm}
         autoHideDuration={3000}
-        onClose={() =>setisConfirm(false)}
+        onClose={() => setisConfirm(false)}
         sx={{marginBottom: 2}}
       >
         <Alert severity="error">Please Enter Same Account Number</Alert>
