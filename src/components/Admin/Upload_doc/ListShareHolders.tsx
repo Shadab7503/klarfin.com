@@ -107,7 +107,7 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
     event.preventDefault();
     setIsLoading(true);
     let total = 0;
-    console.log("total : ", total);
+
     shareholder.forEach(ele => {
       Object.entries(ele).forEach(([key, value]) => {
         if (key == "percentage_shareholding") {
@@ -115,11 +115,11 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
         }
       });
     });
-    console.log("total : ", total);
+
     if (total > 100 || total < 100) {
       setIsFailure(true);
       setIsLoading(false);
-      setMessage("Sum of Percentage Share Holding should be 100%");
+      setMessage("Sum of Percentage Share Holding must be 100%");
       return;
     }
     axios
