@@ -11,7 +11,7 @@ import {
   CardContent,
   Typography,
   MenuItem,
-  Grid
+  Grid,
 } from "@mui/material";
 
 function ListShareHolders({accessToken, handleNext, user, capturedData}) {
@@ -27,12 +27,17 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
     pancard: "",
   });
   const [shareholder, setShareholders] = useState([formData]);
-
-  const EditDataHandler=(data)=>{
-    const updateShareHolder = shareholder.filter((e)=> (e.pancard !== data.pancard))
-    setShareholders(updateShareHolder);
-    SetFormData({...data});
-  }
+  
+  const EditDataHandler = (params) => {
+    console.log(shareholder)
+    const data = params.row;
+    const updateShareHolder = shareholder.filter(
+      e => e.pancard !== data.pancard
+      );
+      console.log(updateShareHolder)
+      setShareholders(updateShareHolder);
+      SetFormData({...data});  
+  };
 
   const [columns, setColumns] = useState([
     {field: "id", headerName: "ID", width: 80},
@@ -57,8 +62,8 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
               py={1}
               px={2}
               style={{marginRight: "1rem"}}
-              onClick={() => {
-                EditDataHandler(params.row);
+              onClick={(event) => {
+                EditDataHandler(params);
               }}
             >
               EDIT
@@ -79,13 +84,21 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
 
   const AddShareHolderHandler = (event: any) => {
     event.preventDefault();
-    
-    shareholder.push(formData);
+
+    const existingPancards = shareholder.map(
+      ele => ele.pancard.toUpperCase()
+    );
+    if (existingPancards.includes(formData.pancard.toUpperCase())) {
+      setIsFailure(true);
+      setMessage("Please Enter Unique Pancard Number");
+      return;
+    }
+    shareholder.push(formData)
     setShareholders(shareholder);
     SetFormData({
       name: "",
-      no_share_held: '',
-      percentage_shareholding: '',
+      no_share_held: "",
+      percentage_shareholding: "",
       pancard: "",
     });
   };
@@ -94,7 +107,7 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
     event.preventDefault();
     setIsLoading(true);
     let total = 0;
-    console.log("total : ", total);
+
     shareholder.forEach(ele => {
       Object.entries(ele).forEach(([key, value]) => {
         if (key == "percentage_shareholding") {
@@ -102,11 +115,11 @@ function ListShareHolders({accessToken, handleNext, user, capturedData}) {
         }
       });
     });
-    console.log("total : ", total);
+
     if (total > 100 || total < 100) {
       setIsFailure(true);
       setIsLoading(false);
-      setMessage("Sum of Share Holding should be 100%");
+      setMessage("Sum of Percentage Share Holding must be 100%");
       return;
     }
     axios
