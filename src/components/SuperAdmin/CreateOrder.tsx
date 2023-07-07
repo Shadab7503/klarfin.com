@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button,MenuItem, CircularProgress, Snackbar, Alert,Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const CreateOrder = ({ accessToken }) => {
   const { folio } = useParams();
   const navigate = useNavigate();
+  const [pan,setPan] = useState();
   const [msg,setMsg] = useState("");
 
   const schemes = [
@@ -128,6 +129,23 @@ const CreateOrder = ({ accessToken }) => {
       })
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/folio`, {
+        headers: {Authorization: `Bearer ${accessToken}`},
+        params: {
+          folio: folio,
+        },
+      })
+      .then(({data}) => {
+        console.log(data.pan);
+        setPan(data.pan);
+        setIsLoading(false);
+      });
+  },[]);
+
+
 
 
   const handleCloseSnackbar = () => {
@@ -144,7 +162,7 @@ const CreateOrder = ({ accessToken }) => {
           Beneficiary Account Number
         </Typography>
         <Typography variant="body1">
-          2203ALFPD9462P
+          {`2203${pan}`}
         </Typography>
 
         <Typography variant="h6" gutterBottom>
@@ -160,7 +178,12 @@ const CreateOrder = ({ accessToken }) => {
         <Typography variant="body1">
           ICICI Bank
         </Typography>
-
+        <Typography variant="h6">
+          Type of Account
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Current Account
+        </Typography>
         <Typography variant="h6" gutterBottom>
           Beneficiary Name
         </Typography>
@@ -229,7 +252,7 @@ const CreateOrder = ({ accessToken }) => {
             />
 
             <TextField
-              label="Account Number"
+              label="Folio Number"
               name="AcNo"
               value={formData.AcNo}
               onChange={handleChange}
@@ -334,7 +357,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.PayMode}
             >
               <MenuItem value="OTBM">
-                OTBM
+                OTBM (One Time Bank Mandate)
               </MenuItem>
               <MenuItem  value="NEFT">
                 NEFT

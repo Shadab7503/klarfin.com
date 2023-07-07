@@ -104,7 +104,7 @@ export default function Orders(props: any) {
     {field: "ChqBank", headerName: "ChqBank", width: 180},
     {field: "REFNO", headerName: "REFNO", width: 180},
   ]);
-
+  
   const [loading, setLoading] = useState(false);
 
   const getReceivablesData = () => {
