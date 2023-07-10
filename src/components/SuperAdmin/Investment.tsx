@@ -37,7 +37,6 @@ export default function Investment(props: any) {
         .then(({ data }) => {
           // setInvestmentList(data.investments);
           getReceivablesData({ page: 1, limit: 20 });
-
           setLoading(false);
         });
     }
@@ -61,12 +60,13 @@ export default function Investment(props: any) {
   };
 
   const [columns, setColumns] = useState([
-    { field: "idx", headerName: "SN", width: 100 },
+    { field: "idx", headerName: "SN", width: 80 },
     { field: "org", headerName: "Name", width: 180 },
     { field: "type", headerName: "Investment For", width: 180 },
     //{ field: 'frequency', headerName: 'Frequency', width: 180 },
     // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
     { field: "fund", headerName: "Fund", width: 180 },
+    { field: 'bank', headerName: 'Bank', width: 180 },
     // { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
     // { field: 'returns', headerName: 'Return generated', type: 'number' },
     {
@@ -275,13 +275,13 @@ export default function Investment(props: any) {
               //  if(key=='status') setstatusOfinvestMentList(each[key])
               obj[key] = value;
             });
-            console.log("Object Data",obj);
             return {
               ...obj,
               id: each._id,
               idx: idx + 1,
               org: each.user_id.name,
               fund: each.fund_id.name,
+              bank:each.BANK,
               is_OTBM : each.is_OTBM,
               status: each.status,             
               type: invtType[each.type],

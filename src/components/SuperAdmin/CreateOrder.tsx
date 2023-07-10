@@ -11,6 +11,12 @@ const CreateOrder = ({ accessToken }) => {
 
   const schemes = [
     {
+      value: "LP",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
+      plan: "RG",
+      opt: "G",
+    },
+    {
       value: "ON",
       name: "OVERNIGHT FUND ( < 5 DAYS )",
       plan: "GP",
@@ -22,15 +28,11 @@ const CreateOrder = ({ accessToken }) => {
       plan: "IG",
       opt: "G",
     },
-    {
-      value: "LP",
-      name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
-      opt: "G",
-    },
+   
   ];
 
   const bankNames = [
+    "--SELECT--",
     "KOTAK MAHINDRA BANK LTD",
     "YES BANK",
     "IDFC FIRST BANK LTD",
@@ -47,7 +49,6 @@ const CreateOrder = ({ accessToken }) => {
     "KARNATAKA BANK LTD",
     "STATE BANK OF INDIA",
     "DHANALAXMI BANK",
-    "TAMILNAD MERCANTILE BANK LTD",
     "AXIS BANK",
     "BANK OF BARODA",
     "CSB BANK LTD",
@@ -61,12 +62,14 @@ const CreateOrder = ({ accessToken }) => {
     "BANDHAN BANK LTD",
     "INDIAN BANK",
     "AU SMALL FINANCE BANK",  
+    "CITI BANK",
+    "BANK OF INDIA"
   ];
 
   const [formData, setFormData] = useState({
     "Fund": "RMF",
-    "Scheme": "ON",
-    "Plan": "GP",
+    "Scheme": "LP",
+    "Plan": "RG",
     "Options": "G",
     "AcNo": folio,
     "Amount": '',
@@ -75,7 +78,7 @@ const CreateOrder = ({ accessToken }) => {
     "SubArnCode": "",
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
-    "ChqBank": "KOTAK MAHINDRA BANK LTD",
+    "ChqBank": "",
     "PayMode": "OTBM",
     "AppName": "Klarfin"
   });
@@ -96,7 +99,6 @@ const CreateOrder = ({ accessToken }) => {
       ...prevData,
       [name]: value,
     }));
-    console.log(formData)
   };
 
   const handleSubmit = async (event) => {
@@ -223,7 +225,7 @@ const CreateOrder = ({ accessToken }) => {
               select
             >
               {schemes.map((ele)=>{
-                return <MenuItem value={ele.value} defaultChecked key={ele.value}>{ele.name}</MenuItem>
+                return <MenuItem value={ele.value}  key={ele.value}>{ele.name}</MenuItem>
               })}
             </TextField>
 
@@ -328,10 +330,10 @@ const CreateOrder = ({ accessToken }) => {
             /> */}
 
             <TextField
-              label="Cheque Bank"
+              label="Select Cheque Bank"
               name="ChqBank"
-              defaultValue={bankNames[0]}
               onChange={handleChange}
+              defaultValue={bankNames[0]}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -340,7 +342,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.ChqBank}
             >
               {bankNames.map((ele,index)=>{
-                return<MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
+                return<MenuItem value={ele}  key={index} >{ele}</MenuItem>
               })}
             </TextField>
 

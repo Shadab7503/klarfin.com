@@ -45,13 +45,12 @@ export default function Transactions(props: any) {
     
 
     const [filter, setFilter] = useState({
-        plan: 'IG',
-        scheme: 'LF',
+        plan: 'RG',
+        scheme: 'LP',
         date: date
     });
 
     const filterHandler = (data) => {
-        console.log(data);
         setFilter({ ...data });
     }
 
@@ -106,7 +105,6 @@ export default function Transactions(props: any) {
                 rowsPerPageOptions={[50, 100, 1000]}
              
                  rows={tranx.map((each: any, idx: number) => {
-                    console.log(each);
                     return {...each,id:idx+1};
                 })}
                 columns={columns.map(each => {
@@ -120,7 +118,6 @@ export default function Transactions(props: any) {
                 hideFooter={true}
                 rowsPerPageOptions={[20]}
                 rows={Lasttranx.map((each: any, idx: number) => {
-                    console.log(each);
                     return {...each,id:idx+1};
                 })}
                 columns={columns.map(each => {

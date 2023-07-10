@@ -23,6 +23,12 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
 
   const schemes = [
     {
+      value: "LP",
+      name: "LOW DURATION FUND",
+      plan: "RG",
+      opt: "G",
+    },
+    {
       value: "ON",
       name: "OVERNIGHT FUND",
       plan: "GP",
@@ -32,12 +38,6 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
       value: "LF",
       name: "LIQUID FUND",
       plan: "IG",
-      opt: "G",
-    },
-    {
-      value: "LP",
-      name: "LOW DURATION FUND",
-      plan: "RG",
       opt: "G",
     },
   ];

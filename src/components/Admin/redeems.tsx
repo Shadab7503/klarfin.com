@@ -89,13 +89,12 @@ export default function Redeems(props: any) {
     
     const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
     const [filter, setFilter] = useState({
-        plan: 'IG',
-        scheme: 'LF',
+        plan: 'RG',
+        scheme: 'LP',
         date: date
     });
 
     const filterHandler = (data) => {
-        console.log(data);
         setFilter({ ...data });
     }
     useEffect(() => {
@@ -120,8 +119,6 @@ export default function Redeems(props: any) {
                 rowsPerPageOptions={[50, 100, 1000]}
              
                 rows={tranx.map((each: any, idx: number) => {
-                    console.log(each);
-                  
                     return {...each,id:idx+1};
                   
                 })}
