@@ -6,6 +6,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const schemes = [
   {
+    value: "LP",
+    name: "LOW DURATION FUND (> 2 WEEKS)",
+    plan: "RG",
+    opt: "G"
+  },
+  {
     value: "ON",
     name: "OVERNIGHT FUND ( < 5 DAYS)",
     plan: "GP",
@@ -17,12 +23,7 @@ const schemes = [
     plan: "IG",
     opt: "G"
   },
-  {
-    value: "LP",
-    name: "LOW DURATION FUND (> 2 WEEKS)",
-    plan: "RG",
-    opt: "G"
-  },
+  
 ]
 
 const CreateOrder = ({ accessToken }) => {
@@ -31,6 +32,7 @@ const CreateOrder = ({ accessToken }) => {
   const navigate = useNavigate();
 
   const bankNames = [
+    "--SELECT--",
     "KOTAK MAHINDRA BANK LTD",
     "YES BANK",
     "IDFC FIRST BANK LTD",
@@ -47,7 +49,6 @@ const CreateOrder = ({ accessToken }) => {
     "KARNATAKA BANK LTD",
     "STATE BANK OF INDIA",
     "DHANALAXMI BANK",
-    "TAMILNAD MERCANTILE BANK LTD",
     "AXIS BANK",
     "BANK OF BARODA",
     "CSB BANK LTD",
@@ -60,13 +61,15 @@ const CreateOrder = ({ accessToken }) => {
     "KARUR VYSA BANK",
     "BANDHAN BANK LTD",
     "INDIAN BANK",
-    "AU SMALL FINANCE BANK",  
+    "AU SMALL FINANCE BANK",
+    "CITI BANK",
+    "BANK OF INDIA"
   ];
 
   const [formData, setFormData] = useState({
     "Fund": "RMF",
-    "Scheme": "ON",
-    "Plan": "GP",
+    "Scheme": "LP",
+    "Plan": "RG",
     "Options": "G",
     "AcNo": folio,
     "Amount": '',
@@ -75,7 +78,7 @@ const CreateOrder = ({ accessToken }) => {
     "SubArnCode": "",
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
-    "ChqBank": "KOTAK MAHINDRA BANK LTD",
+    "ChqBank": "",
     "PayMode": "OTBM",
     "AppName": "Klarfin"
   });
@@ -106,14 +109,12 @@ const CreateOrder = ({ accessToken }) => {
       ...prevData,
       [name]: value,
     }));
-    console.log(formData)
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setIsLoading(true);
-    console.log(formData)
     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` }

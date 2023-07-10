@@ -8,9 +8,44 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
     IFSC: '',
     ACTYPE: 'SAVINGS',
     ACNUM: '',
+    BANK:'',
   });
 
   const AccTypes = ['SAVINGS', 'CURRENT'];
+  const bankNames = [
+    "--SELECT--",
+    "KOTAK MAHINDRA BANK LTD",
+    "YES BANK",
+    "IDFC FIRST BANK LTD",
+    "PUNJAB NATIONAL BANK",
+    "INDUSIND BANK",
+    "ICICI BANK LTD",
+    "EQUITAS SMALL FINANCE BANK LTD",
+    "SOUTH INDIAN BANK",
+    "HDFC BANK LTD",
+    "RBL BANK LIMITED",
+    "BANK OF MAHARASHTRA",
+    "DEUTSCHE BANK AG",
+    "FEDERAL BANK",
+    "KARNATAKA BANK LTD",
+    "STATE BANK OF INDIA",
+    "DHANALAXMI BANK",
+    "AXIS BANK",
+    "BANK OF BARODA",
+    "CSB BANK LTD",
+    "STANDARD CHARTERED BANK",
+    "UNION BANK OF INDIA",
+    "CANARA BANK",
+    "IDBI BANK",
+    "CITY UNION BANK LTD",
+    "THE HONGKONG AND SHANGHAI BANKING CORPORATION LTD",
+    "KARUR VYSA BANK",
+    "BANDHAN BANK LTD",
+    "INDIAN BANK",
+    "AU SMALL FINANCE BANK",
+    "CITI BANK",
+    "BANK OF INDIA"
+  ];
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -190,6 +225,23 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
                 {option.name}
               </MenuItem>
             ))}
+          </TextField>
+
+          <TextField
+            label="Bank Name"
+            name="BANK"
+            onChange={handleChange}
+            defaultValue={bankNames[0]}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            select
+            error={!!validationErrors.BANK}
+            helperText={validationErrors.BANK}
+          >
+            {bankNames.map((ele, index) => {
+              return <MenuItem value={ele} key={index} >{ele}</MenuItem>
+            })}
           </TextField>
 
           <TextField

@@ -21,8 +21,8 @@ export default function Orders(props: any) {
   const today = new Date();
   const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
   const [filter, setFilter] = useState({
-    plan: "IG",
-    scheme: "LF",
+    plan: "RG",
+    scheme: "LP",
     date: date,
   });
 
@@ -127,7 +127,6 @@ export default function Orders(props: any) {
   };
 
   const getTranxData = () => {
-    console.log("Filter Redeems",filter);
     setLoading(true);
     axios
       .post(
@@ -230,7 +229,6 @@ export default function Orders(props: any) {
               //hideFooter={true}
               rowsPerPageOptions={[50, 100, 1000]}
               rows={tranx.map((each: any, idx: number) => {
-                console.log(each);
                 return {...each, id: idx + 1};
               })}
               columns={columnsRedeem.map(each => {
@@ -244,7 +242,6 @@ export default function Orders(props: any) {
               //hideFooter={true}
               rowsPerPageOptions={[50, 100, 1000]}
               rows={investmentList.map((each: any, idx: number) => {
-                console.log(each);
                 return {...each, id: idx + 1};
               })}
               columns={columns.map(each => {

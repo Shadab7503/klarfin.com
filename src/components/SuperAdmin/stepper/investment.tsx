@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -10,19 +10,54 @@ import {
   MenuItem,
 } from "@mui/material";
 import axios from "axios";
-import {Alert} from "../../../utils/components";
-import {createFolio} from "../../../services/nippon.service";
-import {parseError} from "../../../utils/common";
+import { Alert } from "../../../utils/components";
+import { createFolio } from "../../../services/nippon.service";
+import { parseError } from "../../../utils/common";
 
-const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
+const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   const [formData, setFormData] = useState({
     IFSC: "",
     ACTYPE: "SAVINGS",
     ACNUM: "",
     CONMACNUM: "",
+    BANK: ""
   });
 
   const AccTypes = ["SAVINGS", "CURRENT"];
+  const bankNames = [
+    "--SELECT--",
+    "KOTAK MAHINDRA BANK LTD",
+    "YES BANK",
+    "IDFC FIRST BANK LTD",
+    "PUNJAB NATIONAL BANK",
+    "INDUSIND BANK",
+    "ICICI BANK LTD",
+    "EQUITAS SMALL FINANCE BANK LTD",
+    "SOUTH INDIAN BANK",
+    "HDFC BANK LTD",
+    "RBL BANK LIMITED",
+    "BANK OF MAHARASHTRA",
+    "DEUTSCHE BANK AG",
+    "FEDERAL BANK",
+    "KARNATAKA BANK LTD",
+    "STATE BANK OF INDIA",
+    "DHANALAXMI BANK",
+    "AXIS BANK",
+    "BANK OF BARODA",
+    "CSB BANK LTD",
+    "STANDARD CHARTERED BANK",
+    "UNION BANK OF INDIA",
+    "CANARA BANK",
+    "IDBI BANK",
+    "CITY UNION BANK LTD",
+    "THE HONGKONG AND SHANGHAI BANKING CORPORATION LTD",
+    "KARUR VYSA BANK",
+    "BANDHAN BANK LTD",
+    "INDIAN BANK",
+    "AU SMALL FINANCE BANK",
+    "CITI BANK",
+    "BANK OF INDIA"
+  ];
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -40,7 +75,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
         .get(
           process.env.REACT_APP_BACKEND_HOST + "v1/super/get-all-un-approved",
           {
-            headers: {Authorization: `Bearer ${accessToken}`},
+            headers: { Authorization: `Bearer ${accessToken}` },
           }
         )
         .then(response => {
@@ -60,7 +95,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
   const getFunds = () => {
     axios
       .get(process.env.REACT_APP_BACKEND_HOST + "v1/super/funds", {
-        headers: {Authorization: `Bearer ${accessToken}`},
+        headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then(response => {
         if (response.data.succ) {
@@ -77,7 +112,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
   }, []);
 
   const handleChange = event => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
@@ -104,11 +139,11 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
           `${process.env.REACT_APP_BACKEND_HOST}v1/super/investment`,
           formData,
           {
-            headers: {Authorization: `Bearer ${accessToken}`},
+            headers: { Authorization: `Bearer ${accessToken}` },
           }
         )
         .then(res => {
-          const {data} = res;
+          const { data } = res;
           // navigate(`/dashboardSuper/investment`)
           setIsLoading(false);
           if (!data.succ) {
@@ -118,24 +153,24 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
             }
           }
           capturedDataHandler([
-            {inv_id: data.invData.id},
-            {pan: data.invData.pan},
+            { inv_id: data.invData.id },
+            { pan: data.invData.pan },
           ]);
           //console.log('data', data);
           handleNext();
         })
-        .catch(({response}) => {
+        .catch(({ response }) => {
           setIsLoading(false);
-          const {data} = response;
+          const { data } = response;
           setValidationErrors(data.validationErrors);
         });
     }
   };
 
   return (
-    <Card sx={{maxWidth: 600, margin: "0 auto"}}>
+    <Card sx={{ maxWidth: 600, margin: "0 auto" }}>
       <CardContent>
-        <form onSubmit={saveHandler} style={{width: "100%"}}>
+        <form onSubmit={saveHandler} style={{ width: "100%" }}>
           <Typography variant="subtitle1" gutterBottom>
             Investment
           </Typography>
@@ -205,6 +240,23 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
                 {option.name}
               </MenuItem>
             ))}
+          </TextField>
+
+          <TextField
+            label="Bank Name"
+            name="BANK"
+            onChange={handleChange}
+            defaultValue={bankNames[0]}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            select
+            error={!!validationErrors.BANK}
+            helperText={validationErrors.BANK}
+          >
+            {bankNames.map((ele, index) => {
+              return <MenuItem value={ele} key={index} >{ele}</MenuItem>
+            })}
           </TextField>
 
           <TextField
@@ -280,7 +332,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
             type="submit"
             disabled={isLoading}
             fullWidth
-            sx={{marginTop: 2}}
+            sx={{ marginTop: 2 }}
           >
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
@@ -295,13 +347,13 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
         message="Investment submitted successfully!"
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       />
       <Snackbar
         open={isConfirm}
         autoHideDuration={3000}
         onClose={() => setisConfirm(false)}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
         <Alert severity="error">Please Enter Same Account Number</Alert>
       </Snackbar>
@@ -309,9 +361,9 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
         open={existInvester}
         autoHideDuration={3000}
         onClose={() => setExitInvester(false)}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
-        <Alert severity="warning" sx={{width: "100%"}} className="snack">
+        <Alert severity="warning" sx={{ width: "100%" }} className="snack">
           Investor Already Exist !
         </Alert>
       </Snackbar>
@@ -320,7 +372,7 @@ const Investment = ({handleNext, accessToken, capturedDataHandler}) => {
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
         <Alert>Failed to submit Investment. Please try again.</Alert>
       </Snackbar>

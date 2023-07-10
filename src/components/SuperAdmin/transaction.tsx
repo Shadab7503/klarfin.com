@@ -13,9 +13,9 @@ import SearchBar from './searchBar';
 export default function Transactions(props: any) {
 
     const [tranx, setTranx] = useState([]);
-    const [Lasttranx , setLasttranx] = useState([]);
+    const [Lasttranx, setLasttranx] = useState([]);
 
-    const  { folio_id } = useParams();
+    const { folio_id } = useParams();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'Id', width: 180 },
         { field: 'Transaction_type', headerName: 'Transaction_type', width: 180 },
@@ -40,12 +40,12 @@ export default function Transactions(props: any) {
 
     const today = new Date();
     const [loading, setLoading] = useState(false);
-    const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
-    
+    const [date, setDate] = useState(format(today, 'MM/dd/yyyy'))
+
 
     const [filter, setFilter] = useState({
-        plan: 'IG',
-        scheme: 'LF',
+        plan: 'RG',
+        scheme: 'LP',
         date: date
     });
 
@@ -58,7 +58,7 @@ export default function Transactions(props: any) {
     const getTranxData = () => {
         setLoading(true);
         axios
-            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/transaction`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/transaction`, { acno: folio_id, plan: filter.plan, scheme: filter.scheme, trdate: filter.date },
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` }
                 })
@@ -68,17 +68,17 @@ export default function Transactions(props: any) {
             });
     }
 
-    const getLastTwentyTransaction = () =>{
+    const getLastTwentyTransaction = () => {
         setLoading(true);
-      axios
-          .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`,{Folio:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
-              {
-                  headers: { Authorization: `Bearer ${props.accessToken}`}
-              })
-          .then(({ data }) => {
-              setLasttranx(data.tranxData);
-              setLoading(false);
-          });
+        axios
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/lasttransaction`, { Folio: folio_id, plan: filter.plan, scheme: filter.scheme, trdate: filter.date },
+                {
+                    headers: { Authorization: `Bearer ${props.accessToken}` }
+                })
+            .then(({ data }) => {
+                setLasttranx(data.tranxData);
+                setLoading(false);
+            });
     }
 
 
@@ -87,25 +87,17 @@ export default function Transactions(props: any) {
         getLastTwentyTransaction()
     }, [filter])
 
-   
-    return    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
 
-
-<SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate} />
-
-
+    return <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
+        <SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate} />
         <h2 style={{ marginBottom: '20px' }}>Transactions</h2>
-
-
         <div style={{ height: '100vh', width: '100%' }}>
-
-            {  loading? <Loading />:<DataGrid
+            {loading ? <Loading /> : <DataGrid
                 //  hideFooter={true}
                 rowsPerPageOptions={[50, 100, 1000]}
-             
-                 rows={tranx.map((each: any, idx: number) => {
+                rows={tranx.map((each: any, idx: number) => {
                     console.log(each);
-                    return {...each,id:idx+1};
+                    return { ...each, id: idx + 1 };
                 })}
                 columns={columns.map(each => {
                     return { ...each }
@@ -114,19 +106,17 @@ export default function Transactions(props: any) {
         </div>
         <h2>Last 20 Transactions</h2>
         <div style={{ height: '100vh', width: '100%' }}>
-
             <DataGrid
                 hideFooter={true}
                 rowsPerPageOptions={[20]}
-                rows={Lasttranx.slice(0,20).map((each: any, idx: number) => {
+                rows={Lasttranx.slice(0, 20).map((each: any, idx: number) => {
                     console.log(each);
-                    return {...each,id:idx+1};
+                    return { ...each, id: idx + 1 };
                 })}
                 columns={columns.map(each => {
                     return { ...each }
                 })}
             />
         </div>
-
     </Grid>
 }
