@@ -5,6 +5,7 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import Loading from "../Dashboard/Loading";
 import {stringify} from "querystring";
+import { FormatNumber } from '../../utils/formatNumber';
 
 const Scheme = props => {
   const [scheme, setScheme] = useState({
@@ -64,105 +65,69 @@ const Scheme = props => {
   if (loading) return <Loading />;
   return (
     <Grid container spacing={2} mb={10}>
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
-            Actual Amount Invested
-          </Typography>
-          <Typography variant="body1">
-            {parseInt(InvestedAmt) - parseInt(InProcessAmt)}
-          </Typography>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
-            InProcess Amount
-          </Typography>
-          <Typography variant="body1">{InProcessAmt}</Typography>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
-            Free Units
-          </Typography>
-          <Typography variant="body1">{Totalunits}</Typography>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
+      <Grid item xs={12} sm={6} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Scheme Description
           </Typography>
           <Typography variant="body1">{SchemeDescription}</Typography>
         </Paper>
       </Grid>
-
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
-            NAV Date
-          </Typography>
-          <Typography variant="body1">{Nav_Date}</Typography>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
-            NAV
-          </Typography>
-          <Typography variant="body1">{Nav}</Typography>
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
-            PNL/Gain/Loss
-          </Typography>
-          <Typography variant="body1">
-            {parseFloat(TotalAmt) -
-              (parseFloat(InvestedAmt) - parseFloat(InProcessAmt))}
-          </Typography>
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
+      <Grid item xs={12} sm={6} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Folio
           </Typography>
           <Typography variant="body1">{Folio}</Typography>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
-        <Paper elevation={3} sx={{p: 2}}>
-          <Typography variant="h6" component="div" sx={{mb: 1}}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
+            Gain/Loss
+          </Typography>
+          <Typography variant="body1">
+            {(parseFloat(TotalAmt) -
+              (parseFloat(InvestedAmt) - parseFloat(InProcessAmt)))}
+          </Typography>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
+            Actual Amount Invested
+          </Typography>
+          <Typography variant="body1">
+            {(parseInt(InvestedAmt) - parseInt(InProcessAmt))}
+          </Typography>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Current Value
           </Typography>
-          <Typography variant="body1">{parseFloat(TotalAmt)}</Typography>
+          <Typography variant="body1">{FormatNumber(TotalAmt)}</Typography>
         </Paper>
       </Grid>
 
-      {/* <Grid item xs={12} sm={6} md={4}>
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-              Plan Code
-            </Typography>
-            <Typography variant="body1">{Plan_code}</Typography>
-          </Paper>
-        </Grid> */}
-      {/* <Grid item xs={12} sm={6} md={4}>
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-              Scheme Category
-            </Typography>
-            <Typography variant="body1">{SchemeCategory}</Typography>
-          </Paper>
-        </Grid> */}
+      <Grid item xs={12} sm={6} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
+            InProcess Amount
+          </Typography>
+          <Typography variant="body1">{FormatNumber(InProcessAmt)}</Typography>
+        </Paper>
+      </Grid>
+
+      <Grid item xs={12} sm={6} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
+            Total Units
+          </Typography>
+          <Typography variant="body1">{FormatNumber(Totalunits)}</Typography>
+        </Paper>
+      </Grid>
     </Grid>
   );
 };
