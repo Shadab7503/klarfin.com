@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, MenuItem, CircularProgress,Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, MenuItem, CircularProgress, Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -23,47 +23,47 @@ const schemes = [
     plan: "IG",
     opt: "G"
   },
-  
+
 ]
 
 const CreateOrder = ({ accessToken }) => {
-  const [msg,setMsg] = useState("");
+  const [msg, setMsg] = useState("");
   const { folio } = useParams();
   const navigate = useNavigate();
 
   const bankNames = [
     "--SELECT--",
-    "KOTAK MAHINDRA BANK LTD",
-    "YES BANK",
-    "IDFC FIRST BANK LTD",
-    "PUNJAB NATIONAL BANK",
-    "INDUSIND BANK",
-    "ICICI BANK LTD",
-    "EQUITAS SMALL FINANCE BANK LTD",
-    "SOUTH INDIAN BANK",
-    "HDFC BANK LTD",
-    "RBL BANK LIMITED",
-    "BANK OF MAHARASHTRA",
-    "DEUTSCHE BANK AG",
-    "FEDERAL BANK",
-    "KARNATAKA BANK LTD",
-    "STATE BANK OF INDIA",
-    "DHANALAXMI BANK",
-    "AXIS BANK",
-    "BANK OF BARODA",
-    "CSB BANK LTD",
-    "STANDARD CHARTERED BANK",
-    "UNION BANK OF INDIA",
-    "CANARA BANK",
-    "IDBI BANK",
-    "CITY UNION BANK LTD",
-    "THE HONGKONG AND SHANGHAI BANKING CORPORATION LTD",
-    "KARUR VYSA BANK",
-    "BANDHAN BANK LTD",
-    "INDIAN BANK",
     "AU SMALL FINANCE BANK",
+    "AXIS BANK",
+    "BANDHAN BANK LTD",
+    "BANK OF BARODA",
+    "BANK OF INDIA",
+    "BANK OF MAHARASHTRA",
+    "CANARA BANK",
     "CITI BANK",
-    "BANK OF INDIA"
+    "CITY UNION BANK LTD",
+    "CSB BANK LTD",
+    "DEUTSCHE BANK AG",
+    "DHANALAXMI BANK",
+    "EQUITAS SMALL FINANCE BANK LTD",
+    "FEDERAL BANK",
+    "HDFC BANK LTD",
+    "IDBI BANK",
+    "IDFC FIRST BANK LTD",
+    "ICICI BANK LTD",
+    "INDIAN BANK",
+    "INDUSIND BANK",
+    "KARUR VYSA BANK",
+    "KARNATAKA BANK LTD",
+    "KOTAK MAHINDRA BANK LTD",
+    "PUNJAB NATIONAL BANK",
+    "RBL BANK LIMITED",
+    "SOUTH INDIAN BANK",
+    "STATE BANK OF INDIA",
+    "STANDARD CHARTERED BANK",
+    "THE HONGKONG AND SHANGHAI BANKING CORPORATION LTD",
+    "UNION BANK OF INDIA",
+    "YES BANK"
   ];
 
   const [formData, setFormData] = useState({
@@ -95,8 +95,8 @@ const CreateOrder = ({ accessToken }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     if (name == 'Scheme') {
-      const data = schemes.find(each=>each.value == value);
-      if(!data) return;
+      const data = schemes.find(each => each.value == value);
+      if (!data) return;
       setFormData((prevData) => ({
         ...prevData,
         Scheme: data.value,
@@ -128,12 +128,12 @@ const CreateOrder = ({ accessToken }) => {
         }
 
         setIsLoading(false);
-        if(formData.PayMode == 'NEFT') {
+        if (formData.PayMode == 'NEFT') {
           navigate(`/dashboardAdmin/nippon-bank/${folio}`)
           return;
         }
         navigate(`/dashboardAdmin/investment/details/${folio}`)
-        
+
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
@@ -147,7 +147,7 @@ const CreateOrder = ({ accessToken }) => {
 
   return (
     <div style={{ margin: "4rem" }}>
-   
+
       <Card sx={{ maxWidth: 600, margin: '0 auto' }}>
         <CardContent>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -182,10 +182,10 @@ const CreateOrder = ({ accessToken }) => {
             >
 
               {
-                schemes.map(each=>{
-                 return <MenuItem key={each.value} defaultChecked value={each.value}>
-                  {each.name}
-                </MenuItem>
+                schemes.map(each => {
+                  return <MenuItem key={each.value} defaultChecked value={each.value}>
+                    {each.name}
+                  </MenuItem>
                 })
               }
             </TextField>
@@ -302,8 +302,8 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.ChqBank}
               select
             >
-              {bankNames.map((ele,index)=>{
-                return<MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
+              {bankNames.map((ele, index) => {
+                return <MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
               })}
             </TextField>
 
@@ -320,7 +320,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.PayMode}
             >
               <MenuItem defaultChecked value="OTBM">
-                  OTBM (One Time Bank Mandate)
+                OTBM (One Time Bank Mandate)
               </MenuItem>
               <MenuItem value="NEFT">
                 NEFT
@@ -350,7 +350,7 @@ const CreateOrder = ({ accessToken }) => {
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
           sx={{ marginBottom: 2 }}
-          ><Alert severity='error' >{msg}</Alert></Snackbar>
+        ><Alert severity='error' >{msg}</Alert></Snackbar>
       </Card>
     </div>
   );
