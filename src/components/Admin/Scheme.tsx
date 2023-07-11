@@ -65,16 +65,16 @@ const Scheme = props => {
   if (loading) return <Loading />;
   return (
     <Grid container spacing={2} mb={10}>
-      <Grid item xs={12} sm={6} md={6}>
-        <Paper elevation={3} sx={{ p: 2 }}>
+      <Grid item xs={12} sm={6} md={6} >
+        <Paper elevation={3} sx={{ p: 2 ,height: '65%' }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Scheme Description
           </Typography>
           <Typography variant="body1">{SchemeDescription}</Typography>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={6}>
-        <Paper elevation={3} sx={{ p: 2 }}>
+      <Grid item xs={12} sm={6} md={6} >
+        <Paper elevation={3} sx={{ p: 2 ,height: '65%' }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Folio
           </Typography>
@@ -110,22 +110,20 @@ const Scheme = props => {
           <Typography variant="body1">{FormatNumber(TotalAmt)}</Typography>
         </Paper>
       </Grid>
-
-      <Grid item xs={12} sm={6} md={6}>
-        <Paper elevation={3} sx={{ p: 2 }}>
-          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-            InProcess Amount
-          </Typography>
-          <Typography variant="body1">{FormatNumber(InProcessAmt)}</Typography>
-        </Paper>
-      </Grid>
-
       <Grid item xs={12} sm={6} md={6}>
         <Paper elevation={3} sx={{ p: 2 }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Total Units
           </Typography>
           <Typography variant="body1">{FormatNumber(Totalunits)}</Typography>
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={6} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
+            InProcess Amount
+          </Typography>
+          <Typography variant="body1">{FormatNumber(InProcessAmt)}</Typography>
         </Paper>
       </Grid>
     </Grid>
