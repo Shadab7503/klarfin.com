@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { DataGrid, GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid";
+import { DataGrid, GridCellEditStopParams, GridValueFormatterParams, GridColDef, MuiEvent } from "@mui/x-data-grid";
 import axios from "axios";
 
 import Box from "@mui/material/Box";
@@ -11,17 +11,17 @@ import React, { useEffect, useState } from "react";
 import Form from "./Form";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Dashboard/Loading";
+import { sx } from "@mui/joy/styles/styleFunctionSx";
 
 export default function Investment(props: any) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const navigate = useNavigate();
-
   const [investmentList, setInvestmentList] = useState([]);
-  const [invtType,setInvtType] = useState(["Individual","Proprietorship","Partnership","Company"])
+  const [invtType, setInvtType] = useState(["Individual", "Proprietorship", "Partnership", "Company"])
   const [statusOfinvestMentList, setstatusOfinvestMentList] = useState(1);
+
 
   const actionHandler = (type, id) => {
     setLoading(true);
@@ -61,25 +61,24 @@ export default function Investment(props: any) {
   };
 
   const [columns, setColumns] = useState([
-    { field: "idx", headerName: "SN", width: 80 },
+    { field: "idx", headerName: "SN", width: 80, },
     { field: "org", headerName: "Name", width: 180 },
     { field: "type", headerName: "Investment For", width: 180 },
     //{ field: 'frequency', headerName: 'Frequency', width: 180 },
     // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
     { field: "fund", headerName: "Fund", width: 180 },
-    { field: 'bank', headerName: 'Bank', width: 180 },
+    { field: 'bank', headerName: 'Bank', width: 180, },
     // { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
     // { field: 'returns', headerName: 'Return generated', type: 'number' },
     {
       field: "Actions",
-      headerName: "action",
+      headerName: "Action",
       width: 525,
       renderCell: (params: any) => {
         return (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {params.row.status >= 2 && (
               <>
-              
                 {/* <Grid
                   item
                   className="bills-pay"
@@ -99,7 +98,8 @@ export default function Investment(props: any) {
                   px={2}
                   style={{ background: "green", marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(`/dashboardAdmin/order/${params.row.folio.Folio}`);
+                    navigate(`/dashboardAdmin/order/${params.row.folio.Folio}`,
+                      { state: params.row });
                   }}
                 >
                   Create Order
@@ -112,11 +112,11 @@ export default function Investment(props: any) {
                   style={{ background: "orange", marginRight: "1rem" }}
                   onClick={() => {
                     navigate(
-                      `/dashboardAdmin/investment/details/${params.row.folio.Folio}`
+                      `/dashboardAdmin/investment/details/${params.row.folio.Folio}`,
                     );
                   }}
                 >
-                  View
+                  View Reports
                 </Grid>
                 <Grid
                   item
@@ -150,7 +150,7 @@ export default function Investment(props: any) {
                 </>} */}
               </>
             )}
-             
+
             {params.row.status == 1 && (
               <>
                 <Grid
@@ -212,7 +212,6 @@ export default function Investment(props: any) {
 
   useEffect(() => {
     getReceivablesData({ page: 1, limit: 20 });
-    console.log(investmentList);
   }, []);
 
   const style = {
@@ -258,43 +257,43 @@ export default function Investment(props: any) {
         Add Investor
       </Button> */}
 
-      <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",width:"70vw",marginBottom:"10px",height:"60px"}} >
-      <h2 style={{
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "70vw", marginBottom: "10px", height: "60px" }} >
+        <h2 style={{
           fontFamily: "Work Sans",
           fontWeight: "bold",
           padding: "0.1rem 0.4rem",
           borderRadius: "0.5rem",
-          fontSize: "1.4rem", }}>All Investments</h2>
-      <Button
-        type="submit"
-        style={{height:"50px"}}
-        sx={{
-          background: "#231955",
-          fontFamily: "Work Sans",
-          fontWeight: "bold",
-          padding: "0.01rem 0.6rem",
-          borderRadius: "1rem",
-          fontSize: "0.8rem",
-          color: "#fff",
-          "&:hover": {
-            backgroundColor: "#231955",
-          },
-        }}
-        onClick={() => {
-          navigate(`/dashboardAdmin/upload-doc`, { state: { status: 0 } });
-        }}
-      >
-        Upload Documents
-      </Button>
+          fontSize: "1.4rem",
+        }}>All Investments</h2>
+        <Button
+          type="submit"
+          style={{ height: "50px" }}
+          sx={{
+            background: "#231955",
+            fontFamily: "Work Sans",
+            fontWeight: "bold",
+            padding: "0.01rem 0.6rem",
+            borderRadius: "1rem",
+            fontSize: "0.8rem",
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: "#231955",
+            },
+          }}
+          onClick={() => {
+            navigate(`/dashboardAdmin/upload-doc`, { state: { status: 0 } });
+          }}
+        >
+          Upload Documents
+        </Button>
       </div>
 
       <div style={{ height: "100vh", width: "100%" }}>
         <DataGrid
           //  hideFooter={true}
           rowsPerPageOptions={[50, 100, 1000]}
-          
+
           rows={investmentList.map((each: any, idx: number) => {
-           // console.log(each);
             const obj = {};
             Object.keys(each).forEach((key) => {
               let value = each[key];
@@ -304,21 +303,25 @@ export default function Investment(props: any) {
               //  if(key=='status') setstatusOfinvestMentList(each[key])
               obj[key] = value;
             });
-            console.log("Object Data",obj);
+            
             return {
               ...obj,
               id: each._id,
               idx: idx + 1,
               org: each.user_id.name,
               fund: each.fund_id.name,
-              is_OTBM : each.is_OTBM,
-              bank:each.BANK,
-              status: each.status,             
+              is_OTBM: each.is_OTBM,
+              bank: each.BANK,
+              status: each.status,
               type: invtType[each.type],
             };
           })}
           columns={columns.map((each) => {
-            return { ...each };
+            
+            return {
+              ...each,
+              headerAlign: 'center',
+            }
           })}
         />
       </div>

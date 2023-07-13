@@ -21,6 +21,8 @@ const Scheme = props => {
     FreeAmt: "",
     InProcessAmt: "",
     TotalAmt: "",
+    ActualAmt:"",
+    currValue:""
   });
 
   const [loading, setLoading] = useState(false);
@@ -41,14 +43,12 @@ const Scheme = props => {
       )
       .then(({data}) => {
         setScheme(data.schemeData);
-        console.log(data.schemeData);
         setLoading(false);
       });
   };
   useEffect(() => {
     getSchemeData();
   }, [props.filter]);
-  console.log(scheme);
 
   const {
     Folio,
@@ -60,7 +60,8 @@ const Scheme = props => {
     InvestedAmt,
     FreeAmt,
     InProcessAmt,
-    TotalAmt,
+    ActualAmt = (parseInt(InvestedAmt) - parseInt(InProcessAmt)) ,
+    TotalAmt =(parseFloat(InvestedAmt) - parseFloat(InProcessAmt)),
   } = scheme;
   if (loading) return <Loading />;
   return (
@@ -87,8 +88,7 @@ const Scheme = props => {
             Gain/Loss
           </Typography>
           <Typography variant="body1">
-            {(parseFloat(TotalAmt) -
-              (parseFloat(InvestedAmt) - parseFloat(InProcessAmt)))}
+            {FormatNumber(TotalAmt)}
           </Typography>
         </Paper>
       </Grid>
@@ -98,7 +98,7 @@ const Scheme = props => {
             Actual Amount Invested
           </Typography>
           <Typography variant="body1">
-            {(parseInt(InvestedAmt) - parseInt(InProcessAmt))}
+            {FormatNumber(ActualAmt)}
           </Typography>
         </Paper>
       </Grid>
@@ -107,7 +107,7 @@ const Scheme = props => {
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Current Value
           </Typography>
-          <Typography variant="body1">{FormatNumber(TotalAmt)}</Typography>
+          <Typography variant="body1">{FormatNumber((parseFloat(String(TotalAmt)) - parseFloat(InProcessAmt)))}</Typography>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
@@ -121,7 +121,7 @@ const Scheme = props => {
       <Grid item xs={12} sm={6} md={6}>
         <Paper elevation={3} sx={{ p: 2 }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-            InProcess Amount
+            In Process Amount
           </Typography>
           <Typography variant="body1">{FormatNumber(InProcessAmt)}</Typography>
         </Paper>
