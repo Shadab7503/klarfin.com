@@ -316,11 +316,17 @@ export default function Investment(props: any) {
               type: invtType[each.type],
             };
           })}
-          columns={columns.map((each) => {
-            
+          columns={columns.map((each) => {   
             return {
               ...each,
               headerAlign: 'center',
+              align:'center',
+              headerClassName: 'column-header', // Apply the CSS class to the header
+              cellClassName: 'column-cell', // Apply the CSS class to the cells
+              sx: {
+                fontWeight: 'bold',
+              },
+    
             }
           })}
         />
