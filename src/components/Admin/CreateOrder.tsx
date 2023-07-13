@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, MenuItem, CircularProgress, Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams,useLocation } from 'react-router-dom';
+import { url } from 'inspector';
 
 
 const schemes = [
@@ -27,10 +28,10 @@ const schemes = [
 ]
 
 const CreateOrder = ({ accessToken }) => {
+  const { state  }:any = useLocation();
   const [msg, setMsg] = useState("");
-  const { folio } = useParams();
+  const { folio }:any = useParams();
   const navigate = useNavigate();
-
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",
@@ -78,14 +79,13 @@ const CreateOrder = ({ accessToken }) => {
     "SubArnCode": "",
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
-    "ChqBank": "",
-    "PayMode": "OTBM",
+    "ChqBank":(state.BANK ? state.BANK:" " ),
+    "PayMode": "Auto Debit",
     "AppName": "Klarfin"
   });
 
-
+  
   const [validationErrors, setValidationErrors] = useState<any>({});
-
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
@@ -110,15 +110,14 @@ const CreateOrder = ({ accessToken }) => {
       [name]: value,
     }));
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     setIsLoading(true);
     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(res => {
+    {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    }).then(res => {
         const { data } = res;
         if (!data.succ) {
           setIsLoading(false);
@@ -128,11 +127,15 @@ const CreateOrder = ({ accessToken }) => {
         }
 
         setIsLoading(false);
-        if (formData.PayMode == 'NEFT') {
-          navigate(`/dashboardAdmin/nippon-bank/${folio}`)
-          return;
-        }
-        navigate(`/dashboardAdmin/investment/details/${folio}`)
+        setIsSuccess(true);
+        setMsg(`Order submitted successfully for Rs ${formData.Amount}`)
+        setTimeout(()=>{
+          if (formData.PayMode == 'NEFT') {
+            navigate(`/dashboardAdmin/nippon-bank/${folio}`, {state: state })
+            return;
+          }
+          navigate(`/dashboardAdmin/investment/details/${folio}`)
+        },3000)
 
       }).catch(({ response }) => {
         setIsLoading(false);
@@ -166,6 +169,23 @@ const CreateOrder = ({ accessToken }) => {
               // helperText={validationErrors.Fund}
               disabled
             />
+
+            <TextField
+              label="Your Bank"
+              name="ChqBank"
+              value={formData.ChqBank }
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!!validationErrors.ChqBank}
+              helperText={validationErrors.ChqBank}
+              disabled
+            >
+              {/* {bankNames.map((ele, index) => {
+                return <MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
+              })} */}
+            </TextField>
 
             <TextField
               label="Scheme"
@@ -214,7 +234,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.Options}
             /> */}
 
-            <TextField
+            {/* <TextField
               label="Folio Number"
               name="AcNo"
               value={formData.AcNo}
@@ -225,7 +245,7 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.AcNo}
               helperText={validationErrors.AcNo}
               disabled
-            />
+            /> */}
 
             <TextField
               label="Amount"
@@ -291,23 +311,6 @@ const CreateOrder = ({ accessToken }) => {
             /> */}
 
             <TextField
-              label="Cheque Bank"
-              name="ChqBank"
-              defaultValue={bankNames[0]}
-              onChange={handleChange}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!validationErrors.ChqBank}
-              helperText={validationErrors.ChqBank}
-              select
-            >
-              {bankNames.map((ele, index) => {
-                return <MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
-              })}
-            </TextField>
-
-            <TextField
               label="Payment Mode"
               name="PayMode"
               select
@@ -315,12 +318,11 @@ const CreateOrder = ({ accessToken }) => {
               variant="outlined"
               margin="normal"
               fullWidth
-              defaultValue="OTBM"
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
             >
               <MenuItem defaultChecked value="OTBM">
-                OTBM (One Time Bank Mandate)
+                Auto Debit
               </MenuItem>
               <MenuItem value="NEFT">
                 NEFT
@@ -342,9 +344,10 @@ const CreateOrder = ({ accessToken }) => {
           open={isSuccess}
           autoHideDuration={3000}
           onClose={() => setIsSuccess(false)}
-          message="Order created successfully!"
           sx={{ marginBottom: 2 }}
-        />
+        >
+          <Alert severity='success' >{msg}</Alert>
+        </Snackbar>
         <Snackbar
           open={isFailure}
           autoHideDuration={3000}

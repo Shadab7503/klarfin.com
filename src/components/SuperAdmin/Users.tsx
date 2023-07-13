@@ -49,8 +49,7 @@ function Users(props:any) {
       headers: {
         Authorization: "Bearer " + accessToken,
       },
-      data: {
-      },
+      data: {},
     };
     axios(config)
       .then((response) => {

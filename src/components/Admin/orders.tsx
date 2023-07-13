@@ -9,6 +9,7 @@ import {format, formatISO} from "date-fns";
 import Scheme from "./Scheme";
 import Popup from "./model";
 import moment from "moment";
+import DateFormatFromMongo from '../../utils/DateFormatFromMongo';
 
 export default function Orders(props: any) {
   const [showRedeem, setShowRedeem] = useState(false);
@@ -121,6 +122,7 @@ export default function Orders(props: any) {
         },
       })
       .then(({data}) => {
+        console.log(data);
         setInvestmentList(data.orders);
         setLoading(false);
       });

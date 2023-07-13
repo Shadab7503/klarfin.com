@@ -1,7 +1,7 @@
-export const FormatNumber = (number:any):any=>{
-    if(!number){
-        return NaN;
+export const FormatNumber =(input: any): string => {
+    const num: number = Number(input);
+    if (Number.isNaN(num)) {
+      return "N/A";
     }
-    let num:Number = parseFloat(number);
     return num.toFixed(2);
-}
+  }

@@ -2,45 +2,44 @@ import React, { useEffect, useState } from 'react';
 import { Button, CircularProgress, Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 import axios from 'axios';
 
-const Popup = ({refno,isOpen,accessToken,handleClose}) => {
-    console.log('isOpen',isOpen);
+const Popup = ({ refno, isOpen, accessToken, handleClose }) => {
+  console.log('isOpen', isOpen);
 
   const [loading, setLoading] = useState(true);
-  const [data,setData] = useState({
+  const [data, setData] = useState({
     "InstaRemarks": "",
     "InstaStatus": "",
     "ReturnCode": "",
     "ReturnMsg": "",
     "Status": ""
-});
+  });
 
 
 
 
   const getRedeemStatus = () => {
     setLoading(true);
-
     axios
-        .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/redeem/status`,{refno,fund:'RMF'},
-            {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            })
-        .then(({ data }) => {
-            setData(data.status);
-            setLoading(false);
+      .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/redeem/status`, { refno: refno, fund: 'RMF' },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        })
+      .then(({ data }) => {
+        setData(data.status);
+        setLoading(false);
 
-        });
+      });
 
-}
+  }
 
-useEffect(()=>{
+  useEffect(() => {
     getRedeemStatus();
-},[refno])
+  }, [refno])
 
   return (
     <div>
 
-      <Dialog open={isOpen}  onBackdropClick={()=>{handleClose(!isOpen)}}>
+      <Dialog open={isOpen} onBackdropClick={() => { handleClose(!isOpen) }}>
         <DialogTitle>Details</DialogTitle>
         <DialogContent>
           {loading ? (

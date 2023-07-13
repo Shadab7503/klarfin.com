@@ -104,7 +104,7 @@ const RedeemCreate = ({
     SelfValidate: "Y",
     deviceid:"PARTNERAPI",
     appVersion: "1.0.1",
-    appName: "Klarcap",
+    appName: "Klarcap"
   });
 
   const [isLoading, setIsLoading] = useState(false);
