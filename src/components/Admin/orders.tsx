@@ -15,7 +15,6 @@ import TabList from "@material-ui/lab/TabList";
 import { useTheme } from '@mui/material/styles';
 import Overviews from './Overviews';
 import TransactionLast from './TransactionLast';
-//import Transactions from './Transaction';
 import TransactionDatewise from './TransactionDatewise';
 
 export default function Orders(props: any) {
@@ -25,7 +24,7 @@ export default function Orders(props: any) {
   const [popup, setPopup] = useState(false);
   const { folio_id } = useParams();
   const [investmentList, setInvestmentList] = useState([]);
-  const [value, setValue] = React.useState('1');
+  const [value, setValue] = React.useState("1");
   const theme = useTheme();
   const handleChange = (newValue: string) => {
     setValue(newValue);
@@ -139,7 +138,6 @@ export default function Orders(props: any) {
         setLoading(false);
       });
   };
-
   const getTranxData = () => {
     setLoading(true);
     axios
@@ -178,17 +176,16 @@ export default function Orders(props: any) {
       <Box sx={{ width: '100%' }}>
         <TabContext value={value}  >
           <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: '#318ad6', color: 'white' }}>
-            <TabList onChange={(event, newValue) => handleChange(newValue)} centered TabIndicatorProps={{
+            <TabList onChange={(event, newValue) => handleChange(newValue)}   centered TabIndicatorProps={{
               style: { backgroundColor: 'white',color:'white' },
             }}>
-              <Tab style= {{ color:'white' }} label="Portfolio" value="1" />
-              <Tab style= {{ color:'white' }} label="Last 20 Transactions" value="2" />
+              <Tab style= {{ color:'white' ,marginRight:"60px"}} label="Portfolio" value="1" />
+              <Tab style= {{ color:'white' ,marginRight:"60px"}} label="Last 20 Transactions" value="2" />
               <Tab style= {{ color:'white' }} label="Date Wise Transactions" value="3" />
             </TabList>
           </Box>
           <TabPanel value="1">
             <Overviews folio_id={folio_id}
-              filter={filter}
               accessToken={props.accessToken} />
           </TabPanel>
           <TabPanel value="2" ><TransactionLast accessToken={props.accessToken} /></TabPanel>

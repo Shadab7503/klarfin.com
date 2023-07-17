@@ -53,6 +53,7 @@ const Overviews = props => {
             setSumInProcessAmt(0);
             setSumInvestedAmt(0);
             setSumTotalAmount(0);
+            console.log("ress", res)
             const data = res.map((each, idx) => {
                 setSumTotalAmount((prev) => prev + parseFloat(each.data.schemeData.TotalAmt))
                 setSumInProcessAmt((prev) => prev + parseFloat(each.data.schemeData.InProcessAmt))
@@ -60,9 +61,6 @@ const Overviews = props => {
                 const fundName = Funds[idx].fund;
                 Funds[idx] = { fund: fundName, ...each.data.schemeData }
             });
-            //console.log(SumInProcessAmt, ": sumInpamt ");
-            //console.log(SumInvestedAmt, " : Suminmt");
-            //console.log(SumTotalAmt, " : totalAmt")
             setFunds(Funds);
         } catch {
             throw Error("Failed to Fetching Data from Server");
@@ -71,17 +69,18 @@ const Overviews = props => {
     };
     useEffect(() => {
         getSchemeData();
-       // console.log(Funds)
+        // console.log(Funds)
     }, []);
 
     if (loading) return <Loading />;
     return (
-        <Grid container spacing={2} xs>
-            <Paper elevation={3} sx={{ p: 2 }} >
-                <Typography variant="h5" sx={{ mb: 1 }}>Overviews</Typography>
-                <div style={{ display: 'flex', flexDirection: 'row', minWidth: '76vw', minHeight: '20vh', alignItems: 'center', justifyContent: 'center', margin: 'auto' }}>
+        <Grid container spacing={2} margin={2} xs>
+            <Paper elevation={2} sx={{ p: 4, pl: 6, pr: 6 }} >
+                <Typography style={{ fontWeight: 600 }} variant="h6" sx={{ mb: 2 }}>Overviews</Typography>
+                <Divider sx={{ mb: 2 }} />
+                <div style={{ display: 'flex', flexDirection: 'row', minWidth: '69vw', minHeight: '12vh', justifyContent: 'center' }}>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
+                        <Typography style={{ fontWeight: 600 ,color:"grey" }} variant="body1" sx={{ mb: 1 }}>
                             Amount Invested
                         </Typography>
                         <Typography variant="h6">
@@ -89,94 +88,94 @@ const Overviews = props => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
                             Market Value
                         </Typography>
                         <Typography variant="h6">{FormatNumber((SumInvestedAmt - SumInProcessAmt - SumInProcessAmt))}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
                             Gain/Loss
                         </Typography>
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <Typography variant="h6" color="#00D48C" >
                                 {FormatNumber((SumInvestedAmt - SumInProcessAmt))}
                             </Typography>
-                            <Typography variant="caption" color="#00D48C" sx={{ marginLeft: '1px' }} mt={1}>
-                                +{FormatNumber(ConvertToPercentage((SumInvestedAmt - SumInProcessAmt), SumInvestedAmt))}%
+                            <Typography variant="caption" color="#00D48C" >
+                                {FormatNumber(ConvertToPercentage((SumInvestedAmt - SumInProcessAmt), SumInvestedAmt))}%
                             </Typography>
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
                             In Process Amount
                         </Typography>
                         <Typography variant="h6">{FormatNumber(SumInProcessAmt)}</Typography>
                     </Grid>
                 </div>
             </Paper>
-            <Paper elevation={3} sx={{ p: 1 }} >
-                <Typography variant="h5" sx={{ mb: 4 }}>Scheme Details</Typography>
-                <Grid container xs sx={{width:'77vw',padding:"20px"}}>
+            <Paper elevation={2} sx={{ p: 4, pl: 6, pr: 6 }} >
+                <Typography style={{ fontWeight: 600 }} variant="h6" sx={{ mb: 2 }}>Scheme Details</Typography>
+                <Divider sx={{ mb: 4 }} />
+                <div style={{ display: 'flex', flexDirection: 'row', minWidth: '69vw', justifyContent: 'center' }}>
                     <Grid item xs={12} sm={6} md={2.4} >
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
-                        <strong>Fund</strong>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
+                            Fund
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={2.0} sx={{ ml: 4 }}>
+                        <Typography style={{ fontWeight: 600 ,color:"grey" }} variant="body1" sx={{ mb: 1 }}>
+                            Amount Invested
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2.4}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
-                            <strong>Amount Invested</strong>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
+                            Market Value
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2.4}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
-                            <strong>Market Value</strong>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
+                            Gain/Loss
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2.4}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
-                        <strong>Gain/Loss</strong>
+                        <Typography style={{ fontWeight: 600,color:"grey"  }} variant="body1" sx={{ mb: 1 }}>
+                            In Process Amount
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={2.4}>
-                        <Typography variant="body1" component="div" sx={{ mb: 1 }}>
-                        <strong>In Process Amount</strong>
-                        </Typography>
-                    </Grid>
-                </Grid>
-                {
-                    Funds.map((each, idx) => {
-
-                        return <div key={idx} >
-                            <Grid container xs sx={{m:2}}>
-                                <Grid item xs={12} sm={6} md={2.4}>
-                                    <Typography variant="h6" sx={{ p: 1 }}>
-                                        {each.fund}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={2.4}>
-                                    <Typography variant="h6">{FormatNumber(each.InvestedAmt)}</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={2.4}>
-                                    <Typography variant="h6">{FormatNumber((parseFloat(each.InvestedAmt) - parseFloat(each.InProcessAmt) - parseFloat(each.InProcessAmt)))}</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={2.4}>
-                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <Typography variant="h6" color="#00D48C" >
-                                            {FormatNumber((parseFloat(each.InvestedAmt) - parseFloat(each.InProcessAmt)))}
-                                        </Typography>
-                                        <Typography variant="caption" color="#00D48C" sx={{ marginLeft: '1px' }} mt={1}>
-                                            +{FormatNumber(ConvertToPercentage((parseFloat(each.InvestedAmt) - parseFloat(each.InProcessAmt)), each.InvestedAmt))}%
-                                        </Typography>
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={2.4}>
-                                    <Typography variant="h6">{FormatNumber(each.InProcessAmt)}</Typography>
-                                </Grid>
+                </div>
+                <Divider sx={{ mb: 2, mt: 3 }} />
+                {Funds.map((each, idx) => {
+                    return <>
+                        <div style={{ display: 'flex', flexDirection: 'row', minWidth: '69vw', justifyContent: 'center' }}>
+                            <Grid item xs={12} sm={6} md={2.4}>
+                                <Typography style={{ fontWeight: 600}} variant="body1">
+                                    {each.fund}
+                                </Typography>
                             </Grid>
-                            {idx !== Funds.length - 1 && <Divider />}
+                            <Grid item xs={12} sm={6} md={2.0} sx={{ ml: 4 }}>
+                                <Typography variant="body1">{FormatNumber(each.InvestedAmt)}</Typography>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={2.4}>
+                                <Typography variant="body1">{FormatNumber((parseFloat(each.InvestedAmt) - parseFloat(each.InProcessAmt) - parseFloat(each.InProcessAmt)))}</Typography>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={2.4}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <Typography variant="body1" color="#00D48C" >
+                                        {FormatNumber((parseFloat(each.InvestedAmt) - parseFloat(each.InProcessAmt)))}
+                                    </Typography>
+                                    <Typography variant="caption" color="#00D48C">
+                                        {FormatNumber(ConvertToPercentage((parseFloat(each.InvestedAmt) - parseFloat(each.InProcessAmt)), each.InvestedAmt))}%
+                                    </Typography>
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={2.4}>
+                                <Typography variant="body1">{FormatNumber(each.InProcessAmt)}</Typography>
+                            </Grid>
                         </div>
-                    })
+                        {idx !== Funds.length - 1 && <Divider sx={{ mt: 2, mb: 2 }} />}
+                    </>
+                })
                 }
             </Paper>
         </Grid>

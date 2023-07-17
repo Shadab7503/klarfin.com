@@ -4,6 +4,8 @@ import {
     Button,
     MenuItem,
     TextField,
+    Typography,
+    Paper
 } from '@mui/material';
 import { DataGrid, GridValueSetterParams } from '@mui/x-data-grid';
 import axios from 'axios';
@@ -12,16 +14,26 @@ import Loading from '../Dashboard/Loading';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Stack } from '@mui/joy';
-import { Typography } from '@material-ui/core';
 export default function Transaction20(props: any) {
     const [Lasttranx, setLasttranx] = useState([]);
     const { folio_id } = useParams();
     const [columns, setColumns] = useState([
-        { field: 'id', headerName: 'S.No', width: 180 },
+        {
+            field: 'id', headerName: 'S.No', width: 180, renderHeader: () => (
+                <strong>
+                    {'S.No'}
+                </strong>
+            ),
+        },
         {
             field: 'Transaction_type',
             headerName: 'Transaction Type',
             width: 250,
+            renderHeader: () => (
+                <strong>
+                    {'Transaction Type'}
+                </strong>
+            ),
             renderCell: (params) => {
                 let { Transaction_type, Modeofpayment } = params.row;
                 if (Modeofpayment == 'NFET') {
@@ -32,7 +44,12 @@ export default function Transaction20(props: any) {
             },
         },
         {
-            field: 'Amount', headerName: 'Amount', width: 250, renderCell: (params) => {
+            field: 'Amount', headerName: 'Amount', width: 250,
+            renderHeader: () => (
+                <strong>
+                    {'Amount'}
+                </strong>
+            ), renderCell: (params) => {
                 const { Amount, Status } = params.row;
                 if (Status == 'Under process') {
                     return <Stack ><Typography variant='body1' >{Amount}</Typography><Typography style={{ color: '#FDD017' }} variant='caption'>{Status}</Typography></Stack>
@@ -41,7 +58,13 @@ export default function Transaction20(props: any) {
                 }
             }
         },
-        { field: 'Transaction_Date', headerName: 'Transaction Date', width: 250 },
+        {
+            field: 'Transaction_Date', headerName: 'Transaction Date', width: 250, renderHeader: () => (
+                <strong>
+                    {'Transaction Date'}
+                </strong>
+            ),
+        },
 
     ]);
     const today = new Date();
@@ -53,14 +76,14 @@ export default function Transaction20(props: any) {
         date: date
     });
 
-    const changeHandler =(event)=>{
-        const {name,value} = event.target;
-        if(name=="scheme"){
-          const data = schemes.find(each=>each.value == value);
-          if(!data){ return ;}
-          setFilter({...filter,"plan":data.plan,"scheme":value});
+    const changeHandler = (event) => {
+        const { name, value } = event.target;
+        if (name == "scheme") {
+            const data = schemes.find(each => each.value == value);
+            if (!data) { return; }
+            setFilter({ ...filter, "plan": data.plan, "scheme": value });
         }
-      }
+    }
 
     const schemes = [
         {
@@ -103,16 +126,17 @@ export default function Transaction20(props: any) {
     }, [])
 
     return (
-        loading ? <Loading /> : <>
-            <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
-                <AppBar style={{ backgroundColor: "white",width:'38%' ,marginLeft:"70%" }} position="static" elevation={0}  >
-                    <Toolbar>
+        <Grid container spacing={2} xs>
+            <Grid item xs={12} sx={{ ml: 4, maxWidth: "90vw", height: '100vh' }}>
+                <AppBar style={{ backgroundColor: "white", display: 'flex', width: '76vw', flexDirection: 'row', justifyContent: "flex-end" }} position="static" elevation={0}  >
+                    <Toolbar sx={{ display: 'flex', alignItems: "center", margin: '0px' }}>
                         <TextField
                             label="Scheme"
                             name="scheme"
+                            size='small'
                             onChange={changeHandler}
                             value={filter.scheme}
-                            sx={{ m: 1, minWidth: 120 }}
+                            sx={{ mr: 2 }}
                             select
                         >
                             {schemes.map((each, idx) => {
@@ -123,29 +147,34 @@ export default function Transaction20(props: any) {
                                 );
                             })}
                         </TextField>
-                        <Button variant="contained" color="primary" onClick={filterHandler}>
+                        <Button style={{ marginTop: "-3px", height: "37px" }} variant="contained" color="primary" onClick={filterHandler}>
                             Search
                         </Button>
                     </Toolbar>
                 </AppBar>
-                <h2>Last 20 Transactions</h2>
-                <div style={{ height: '100vh', width: '100%' }}>
-                    <DataGrid
+                <Typography style={{ fontWeight: 600 }} variant="h6">Last 20 Transactions</Typography>
+                <div style={{ height: '100vh', width: '75vw' }}>
+                    {loading ? <Loading /> : <DataGrid
+                        sx={{ mt: 2 }}
                         hideFooter={true}
                         rowsPerPageOptions={[20]}
                         rows={Lasttranx.map((each: any, idx: number) => {
                             return { ...each, id: idx + 1 };
                         })}
                         columns={columns.map(each => {
-                            return { ...each, 
+                            return {
+                                ...each,
                                 headerAlign: 'center',
-                                align:'center',
+                                align: 'center',
                                 sx: {
-                                  size:2,
-                                },}
+                                    size: 2,
+                                },
+                            }
                         })}
                     />
+                    }
                 </div>
-            </Grid></>
+            </Grid>
+        </Grid>
     )
 }

@@ -21,9 +21,9 @@ const TopBar = (props: TopBarProps) => {
       alignItems="center"
     >
       <Grid item xl={2} lg={3} sm={4} xs={6}>
-        <Grid container alignItems="center" justifyContent="space-evenly">
+        <Grid container sx={{ml:4}}>
           <Grid item>
-            <Grid container alignItems="center">
+            <Grid container>
               { (location.pathname !== '/dashboardAdmin/investing')&&<Button variant="contained" onClick={() => {
                 navigate(`/dashboardAdmin/investing`)
               }} >HOME</Button>}
