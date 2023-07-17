@@ -14,7 +14,7 @@ import { TabPanel, TabContext } from '@material-ui/lab'
 import TabList from "@material-ui/lab/TabList";
 import { useTheme } from '@mui/material/styles';
 import Overviews from './Overviews';
-import Transaction20 from './TransactionLast';
+import TransactionLast from './TransactionLast';
 //import Transactions from './Transaction';
 import TransactionDatewise from './TransactionDatewise';
 
@@ -191,7 +191,7 @@ export default function Orders(props: any) {
               filter={filter}
               accessToken={props.accessToken} />
           </TabPanel>
-          <TabPanel value="2" ><Transaction20 accessToken={props.accessToken} /></TabPanel>
+          <TabPanel value="2" ><TransactionLast accessToken={props.accessToken} /></TabPanel>
           <TabPanel value="3"><TransactionDatewise accessToken={props.accessToken} /></TabPanel>
         </TabContext>
       </Box>
