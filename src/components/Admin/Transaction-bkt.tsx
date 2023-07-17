@@ -7,7 +7,7 @@ import Loading from '../Dashboard/Loading';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import SearchBar from './searchBar';
-
+   
 
 export default function Transactions(props: any) {
     const [tranx, setTranx] = useState([]);
