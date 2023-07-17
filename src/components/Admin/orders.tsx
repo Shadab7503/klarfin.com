@@ -133,7 +133,7 @@ export default function Orders(props: any) {
         },
       })
       .then(({ data }) => {
-        console.log(data);
+       // console.log(data);
         setInvestmentList(data.orders);
         setLoading(false);
       });

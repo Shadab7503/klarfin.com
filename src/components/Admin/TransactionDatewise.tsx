@@ -68,7 +68,7 @@ export default function TransactionDatewise(props: any) {
     };
 
     const [IntervalDate, setIntervalDate] = useState({
-        startDate: DateConverter(new Date().getTime() - 3 * 24 * 60 * 60 * 1000),
+        startDate: DateConverter(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
         endDate: DateConverter(new Date().getTime()),
     });
 
@@ -106,7 +106,8 @@ export default function TransactionDatewise(props: any) {
         setLoading(true);
         const middleDayTime = new Date(IntervalDate.startDate).getTime() + 24 * 60 * 60 * 1000;
         const middleDay = DateConverter(middleDayTime);
-        console.log(middleDay)
+        //console.log(IntervalDate.startDate,middleDay,IntervalDate.endDate);
+        
         try {
             const res = await Promise.all([
                 axios.post(
@@ -126,7 +127,7 @@ export default function TransactionDatewise(props: any) {
             const data = res.map((each) => {
                 arrayData.push(...each.data.tranxData);
             })
-            console.log("ArrayData : ", arrayData);
+            //console.log("ArrayData : ", arrayData);
             const finalArray = arrayData.filter((each) => (each.Amount).length > 0)
             setTranx(finalArray);
             setLoading(false)
@@ -156,22 +157,22 @@ export default function TransactionDatewise(props: any) {
     const CheckRangeHandler = (value) => {
         if (value[0] == 0 || value[1] == 0) {
             setError(true);
-            setMessage("Please Enter Valid Date Range Between 3 days");
+            setMessage("Please Enter Valid Date Range");
             return;
         }
         if (value[0] > new Date() || value[1] > new Date()) {
             setError(true);
-            setMessage("Please Enter Valid Date Range")
+            setMessage("Please Enter Valid Date Range,Future Data Not Available")
             return;
         }
 
         const endDate = DateConverter(value[1])
         const startDate = DateConverter(value[0]);
-        if (new Date(endDate).getTime() - new Date(startDate).getTime() > 3 * 24 * 60 * 60 * 1000) {
+        if (new Date(endDate).getTime() - new Date(startDate).getTime() > 2 * 24 * 60 * 60 * 1000) {
             setError(true)
-            setMessage("Please Enter Valid Date Range Between 3 days")
+            setMessage("Please Enter Valid Date Range ,Date interval should be maximum 3 Days")
             return;
-        } else if (new Date(endDate).getTime() - new Date(startDate).getTime() < 3 * 24 * 60 * 60 * 1000) {
+        } else if (new Date(endDate).getTime() - new Date(startDate).getTime() < 2 * 24 * 60 * 60 * 1000) {
             setIntervalDate({
                 startDate: DateConverter(value[0]),
                 endDate: DateConverter(value[1])
@@ -215,6 +216,10 @@ export default function TransactionDatewise(props: any) {
                         size='lg'
                         appearance='subtle'
                         onOk={(value) => CheckRangeHandler(value)}
+                        placement="bottomEnd"
+                        editable={true}
+                        defaultValue={[new Date(Date.now() - 2*24*60*60*1000),new Date()]}
+                        showOneCalendar={true}
                     />
                 </div>
                 {/* <TextField

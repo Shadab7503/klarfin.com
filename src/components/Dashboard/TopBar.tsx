@@ -4,7 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { TopBarProps } from "../../utils/interface";
 import company from "../../images/company-logo.png";
 import settings from "../../images/settings.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import Home from "../Main/Home/Home";
 import Investment from "../SuperAdmin/Investment";
@@ -12,6 +12,7 @@ import Investment from "../SuperAdmin/Investment";
 
 const TopBar = (props: TopBarProps) => {
   const navigate = useNavigate();
+  const location = useLocation()
   return (
     <Grid
       container
@@ -19,17 +20,17 @@ const TopBar = (props: TopBarProps) => {
       className="topbar"
       alignItems="center"
     >
-      { <Grid item xl={2} lg={3} sm={4} xs={6}>
+      <Grid item xl={2} lg={3} sm={4} xs={6}>
         <Grid container alignItems="center" justifyContent="space-evenly">
           <Grid item>
             <Grid container alignItems="center">
-              <Button variant="contained" onClick={() => {
+              { (location.pathname !== '/dashboardAdmin/investing')&&<Button variant="contained" onClick={() => {
                 navigate(`/dashboardAdmin/investing`)
-              }} >HOME</Button>
+              }} >HOME</Button>}
             </Grid>
           </Grid>
         </Grid>
-      </Grid>}
+      </Grid>
       <Grid item xl={2} lg={3} sm={4} xs={6}>
         <Grid container alignItems="center" justifyContent="space-evenly">
           <Grid item>
