@@ -59,19 +59,54 @@ export default function Investment(props: any) {
   };
 
   const [columns, setColumns] = useState([
-    { field: "idx", headerName: "SN", width: 80, },
-    { field: "org", headerName: "Name", width: 180 },
-    { field: "type", headerName: "Investment For", width: 180 },
+    {
+      field: "idx", headerName: "SN", width: 80, renderHeader: () => (
+        <strong>
+          {'SN'}
+        </strong>
+      ),
+    },
+    {
+      field: "org", headerName: "Name", width: 180,
+      renderHeader: () => (
+        <strong>
+          {'Name'}
+        </strong>
+      ),
+    },
+
+    {
+      field: "type", headerName: "Investment For", width: 180, renderHeader: () => (
+        <strong>
+          {'Investment For'}
+        </strong>
+      ),
+    },
     //{ field: 'frequency', headerName: 'Frequency', width: 180 },
     // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
-    { field: "fund", headerName: "Fund", width: 180 },
-    { field: 'bank', headerName: 'Bank', width: 180, },
+    {
+      field: "fund", headerName: "Fund", width: 180, renderHeader: () => (
+        <strong>
+          {'Fund'}
+        </strong>
+      ),
+    },
+    { field: 'bank', headerName: 'Bank', width: 180,renderHeader: () => (
+      <strong>
+        {'Bank'}
+      </strong>
+    ), },
     // { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
     // { field: 'returns', headerName: 'Return generated', type: 'number' },
     {
       field: "Actions",
       headerName: "Action",
-      width: 525,
+      width: 440,
+      renderHeader: () => (
+        <strong>
+          {'Action'}
+        </strong>
+      ),
       renderCell: (params: any) => {
         return (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -182,11 +217,10 @@ export default function Investment(props: any) {
                     >
                         Delete
                     </Grid> */}
-            <span></span>
           </div>
         );
       },
-    },
+    }
   ]);
 
   const [loading, setLoading] = useState(false);

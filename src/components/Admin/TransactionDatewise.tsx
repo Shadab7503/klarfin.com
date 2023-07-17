@@ -24,11 +24,21 @@ export default function TransactionDatewise(props: any) {
     const [isError, setError] = useState(false);
     const [message, setMessage] = useState("");
     const [columns, setColumns] = useState([
-        { field: 'id', headerName: 'S.No', width: 180 },
+        {
+            field: 'id', headerName: 'S.No', width: 180, renderHeader: () => (
+                <strong>
+                    {'S.No'}
+                </strong>
+            ),
+        },
         {
             field: 'Transaction_type',
             headerName: 'Transaction Type',
-            width: 250,
+            width: 250, renderHeader: () => (
+                <strong>
+                    {'Transaction Type'}
+                </strong>
+            ),
             renderCell: (params) => {
                 let { Transaction_type, Modeofpayment } = params.row;
                 if (Modeofpayment == 'NFET') {
@@ -39,7 +49,11 @@ export default function TransactionDatewise(props: any) {
             },
         },
         {
-            field: 'Amount', headerName: 'Amount', width: 250, renderCell: (params) => {
+            field: 'Amount', headerName: 'Amount', width: 250, renderHeader: () => (
+                <strong>
+                    {'Amount'}
+                </strong>
+            ), renderCell: (params) => {
                 const { Amount, Status } = params.row;
                 if (Status == 'Under process') {
                     return <Stack ><Typography variant='body1' >{Amount}</Typography><Typography style={{ color: '#FDD017' }} variant='caption'>{Status}</Typography></Stack>
@@ -48,7 +62,13 @@ export default function TransactionDatewise(props: any) {
                 }
             }
         },
-        { field: 'Transaction_Date', headerName: 'Transaction Date', width: 250 },
+        {
+            field: 'Transaction_Date', headerName: 'Transaction Date', width: 250, renderHeader: () => (
+                <strong>
+                    {'Transaction Date'}
+                </strong>
+            ),
+        },
     ]);
     const today = new Date();
     const [loading, setLoading] = useState(false);
@@ -107,7 +127,7 @@ export default function TransactionDatewise(props: any) {
         const middleDayTime = new Date(IntervalDate.startDate).getTime() + 24 * 60 * 60 * 1000;
         const middleDay = DateConverter(middleDayTime);
         //console.log(IntervalDate.startDate,middleDay,IntervalDate.endDate);
-        
+
         try {
             const res = await Promise.all([
                 axios.post(
@@ -180,49 +200,53 @@ export default function TransactionDatewise(props: any) {
         }
     }
 
-    return <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
-        <Snackbar
-            open={isError}
-            autoHideDuration={4000}
-            onClose={() => setError(false)}
-        >
-            <Alert severity='error'
-                style={{ backgroundColor: "red" }}
-                ><span style={{color:"white"}} >{message}</span></Alert>
-        </Snackbar>
-        <AppBar style={{ backgroundColor: "white", width: '55%', marginLeft: "50%" }} position="static" elevation={0}  >
-            <Toolbar>
-                <TextField
-                    label="Scheme"
-                    name="scheme"
-                    onChange={changeHandler}
-                    value={filter.scheme}
-                    sx={{ m: 1, minWidth: 120 }}
-                    select
-                    fullWidth
-                >
-                    {schemes.map((each, idx) => {
-                        return (
-                            <MenuItem key={idx} value={each.value}>
-                                {each.name}
-                            </MenuItem>
-                        );
-                    })}
-                </TextField>
-                <div style={{ border: '1.5px solid rgb(210 205 205)', margin: '10px', borderRadius: "5px" }} >
-                    <DateRangePicker
-                        style={{ width: '250px', height: "34px",color:"black", margin: '10px' }}
-                        //onChange={(value) => changeIntervalDate(value)}
-                        size='lg'
-                        appearance='subtle'
-                        onOk={(value) => CheckRangeHandler(value)}
-                        placement="bottomEnd"
-                        editable={true}
-                        defaultValue={[new Date(Date.now() - 2*24*60*60*1000),new Date()]}
-                        showOneCalendar={true}
-                    />
-                </div>
-                {/* <TextField
+
+
+    return <Grid container spacing={2} xs>
+        <Grid item xs={12} sx={{ ml: 4, maxWidth: "90vw", height: '100vh' }}>
+            <Snackbar
+                open={isError}
+                autoHideDuration={4000}
+                onClose={() => setError(false)}
+            >
+                <Alert severity='error'
+                    style={{ backgroundColor: "red" }}
+                ><span style={{ color: "white" }} >{message}</span></Alert>
+            </Snackbar>
+            <AppBar style={{ backgroundColor: "white", display: 'flex', width: '76vw', flexDirection: 'row', justifyContent: "flex-end" }} position="static" elevation={0}   >
+                <Toolbar sx={{ display: 'flex', alignItems: "center", margin: '0px' }}>
+                    <TextField
+                        label="Scheme"
+                        name="scheme"
+                        onChange={changeHandler}
+                        value={filter.scheme}
+                        sx={{ mr: 2 }}
+                        select
+                        size='small'
+                    >
+                        {schemes.map((each, idx) => {
+                            return (
+                                <MenuItem key={idx} value={each.value}>
+                                    {each.name}
+                                </MenuItem>
+                            );
+                        })}
+                    </TextField>
+                    <div style={{ border: '1.5px solid rgb(210 205 205)', height: "39px", borderRadius: "4px", marginRight: "13px" }} >
+                        <DateRangePicker
+                            //onChange={(value) => changeIntervalDate(value)}
+                            size='md'
+                            appearance='subtle'
+                            onOk={(value) => CheckRangeHandler(value)}
+                            placement="bottomEnd"
+                            editable={true}
+                            defaultValue={[new Date(Date.now() - 2 * 24     * 60 * 60 * 1000), new Date()]}
+                            showOneCalendar={true}
+                            character="  to  "
+                            format="dd-MM-yyyy"
+                        />
+                    </div>
+                    {/* <TextField
                     id="date"
                     label="Selected Date"
                     type="date"
@@ -239,31 +263,33 @@ export default function TransactionDatewise(props: any) {
                     }}
                     sx={{ m: 1 }}
                 /> */}
-                <Button variant="contained" color="primary" onClick={getDataHandler}>
-                    Search
-                </Button>
-            </Toolbar>
-        </AppBar>
-        <h2 style={{ marginBottom: '20px' }}>Transactions</h2>
-        <div style={{ height: '100vh', width: '100%' }}>
-            {loading ? <Loading /> : <DataGrid
-                //  hideFooter={true}
-                rowsPerPageOptions={[50, 100, 1000]}
+                    <Button style={{ marginTop: "-3px", height: "37px" }} variant="contained" color="primary" onClick={getDataHandler}>
+                        Search
+                    </Button>
+                </Toolbar>
+            </AppBar>
+            <Typography style={{ fontWeight: 600 }} variant="h6">Transactions</Typography>
+            <div style={{ height: '100vh', width: '75vw' }}>
+                {loading ? <Loading /> : <DataGrid
+                    sx={{ mt: 2 }}
+                    //  hideFooter={true}
+                    rowsPerPageOptions={[50, 100, 1000]}
 
-                rows={tranx.map((each: any, idx: number) => {
-                    return { ...each, id: idx + 1 };
-                })}
-                columns={columns.map(each => {
-                    return {
-                        ...each, headerAlign: 'center',
-                        align: 'center',
-                        sx: {
-                            size: 2,
-                        },
-                    }
-                })}
-            />}
-        </div>
+                    rows={tranx.map((each: any, idx: number) => {
+                        return { ...each, id: idx + 1 };
+                    })}
+                    columns={columns.map(each => {
+                        return {
+                            ...each, headerAlign: 'center',
+                            align: 'center',
+                            sx: {
+                                size: 2,
+                            },
+                        }
+                    })}
+                />}
+            </div>
+        </Grid>
     </Grid>
 }
 
