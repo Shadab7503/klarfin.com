@@ -10,7 +10,6 @@ import SearchBar from './searchBar';
 
 
 export default function Transactions(props: any) {
-
     const [tranx, setTranx] = useState([]);
     const [Lasttranx , setLasttranx] = useState([]);
     console.log("Transactions")
