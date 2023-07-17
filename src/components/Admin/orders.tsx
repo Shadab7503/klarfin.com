@@ -1,26 +1,37 @@
-import {Button, Grid, Tab, Tabs} from "@mui/material";
-import {DataGrid} from "@mui/x-data-grid";
+import * as React from 'react';
+import { Button, Grid, Tab, Box, Tabs } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Loading from "../Dashboard/Loading";
-import {Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SearchBar from "./searchBar";
-import {format, formatISO} from "date-fns";
+import { format, formatISO } from "date-fns";
 import Scheme from "./Scheme";
 import Popup from "./model";
 import moment from "moment";
-import DateFormatFromMongo from '../../utils/DateFormatFromMongo';
+import { TabPanel, TabContext } from '@material-ui/lab'
+import TabList from "@material-ui/lab/TabList";
+import { useTheme } from '@mui/material/styles';
+import Overviews from './Overviews';
+import Transaction20 from './Transaction20';
+import TransactionDatewise from './TransactionDatewise';
 
 export default function Orders(props: any) {
   const [showRedeem, setShowRedeem] = useState(false);
   const [tranx, setTranx] = useState([]);
   const [refno, setRefno] = useState();
   const [popup, setPopup] = useState(false);
-  const {folio_id} = useParams();
+  const { folio_id } = useParams();
   const [investmentList, setInvestmentList] = useState([]);
-  
+  const [value, setValue] = React.useState('1');
+  const theme = useTheme();
+  const handleChange = (newValue: string) => {
+    setValue(newValue);
+  };
+
   const today = new Date();
-  const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
+  const [date, setDate] = useState(format(today, 'MM/dd/yyyy'))
   const [filter, setFilter] = useState({
     plan: "RG",
     scheme: "LP",
@@ -35,30 +46,30 @@ export default function Orders(props: any) {
     const formattedDate = moment(dateString, 'MM/DD/YYYY').add(1, 'day').format('MM/DD/YYYY');
     return formattedDate;
   }
-  
+
   const [columnsRedeem, setColumnsRedeem] = useState([
-    {field: "id", headerName: "Id", width: 180},
-    {field: "scheme", headerName: "Scheme", width: 180},
-    {field: "UnitAmtValue", headerName: "UnitAmtValue", width: 180},
-    {field: "createdAt", headerName: "Created At", width: 230},
-    {field: "fund", headerName: "Fund", width: 180},
-    {field: "acno", headerName: "Acno", width: 180},
-    {field: "plan", headerName: "Plan", width: 180},
-    {field: "options", headerName: "Options", width: 180},
-    {field: "RedFlag", headerName: "RedFlag", width: 180},
-    {field: "UnitamtFlag", headerName: "UnitAmtFlag", width: 180},
-    {field: "Tpin", headerName: "Tpin", width: 180},
-    {field: "bank", headerName: "Bank", width: 180},
-    {field: "oldihno", headerName: "Oldihno", width: 180},
-    {field: "trdate", headerName: "Trdate", width: 180},
-    {field: "entdate", headerName: "Entdate", width: 180},
-    {field: "ShowInstaStatus", headerName: "ShowInstaStatus", width: 180},
-    {field: "OTP", headerName: "OTP", width: 180},
-    {field: "OTPReference", headerName: "OTPReference", width: 180},
-    {field: "SelfValidate", headerName: "SelfValidate", width: 180},
-    {field: "Return_code", headerName: "Return_code", width: 180},
-    {field: "REFNO", headerName: "REFNO", width: 180},
-    {field: "Date_Time", headerName: "Date_Time", width: 180},
+    { field: "id", headerName: "Id", width: 180 },
+    { field: "scheme", headerName: "Scheme", width: 180 },
+    { field: "UnitAmtValue", headerName: "UnitAmtValue", width: 180 },
+    { field: "createdAt", headerName: "Created At", width: 230 },
+    { field: "fund", headerName: "Fund", width: 180 },
+    { field: "acno", headerName: "Acno", width: 180 },
+    { field: "plan", headerName: "Plan", width: 180 },
+    { field: "options", headerName: "Options", width: 180 },
+    { field: "RedFlag", headerName: "RedFlag", width: 180 },
+    { field: "UnitamtFlag", headerName: "UnitAmtFlag", width: 180 },
+    { field: "Tpin", headerName: "Tpin", width: 180 },
+    { field: "bank", headerName: "Bank", width: 180 },
+    { field: "oldihno", headerName: "Oldihno", width: 180 },
+    { field: "trdate", headerName: "Trdate", width: 180 },
+    { field: "entdate", headerName: "Entdate", width: 180 },
+    { field: "ShowInstaStatus", headerName: "ShowInstaStatus", width: 180 },
+    { field: "OTP", headerName: "OTP", width: 180 },
+    { field: "OTPReference", headerName: "OTPReference", width: 180 },
+    { field: "SelfValidate", headerName: "SelfValidate", width: 180 },
+    { field: "Return_code", headerName: "Return_code", width: 180 },
+    { field: "REFNO", headerName: "REFNO", width: 180 },
+    { field: "Date_Time", headerName: "Date_Time", width: 180 },
 
     {
       field: "Actions",
@@ -66,13 +77,13 @@ export default function Orders(props: any) {
       width: 420,
       renderCell: (params: any) => {
         return (
-          <div style={{display: "flex", justifyContent: "space-between"}}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Grid
               item
               className="bills-pay"
               py={1}
               px={2}
-              style={{marginRight: "1rem"}}
+              style={{ marginRight: "1rem" }}
               onClick={() => {
                 setRefno(params.row.REFNO);
                 setPopup(true);
@@ -87,41 +98,41 @@ export default function Orders(props: any) {
   ]);
 
   const [columns, setColumns] = useState([
-    {field: "id", headerName: "Id", width: 180},
-    {field: "Scheme", headerName: "Scheme", width: 180},
-    {field: "Amount", headerName: "Amount", width: 180},
-    {field: "PayMode", headerName: "PayMode", width: 180},
-    {field: "createdAt", headerName: "Date Time", width: 230},
-    {field: "Fund", headerName: "Fund", width: 180},
-    {field: "Plan", headerName: "Plan", width: 180},
-    {field: "Options", headerName: "Options", width: 180},
-    {field: "AcNo", headerName: "AcNo", width: 180},
-    {field: "TrType", headerName: "TrType", width: 180},
-    {field: "Agent", headerName: "Agent", width: 180},
+    { field: "id", headerName: "Id", width: 180 },
+    { field: "Scheme", headerName: "Scheme", width: 180 },
+    { field: "Amount", headerName: "Amount", width: 180 },
+    { field: "PayMode", headerName: "PayMode", width: 180 },
+    { field: "createdAt", headerName: "Date Time", width: 230 },
+    { field: "Fund", headerName: "Fund", width: 180 },
+    { field: "Plan", headerName: "Plan", width: 180 },
+    { field: "Options", headerName: "Options", width: 180 },
+    { field: "AcNo", headerName: "AcNo", width: 180 },
+    { field: "TrType", headerName: "TrType", width: 180 },
+    { field: "Agent", headerName: "Agent", width: 180 },
     // { field: 'SubBroker', headerName: 'SubBroker', width: 180 },
     // { field: 'SubArnCode', headerName: 'SubArnCode', width: 180 },
-    {field: "EUIN", headerName: "EUIN", width: 180},
+    { field: "EUIN", headerName: "EUIN", width: 180 },
     // { field: 'EUINDecFlag', headerName: 'EUINDecFlag', width: 180 },
-    {field: "ChqBank", headerName: "ChqBank", width: 180},
-    {field: "REFNO", headerName: "REFNO", width: 180},
+    { field: "ChqBank", headerName: "ChqBank", width: 180 },
+    { field: "REFNO", headerName: "REFNO", width: 180 },
   ]);
-  
+
   const [loading, setLoading] = useState(false);
 
   const getReceivablesData = () => {
     setLoading(true);
     axios
       .get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/orders`, {
-        headers: {Authorization: `Bearer ${props.accessToken}`},
+        headers: { Authorization: `Bearer ${props.accessToken}` },
         params: {
           folio: folio_id,
-          fromDate:convertToISOString(filter.date),
+          fromDate: convertToISOString(filter.date),
           toDate: convertToISOString((incrementOneDay(filter.date))),
-          plan:filter.plan,
-          scheme:filter.scheme
+          plan: filter.plan,
+          scheme: filter.scheme
         },
       })
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log(data);
         setInvestmentList(data.orders);
         setLoading(false);
@@ -140,10 +151,10 @@ export default function Orders(props: any) {
           trdate: filter.date,
         },
         {
-          headers: {Authorization: `Bearer ${props.accessToken}`},
+          headers: { Authorization: `Bearer ${props.accessToken}` },
         }
       )
-      .then(({data}) => {
+      .then(({ data }) => {
         setTranx(data.redeem);
         setLoading(false);
       });
@@ -159,24 +170,44 @@ export default function Orders(props: any) {
   };
 
   const filterHandler = data => {
-    setFilter({...data});
+    setFilter({ ...data });
   };
   return (
     <div>
-  
-      <Grid
+      <Box sx={{ width: '100%' }}>
+        <TabContext value={value}  >
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: '#318ad6', color: 'white' }}>
+            <TabList onChange={(event, newValue) => handleChange(newValue)} centered TabIndicatorProps={{
+              style: { backgroundColor: 'white',color:'white' },
+            }}>
+              <Tab style= {{ color:'white' }} label="Portfolio" value="1" />
+              <Tab style= {{ color:'white' }} label="Last 20 Transactions" value="2" />
+              <Tab style= {{ color:'white' }} label="Date Wise Transactions" value="3" />
+            </TabList>
+          </Box>
+          <TabPanel value="1">
+            <Overviews folio_id={folio_id}
+              filter={filter}
+              accessToken={props.accessToken} />
+          </TabPanel>
+          <TabPanel value="2" ><Transaction20 accessToken={props.accessToken} /></TabPanel>
+          <TabPanel value="3"><TransactionDatewise accessToken={props.accessToken} /></TabPanel>
+        </TabContext>
+      </Box>
+
+      {/* <Grid
         item
         xs={12}
         px={10}
         mt={5}
-        sx={{maxWidth: "95vw", height: "100vh"}}
+        sx={{ maxWidth: "95vw", height: "100vh" }}
       >
         <div>
           <Button
-            style={{marginRight: "2rem"}}
+            style={{ marginRight: "2rem" }}
             variant="contained"
             color="primary"
-            onClick={() => {}}
+            onClick={() => { }}
           >
             <Link to={`/dashboardAdmin/investment/tranx/${folio_id}`}>
               Transactions
@@ -196,17 +227,17 @@ export default function Orders(props: any) {
           filter={filter}
           accessToken={props.accessToken}
         />
-        <div style={{marginBottom: "1rem"}}>
+        <div style={{ marginBottom: "1rem" }}>
           <Button
             variant="contained"
             style={
               !showRedeem
-                ? {backgroundColor: "#1976d2", marginRight: "2rem"}
+                ? { backgroundColor: "#1976d2", marginRight: "2rem" }
                 : {
-                    backgroundColor: "white",
-                    color: "black",
-                    marginRight: "2rem",
-                  }
+                  backgroundColor: "white",
+                  color: "black",
+                  marginRight: "2rem",
+                }
             }
             onClick={ShowHandler}
           >
@@ -216,8 +247,8 @@ export default function Orders(props: any) {
             variant="contained"
             style={
               showRedeem
-                ? {backgroundColor: "#1976d2"}
-                : {backgroundColor: "white", color: "black"}
+                ? { backgroundColor: "#1976d2" }
+                : { backgroundColor: "white", color: "black" }
             }
             onClick={ShowHandler}
           >
@@ -226,33 +257,33 @@ export default function Orders(props: any) {
         </div>
 
         {showRedeem ? (
-          <div style={{height: "100vh", width: "100%"}}>
+          <div style={{ height: "100vh", width: "100%" }}>
             <DataGrid
               //hideFooter={true}
               rowsPerPageOptions={[50, 100, 1000]}
               rows={tranx.map((each: any, idx: number) => {
-                return {...each, id: idx + 1};
+                return { ...each, id: idx + 1 };
               })}
               columns={columnsRedeem.map(each => {
-                return {...each};
+                return { ...each };
               })}
             />
           </div>
         ) : (
-          <div style={{height: "100vh", width: "100%"}}>
+          <div style={{ height: "100vh", width: "100%" }}>
             <DataGrid
               //hideFooter={true}
               rowsPerPageOptions={[50, 100, 1000]}
               rows={investmentList.map((each: any, idx: number) => {
-                return {...each, id: idx + 1};
+                return { ...each, id: idx + 1 };
               })}
               columns={columns.map(each => {
-                return {...each};
+                return { ...each };
               })}
             />
           </div>
         )}
-      </Grid>
-    </div> 
+      </Grid> */}
+    </div>
   );
 }

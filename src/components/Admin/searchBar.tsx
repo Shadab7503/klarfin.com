@@ -100,24 +100,6 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
             );
           })}
         </TextField>
-        {/* <TextField
-          label="Plan"
-          name="plan"
-          onChange={e => {
-            filterHandler("plan", e.target.value);
-          }}
-          sx={{m: 1, minWidth: 120}}
-          select
-        >
-          {schemes.map((each, idx) => {
-            return (
-              <MenuItem key={idx} value={each.plan}>
-                {each.plan}
-              </MenuItem>
-            );
-          })}
-        </TextField> */}
-
         <TextField
           id="date"
           label="Selected Date"
