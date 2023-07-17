@@ -211,7 +211,7 @@ export default function TransactionDatewise(props: any) {
                 </TextField>
                 <div style={{ border: '1.5px solid rgb(210 205 205)', margin: '10px', borderRadius: "5px" }} >
                     <DateRangePicker
-                        style={{ width: '250px', height: "34px", margin: '10px' }}
+                        style={{ width: '250px', height: "34px",color:"black", margin: '10px' }}
                         //onChange={(value) => changeIntervalDate(value)}
                         size='lg'
                         appearance='subtle'
