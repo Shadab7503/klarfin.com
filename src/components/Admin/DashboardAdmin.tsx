@@ -6,7 +6,7 @@ import Users from "./Users";
 import HorizontalLinearStepper from "./stepper/stepper";
 import CreateOrder from "./CreateOrder";
 import Orders from "./orders";
-import Transactions from "./transaction";
+import Transactions from "./Transaction";
 import RedeemStepper from "./stepper/RedeemStepper";
 import Redeem from "./redeems";
 import CashFlows from "./CashFlows";

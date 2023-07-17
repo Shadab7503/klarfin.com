@@ -124,7 +124,6 @@ export default function Redeems(props: any) {
                 })}
 
                 columns={columns.map(each => {
-                   
                     return { ...each }
                 })}
             />

@@ -321,10 +321,8 @@ export default function Investment(props: any) {
               ...each,
               headerAlign: 'center',
               align:'center',
-              headerClassName: 'column-header', // Apply the CSS class to the header
-              cellClassName: 'column-cell', // Apply the CSS class to the cells
               sx: {
-                fontWeight: 'bold',
+                size:2,
               },
     
             }
