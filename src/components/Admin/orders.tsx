@@ -14,7 +14,8 @@ import { TabPanel, TabContext } from '@material-ui/lab'
 import TabList from "@material-ui/lab/TabList";
 import { useTheme } from '@mui/material/styles';
 import Overviews from './Overviews';
-import Transaction20 from './Transaction20';
+import Transaction20 from './TransactionLast';
+//import Transactions from './Transaction';
 import TransactionDatewise from './TransactionDatewise';
 
 export default function Orders(props: any) {

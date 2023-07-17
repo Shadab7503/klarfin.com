@@ -6,15 +6,13 @@ import React, { useEffect, useState } from 'react';
 import Loading from '../Dashboard/Loading';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
-
 import SearchBar from './searchBar';
 
 
 export default function Transactions(props: any) {
-
     const [tranx, setTranx] = useState([]);
     const [Lasttranx , setLasttranx] = useState([]);
-
+    console.log("Transactions")
     const  { folio_id } = useParams();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'Id', width: 180 },
