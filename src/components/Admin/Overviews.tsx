@@ -60,9 +60,9 @@ const Overviews = props => {
                 const fundName = Funds[idx].fund;
                 Funds[idx] = { fund: fundName, ...each.data.schemeData }
             });
-            console.log(SumInProcessAmt, ": sumInpamt ");
-            console.log(SumInvestedAmt, " : Suminmt");
-            console.log(SumTotalAmt, " : totalAmt")
+            //console.log(SumInProcessAmt, ": sumInpamt ");
+            //console.log(SumInvestedAmt, " : Suminmt");
+            //console.log(SumTotalAmt, " : totalAmt")
             setFunds(Funds);
         } catch {
             throw Error("Failed to Fetching Data from Server");
@@ -71,7 +71,7 @@ const Overviews = props => {
     };
     useEffect(() => {
         getSchemeData();
-        console.log(Funds)
+       // console.log(Funds)
     }, []);
 
     if (loading) return <Loading />;

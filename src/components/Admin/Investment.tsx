@@ -1,17 +1,15 @@
 import { Grid } from "@mui/material";
 import { DataGrid, GridCellEditStopParams, GridValueFormatterParams, GridColDef, MuiEvent } from "@mui/x-data-grid";
 import axios from "axios";
-
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-
+import { makeStyles } from '@mui/styles';
 import React, { useEffect, useState } from "react";
 import Form from "./Form";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Dashboard/Loading";
-import { sx } from "@mui/joy/styles/styleFunctionSx";
 
 export default function Investment(props: any) {
   const [open, setOpen] = React.useState(false);
@@ -303,7 +301,7 @@ export default function Investment(props: any) {
               //  if(key=='status') setstatusOfinvestMentList(each[key])
               obj[key] = value;
             });
-            
+
             return {
               ...obj,
               id: each._id,
@@ -316,15 +314,14 @@ export default function Investment(props: any) {
               type: invtType[each.type],
             };
           })}
-          columns={columns.map((each) => {   
+          columns={columns.map((each) => {
             return {
               ...each,
               headerAlign: 'center',
-              align:'center',
+              align: 'center',
               sx: {
-                size:2,
+                size: 2,
               },
-    
             }
           })}
         />
