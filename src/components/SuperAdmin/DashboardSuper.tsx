@@ -10,6 +10,7 @@ import Orders from "./orders";
 import Transactions from "./transaction";
 import RedeemStepper from "./stepper/RedeemStepper";
 import Redeem from "./redeems";
+import CreateOrderOTP from "./CreateOrderOtp";
 
 const DashboardSuper = (props: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -64,16 +65,19 @@ const DashboardSuper = (props: any) => {
 
         </SuperAdminLayout>} />
 
-        <Route path="/dashboardSuper/add-investment/:id" element={<SuperAdminLayout
+        <Route path="/dashboardSuper/redeem/:folio_id" element={<SuperAdminLayout
           user={{}} >
-          <Form accessToken={accessToken} />
+          <RedeemStepper accessToken={accessToken} />
 
+        </SuperAdminLayout>} />
+        <Route path="/dashboardSuper/investment/create-order-otp/:folio_id" element={<SuperAdminLayout
+          user={{}} >
+          <CreateOrderOTP accessToken={accessToken} />
         </SuperAdminLayout>} />
 
         <Route path="/dashboardSuper/investment/details/:folio_id" element={<SuperAdminLayout
           user={{}} >
           <Orders accessToken={accessToken} />
-
         </SuperAdminLayout>} />
 
         <Route path="/dashboardSuper/investment/tranx/:folio_id" element={<SuperAdminLayout

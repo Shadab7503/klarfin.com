@@ -159,7 +159,8 @@ export default function Investment(props: any) {
                   style={{ marginRight: "1rem" }}
                   onClick={() => {
                     navigate(
-                      `/dashboardAdmin/redeem/${params.row.folio.Folio}`
+                      `/dashboardAdmin/redeem/${params.row.folio.Folio}`,
+                      { state: params.row }
                     );
                   }}
                 >

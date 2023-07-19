@@ -1,49 +1,49 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid";
+import { Grid, Typography } from "@mui/material";
 import TopBar from "../Dashboard/TopBar";
 import SideBarSuper from "../Dashboard/SideBarSuper";
 
 
-const SuperAdminLayout = (props:{children:JSX.Element,user:any}) => {
- 
-    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-    const [selectedItem, setSelectedItem] = useState<string>("Investment");
+const SuperAdminLayout = (props: { children: JSX.Element, user: any }) => {
 
-    return (
-      <div className="dashboard">
-        <Grid container className="dashboard-container">
-          <Grid item lg="auto" md={2.5}>
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<string>("Investment");
+
+  return (
+    <div className="dashboard" style={{ height: "100vh", width: "100vw" }}>
+      <Grid container className="dashboard-container">
+        <Grid item lg="auto" md={2.5}>
           <SideBarSuper
-              selectedItem={selectedItem}
-              drawerOpen={drawerOpen}
-              setSelectedItem={setSelectedItem}
-              setDrawerOpen={setDrawerOpen}
-            />
-            
-          </Grid>
-          <Grid
-            item
-            lg={true}
-            md={9.5}
-            xs={12}
-            style={{ maxHeight: "100vh", overflow: "auto" }}
-          >
-            <Grid container>
-              <Grid item xs={12}>
-                <h2 style={{marginLeft:"85%",padding:'0px', height:'20px'}} >SuperAdmin</h2><hr/>
-              </Grid>
+            selectedItem={selectedItem}
+            drawerOpen={drawerOpen}
+            setSelectedItem={setSelectedItem}
+            setDrawerOpen={setDrawerOpen}
+          />
 
-              <Grid item xs={12}>
-                 {
-                    props.children
-                 }
-              
-              </Grid>
+        </Grid>
+        <Grid
+          item
+          lg={true}
+          md={9.5}
+          xs={12}
+          style={{ maxHeight: "100vh", overflow: "auto" }}
+        >
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography variant="h5" style={{display:'flex',justifyContent:'flex-end',height:"5vh",alignItems:"center",marginRight:'20px'}} >SuperAdmin</Typography><hr />
+            </Grid>
+
+            <Grid item xs={12}>
+              {
+                props.children
+              }
+
             </Grid>
           </Grid>
         </Grid>
-      </div>
-    );
+      </Grid>
+    </div>
+  );
 
 };
 

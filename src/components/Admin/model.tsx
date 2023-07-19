@@ -3,7 +3,6 @@ import { Button, CircularProgress, Dialog, DialogContent, DialogTitle, Typograph
 import axios from 'axios';
 
 const Popup = ({refno,isOpen,accessToken,handleClose}) => {
-    console.log('isOpen',isOpen);
 
   const [loading, setLoading] = useState(true);
   const [data,setData] = useState({
@@ -13,9 +12,6 @@ const Popup = ({refno,isOpen,accessToken,handleClose}) => {
     "ReturnMsg": "",
     "Status": ""
 });
-
-
-
 
   const getRedeemStatus = () => {
     setLoading(true);

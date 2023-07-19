@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -11,8 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import {createFolio} from "../../../services/nippon.service";
-import {useNavigate} from "react-router-dom";
+import { createFolio } from "../../../services/nippon.service";
+import { useNavigate,useLocation } from "react-router-dom";
 
 const RedeemCreate = ({
   handleNext,
@@ -83,7 +83,7 @@ const RedeemCreate = ({
     "UNION BANK OF INDIA",
     "YES BANK"
   ];
-
+  const { state  }:any = useLocation();
   const [formData, setFormData] = useState({
     fund: "RMF",
     acno: capturedData.folio_id,
@@ -94,7 +94,7 @@ const RedeemCreate = ({
     UnitamtFlag: "A",
     UnitAmtValue: "",
     Tpin: "A",
-    bank: bankNames[0],
+    bank: (state.BANK ? state.BANK:" " ),
     oldihno: 0,
     trdate: getDate(),
     entdate: getDate(),
@@ -110,16 +110,16 @@ const RedeemCreate = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
-  const [failureMsg, setFailureMsg] = useState("");
+  const [Msg, setMsg] = useState("");
   const [validationErrors, setValidationErrors] = useState<any>({});
   const Navigate = useNavigate();
 
   const handleChange = event => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
     if (name == "scheme") {
       const data = schemes.find(each => each.value == value);
       if (!data) return;
-      setFormData({...formData, plan: data.plan, scheme: data.value});
+      setFormData({ ...formData, plan: data.plan, scheme: data.value });
     }
     setFormData(prevData => ({
       ...prevData,
@@ -137,67 +137,68 @@ const RedeemCreate = ({
         `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeem`,
         formData,
         {
-          headers: {Authorization: `Bearer ${accessToken}`},
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       )
       .then(res => {
         // navigate(`/dashboardSuper/investment`)
-        const {data} = res;
+        const { data } = res;
         if (!data.succ) {
           setIsFailure(true);
           setIsLoading(false);
-          setFailureMsg(data.message);
+          setMsg(data.message);
           return;
         }
         setIsSuccess(true);
         setIsLoading(false);
+
+        setMsg(`Redeem request submitted successfully for Rs ${formData.UnitAmtValue}`)
         setTimeout(() => {
           Navigate(`/dashboardAdmin/investment/details/${formData.acno}`);
-        }, 2000);
+        }, 3000);
       })
-      .catch(({response}) => {
+      .catch(({ response }) => {
         setIsLoading(false);
-        const {data} = response;
+        const { data } = response;
         setValidationErrors(data.validationErrors);
       });
   };
-
   const handleCloseSnackbar = () => {
     setIsFailure(false);
   };
 
   return (
-    <Card sx={{maxWidth: 600, margin: "0 auto"}}>
+    <Card sx={{ maxWidth: 600, margin: "0 auto" }}>
       <CardContent>
-        <form onSubmit={handleSubmit} style={{width: "100%"}}>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <Typography variant="subtitle1" gutterBottom>
-            Redeem request
+            Redeem Request
           </Typography>
           <TextField
-            label="Fund"
+            label="Fund Name"
             name="fund"
-            value={formData.fund}
+            value="Nippon India"
             onChange={handleChange}
             variant="outlined"
             margin="normal"
             fullWidth
             error={!!validationErrors.fund}
             helperText={validationErrors.fund}
+            disabled
           />
 
           <TextField
-            label="Account Number"
-            name="acno"
-            value={formData.acno}
+            label="Your Bank"
+            name="bank"
+            defaultValue={formData.bank}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
             fullWidth
-            error={!!validationErrors.acno}
-            helperText={validationErrors.acno}
+            error={!!validationErrors.bank}
+            helperText={validationErrors.bank}
             disabled
           />
-
           <TextField
             label="Scheme"
             name="scheme"
@@ -219,7 +220,46 @@ const RedeemCreate = ({
             })}
           </TextField>
 
+          <TextField
+            label="Amount"
+            name="UnitAmtValue"
+            value={formData.UnitAmtValue}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.UnitAmtValue}
+            helperText={validationErrors.UnitAmtValue}
+            type="number"
+          />
+
+          <TextField
+            label="OTP"
+            name="OTP"
+            value={formData.OTP}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.OTP}
+            helperText={validationErrors.OTP}
+          />
+
           {/* <TextField
+            label="Account Number"
+            name="acno"
+            value={formData.acno}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.acno}
+            helperText={validationErrors.acno}
+            disabled
+          /> 
+
+
+           <TextField
             label="Plan"
             name="plan"
             value={formData.plan}
@@ -229,9 +269,9 @@ const RedeemCreate = ({
             fullWidth
             error={!!validationErrors.plan}
             helperText={validationErrors.plan}
-          /> */}
+          /> 
 
-          <TextField
+           <TextField
             label="Options"
             name="options"
             value={formData.options}
@@ -267,20 +307,9 @@ const RedeemCreate = ({
             helperText={validationErrors.UnitamtFlag}
           />
 
-          <TextField
-            label="Unit Amount Value"
-            name="UnitAmtValue"
-            value={formData.UnitAmtValue}
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            error={!!validationErrors.UnitAmtValue}
-            helperText={validationErrors.UnitAmtValue}
-            type="number"
-          />
 
-          <TextField
+
+           <TextField
             label="Tpin"
             name="Tpin"
             value={formData.Tpin}
@@ -290,28 +319,8 @@ const RedeemCreate = ({
             fullWidth
             error={!!validationErrors.Tpin}
             helperText={validationErrors.Tpin}
-          />
+          /> 
 
-          <TextField
-            label="Bank"
-            name="bank"
-            defaultValue={bankNames[0]}
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            select
-            error={!!validationErrors.bank}
-            helperText={validationErrors.bank}
-          >
-            {bankNames.map((ele, index) => {
-              return (
-                <MenuItem value={ele} defaultChecked key={index}>
-                  {ele}
-                </MenuItem>
-              );
-            })}
-          </TextField>
 
           <TextField
             label="Old IHNO"
@@ -363,19 +372,8 @@ const RedeemCreate = ({
             helperText={validationErrors.ShowInstaStatus}
           />
 
-          <TextField
-            label="OTP"
-            name="OTP"
-            value={formData.OTP}
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            error={!!validationErrors.OTP}
-            helperText={validationErrors.OTP}
-          />
 
-          <TextField
+           <TextField
             label="OTP Reference"
             name="OTPReference"
             value={formData.OTPReference}
@@ -399,7 +397,7 @@ const RedeemCreate = ({
             fullWidth
             error={!!validationErrors.SelfValidate}
             helperText={validationErrors.SelfValidate}
-          />
+          /> */}
 
           <Button
             variant="contained"
@@ -407,7 +405,7 @@ const RedeemCreate = ({
             type="submit"
             disabled={isLoading}
             fullWidth
-            sx={{marginTop: 2}}
+            sx={{ marginTop: 2 }}
           >
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
@@ -421,17 +419,17 @@ const RedeemCreate = ({
         open={isSuccess}
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
-        <Alert severity="success">Redeem request submitted successfully!</Alert>
+        <Alert severity="success">{Msg}</Alert>
       </Snackbar>
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
-        <Alert severity="error">{failureMsg}</Alert>
+        <Alert severity="error">{Msg}</Alert>
       </Snackbar>
     </Card>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, MenuItem, CircularProgress, Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { useNavigate, useParams,useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { url } from 'inspector';
 
 
@@ -28,10 +28,11 @@ const schemes = [
 ]
 
 const CreateOrder = ({ accessToken }) => {
-  const { state  }:any = useLocation();
+  const { state }: any = useLocation();
   const [msg, setMsg] = useState("");
-  const { folio }:any = useParams();
+  const { folio }: any = useParams();
   const navigate = useNavigate();
+
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",
@@ -79,18 +80,15 @@ const CreateOrder = ({ accessToken }) => {
     "SubArnCode": "",
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
-    "ChqBank":(state.BANK ? state.BANK:" " ),
-    "PayMode": "Auto Debit",
+    "ChqBank": (state.BANK ? state.BANK : " "),
+    "PayMode": "",
     "AppName": "Klarfin"
   });
 
-  
   const [validationErrors, setValidationErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
-
-
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -110,38 +108,72 @@ const CreateOrder = ({ accessToken }) => {
       [name]: value,
     }));
   };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
-    {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    }).then(res => {
-        const { data } = res;
-        if (!data.succ) {
-          setIsLoading(false);
-          setMsg(data.message)
-          setIsFailure(true);
-          return;
-        }
-
-        setIsLoading(false);
-        setIsSuccess(true);
-        setMsg(`Order submitted successfully for Rs ${formData.Amount}`)
-        setTimeout(()=>{
-          if (formData.PayMode == 'NEFT') {
-            navigate(`/dashboardAdmin/nippon-bank/${folio}`, {state: state })
+    if (formData.PayMode == "NEFT") {
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }).then(res => {
+          const { data } = res;
+          if (!data.succ) {
+            setIsLoading(false);
+            setMsg(data.message)
+            setIsFailure(true);
             return;
           }
-          navigate(`/dashboardAdmin/investment/details/${folio}`)
-        },3000)
+          setIsLoading(false);
+          setIsSuccess(true);
+          setMsg(`Order submitted successfully for Rs ${formData.Amount}`)
+          setTimeout(() => {
+            if (formData.PayMode == 'NEFT') {
+              navigate(`/dashboardAdmin/nippon-bank/${folio}`, { state: state })
+              return;
+            }
+          }, 3000)
 
-      }).catch(({ response }) => {
+        }).catch(({ response }) => {
+          setIsLoading(false);
+          const { data } = response;
+          setValidationErrors(data.validationErrors);
+        })
+    } else if (formData.PayMode == "OTBM") {
+      if (Number(formData.Amount) < 5000) {
         setIsLoading(false);
-        const { data } = response;
-        setValidationErrors(data.validationErrors);
-      })
+        setIsFailure(true);
+        setMsg("Minimum Amount is : 5000.00")
+        return
+      }
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`,formData,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }).then(res => {
+          const { data } = res;
+          if (!data.succ) {
+            setIsLoading(false);
+            setMsg(data.message)
+            setIsFailure(true);
+            return;
+          }
+          setIsSuccess(true);
+          setMsg(`OTP is sending to ${state.user_id.email}`)
+          setIsLoading(false);
+          //axios.post('url',{data},{header}).then((res)=>{})
+          setTimeout(() => {
+            navigate(`/dashboardAdmin/investment/create-order-otp/${folio}`, { state:{ state ,formData} })
+          }, 5000);
+          return;
+        }).catch(({ response }) => {
+          setIsLoading(false);
+          const { data } = response;
+          setValidationErrors(data.validationErrors);
+          return;
+        })
+
+      //navigate(`/dashboardAdmin/investment/details/${folio}`)
+    }
   };
 
   const handleCloseSnackbar = () => {
@@ -173,7 +205,7 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Your Bank"
               name="ChqBank"
-              value={formData.ChqBank }
+              value={formData.ChqBank}
               onChange={handleChange}
               variant="outlined"
               margin="normal"

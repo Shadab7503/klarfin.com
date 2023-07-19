@@ -12,6 +12,7 @@ import moment from "moment";
 
 export default function Orders(props: any) {
   const [showRedeem, setShowRedeem] = useState(false);
+  const [showOrder, setShowOrder] = useState(true);
   const [tranx, setTranx] = useState([]);
   const [refno, setRefno] = useState();
   const [popup, setPopup] = useState(false);
@@ -92,7 +93,8 @@ export default function Orders(props: any) {
     {field: "PayMode", headerName: "PayMode", width: 180},
     {field: "createdAt", headerName: "Date Time", width: 230},
     {field: "Fund", headerName: "Fund", width: 180},
-    {field: "Plan", headerName: "Plan", width: 180},
+    {field: "Plan", headerName: "Plan", width: 120},
+    {field: "created_by", headerName: "Initiator", width: 240},
     {field: "Options", headerName: "Options", width: 180},
     {field: "AcNo", headerName: "AcNo", width: 180},
     {field: "TrType", headerName: "TrType", width: 180},
@@ -121,13 +123,14 @@ export default function Orders(props: any) {
         },
       })
       .then(({data}) => {
+        console.log("order : ", data.orders)
         setInvestmentList(data.orders);
         setLoading(false);
       });
   };
 
   const getTranxData = () => {
-    console.log("Filter Redeems",filter);
+    
     setLoading(true);
     axios
       .post(
@@ -143,6 +146,7 @@ export default function Orders(props: any) {
         }
       )
       .then(({data}) => {
+        //console.log("redeems : ", data.redeem)
         setTranx(data.redeem);
         setLoading(false);
       });
@@ -153,8 +157,14 @@ export default function Orders(props: any) {
     getReceivablesData();
   }, [filter]);
 
-  const ShowHandler = () => {
-    setShowRedeem(!showRedeem);
+  const ShowHandlerOrder = () => {
+    setShowOrder(true)
+    setShowRedeem(false);
+  };
+
+  const ShowHandlerRedeem = () => {
+    setShowOrder(false)
+    setShowRedeem(true);
   };
 
   const filterHandler = data => {
@@ -207,7 +217,7 @@ export default function Orders(props: any) {
                     marginRight: "2rem",
                   }
             }
-            onClick={ShowHandler}
+            onClick={ShowHandlerOrder}
           >
             Orders
           </Button>
@@ -218,7 +228,7 @@ export default function Orders(props: any) {
                 ? {backgroundColor: "#1976d2"}
                 : {backgroundColor: "white", color: "black"}
             }
-            onClick={ShowHandler}
+            onClick={ShowHandlerRedeem}
           >
             Redeems
           </Button>

@@ -118,8 +118,9 @@ export default function Transaction20(props: any) {
                 })
             .then(({ data }) => {
                 setLasttranx(data.tranxData);
+                console.log(data.tranxData)
                 setLoading(false);
-            });
+            }); 
     }
     useEffect(() => {
         getLastTwentyTransaction()

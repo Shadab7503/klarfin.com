@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button,MenuItem, CircularProgress, Snackbar, Alert,Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, MenuItem, CircularProgress, Snackbar, Alert, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const CreateOrder = ({ accessToken }) => {
   const { folio } = useParams();
+  const { state }:any = useLocation()
   const navigate = useNavigate();
-  const [pan,setPan] = useState();
-  const [msg,setMsg] = useState("");
+  const [pan, setPan] = useState();
+  const [msg, setMsg] = useState("");
 
   const schemes = [
     {
@@ -28,9 +29,9 @@ const CreateOrder = ({ accessToken }) => {
       plan: "IG",
       opt: "G",
     },
-   
-  ];
 
+  ];
+  console.log("state",state);
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",
@@ -77,7 +78,7 @@ const CreateOrder = ({ accessToken }) => {
     "SubArnCode": "",
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
-    "ChqBank": "",
+    "ChqBank": (state.BANK ? state.BANK : " "),
     "PayMode": "OTBM",
     "AppName": "Klarfin"
   });
@@ -86,65 +87,102 @@ const CreateOrder = ({ accessToken }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if(name=="Scheme"){
-      const data = schemes.find((each)=>each.value == value);
-      if(!data) return;
-      setFormData({...formData,Plan:data.plan,Scheme:data.value});
+    if (name == "Scheme") {
+      const data = schemes.find((each) => each.value == value);
+      if (!data) return;
+      setFormData({ ...formData, Plan: data.plan, Scheme: data.value });
     }
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-
+ 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setIsLoading(true);
-    console.log(formData)
-    // return;
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/create-order`, formData,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(res => {
+   
+
+    if (formData.PayMode == "NEFT") {
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/create-order`, formData,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }).then(res => {
+          const { data } = res;
+          if (!data.succ) {
+            setIsLoading(false);
+            setMsg(data.message)
+            setIsFailure(true);
+            return;
+          }
+          setIsLoading(false);
+          setIsSuccess(true);
+          setMsg(`Order submitted successfully for Rs ${formData.Amount}`)
+          setTimeout(() => {
+            navigate(`/dashboardSuper/investment/details/${folio}`)
+          }, 2000);
+
+        }).catch(({ response }) => {
+          setIsLoading(false);
+          const { data } = response;
+          setValidationErrors(data.validationErrors);
+        })
+    } else if (formData.PayMode == "OTBM") {
+      if (Number(formData.Amount) < 5000) {
         setIsLoading(false);
-        const {data} = res;
-        if(!data.succ){
-          setIsLoading(false)
-          setIsFailure(true);
-          setMsg(data.message)
+        setIsFailure(true);
+        setMsg("Minimum Amount is : 5000.00")
+        return
+      }
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/creatotbmotp`, formData,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }).then(res => {
+          const { data } = res;
+          if (!data.succ) {
+            setIsLoading(false);
+            setMsg(data.message)
+            setIsFailure(true);
+            return;
+          }
+          setIsSuccess(true);
+          setMsg(`OTP is sending to ${process.env.REACT_APP_SUPERADMIN_EMAIL}`)
+          setIsLoading(false);
+          //axios.post('url',{data},{header}).then((res)=>{})
+          setTimeout(() => {
+            navigate(`/dashboardSuper/investment/create-order-otp/${folio}`, { state: { state, formData } })
+          }, 4000);
           return;
-        }
-        setMsg(data.message);
-        setIsSuccess(true);
-        setTimeout(() => {
-          navigate(`/dashboardSuper/investment/details/${folio}`)
-        }, 2000);
-      }).catch(({ response }) => {
-        setIsLoading(false);
-        const { data } = response;
-        setValidationErrors(data.validationErrors);
-      })
+        }).catch(({ response }) => {
+          setIsLoading(false);
+          const { data } = response;
+          setValidationErrors(data.validationErrors);
+          return;
+        })
+
+      //navigate(`/dashboardAdmin/investment/details/${folio}`)
+    }
   };
 
   useEffect(() => {
     setIsLoading(true);
     axios
       .get(`${process.env.REACT_APP_BACKEND_HOST}v1/super/folio`, {
-        headers: {Authorization: `Bearer ${accessToken}`},
+        headers: { Authorization: `Bearer ${accessToken}` },
         params: {
           folio: folio,
         },
       })
-      .then(({data}) => {
-        console.log(data.pan);
+      .then(({ data }) => {
         setPan(data.pan);
         setIsLoading(false);
       });
-  },[]);
+  }, []);
 
 
 
@@ -156,43 +194,43 @@ const CreateOrder = ({ accessToken }) => {
 
   return (
     <div style={{ margin: "4rem" }}>
-       <Card>
-      <CardContent>
-        <h2>Nippon Bank Details </h2>
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Account Number
-        </Typography>
-        <Typography variant="body1">
-          {`2203${pan}`}
-        </Typography>
+      <Card>
+        <CardContent>
+          <h2>Nippon Bank Details </h2>
+          <Typography variant="h6" gutterBottom>
+            Beneficiary Account Number
+          </Typography>
+          <Typography variant="body1">
+            {`2203${pan}`}
+          </Typography>
 
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Bank IFSC code
-        </Typography>
-        <Typography variant="body1">
-          ICIC0000104
-        </Typography>
+          <Typography variant="h6" gutterBottom>
+            Beneficiary Bank IFSC code
+          </Typography>
+          <Typography variant="body1">
+            ICIC0000104
+          </Typography>
 
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Bank Name
-        </Typography>
-        <Typography variant="body1">
-          ICICI Bank
-        </Typography>
-        <Typography variant="h6">
-          Type of Account
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Current Account
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Beneficiary Name
-        </Typography>
-        <Typography variant="body1">
-          NIPPON INDIA MUTUAL FUND VIRTUAL POOL ACCOUNT
-        </Typography>
-      </CardContent>
-    </Card>
+          <Typography variant="h6" gutterBottom>
+            Beneficiary Bank Name
+          </Typography>
+          <Typography variant="body1">
+            ICICI Bank
+          </Typography>
+          <Typography variant="h6">
+            Type of Account
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Current Account
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Beneficiary Name
+          </Typography>
+          <Typography variant="body1">
+            NIPPON INDIA MUTUAL FUND VIRTUAL POOL ACCOUNT
+          </Typography>
+        </CardContent>
+      </Card>
       <Card sx={{ maxWidth: 600, margin: '0 auto' }}>
         <CardContent>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -223,8 +261,8 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.Scheme}
               select
             >
-              {schemes.map((ele)=>{
-                return <MenuItem value={ele.value}  key={ele.value}>{ele.name}</MenuItem>
+              {schemes.map((ele) => {
+                return <MenuItem value={ele.value} key={ele.value}>{ele.name}</MenuItem>
               })}
             </TextField>
 
@@ -289,9 +327,9 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.TrType}
             />
 
-     
 
-{/*             <TextField
+
+            {/*             <TextField
               label="SubBroker"
               name="SubBroker"
               value={formData.SubBroker}
@@ -339,9 +377,10 @@ const CreateOrder = ({ accessToken }) => {
               select
               error={!!validationErrors.ChqBank}
               helperText={validationErrors.ChqBank}
+              required
             >
-              {bankNames.map((ele,index)=>{
-                return<MenuItem value={ele}  key={index} >{ele}</MenuItem>
+              {bankNames.map((ele, index) => {
+                return <MenuItem value={ele} key={index} >{ele}</MenuItem>
               })}
             </TextField>
 
@@ -360,13 +399,13 @@ const CreateOrder = ({ accessToken }) => {
               <MenuItem value="OTBM">
                 OTBM (One Time Bank Mandate)
               </MenuItem>
-              <MenuItem  value="NEFT">
+              <MenuItem value="NEFT">
                 NEFT
               </MenuItem>
             </TextField>
 
-       
-         
+
+
             <Button
               variant="contained"
               color="primary"

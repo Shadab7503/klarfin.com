@@ -143,16 +143,21 @@ export default function TransactionDatewise(props: any) {
                     { headers: { Authorization: `Bearer ${props.accessToken}` }, }
                 ),
             ]);
-            const arrayData = [{ Amount: "", Transaction_Date: '', Transaction_type: '', Modeofpayment: '', Status: '' }];
+            console.log("res TD: ", res);
+            let arrayData = [{ Amount: "", Transaction_Date: '', Transaction_type: '', Modeofpayment: '', Status: '', Return_Code: '' }];
             const data = res.map((each) => {
-                arrayData.push(...each.data.tranxData);
+                (each.data.tranxData).map((ele) => {
+                    arrayData.push(ele);
+                })
             })
-            //console.log("ArrayData : ", arrayData);
+            console.log("ArrayData : ", arrayData);
             const finalArray = arrayData.filter((each) => (each.Amount).length > 0)
             setTranx(finalArray);
             setLoading(false)
         } catch {
             setLoading(false)
+            setError(true);
+            setMessage("Failed to Fetching Data from Server")
             throw Error("Failed to Fetching Data from Server");
         }
         // console.log("filter : ",filter);
@@ -240,7 +245,7 @@ export default function TransactionDatewise(props: any) {
                             onOk={(value) => CheckRangeHandler(value)}
                             placement="bottomEnd"
                             editable={true}
-                            defaultValue={[new Date(Date.now() - 2 * 24     * 60 * 60 * 1000), new Date()]}
+                            defaultValue={[new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), new Date()]}
                             showOneCalendar={true}
                             character="  to  "
                             format="dd-MM-yyyy"
@@ -278,8 +283,9 @@ export default function TransactionDatewise(props: any) {
                     rows={tranx.map((each: any, idx: number) => {
                         return { ...each, id: idx + 1 };
                     })}
-                    columns={columns.map(each => {
+                    columns={columns.map((each, idx) => {
                         return {
+                            id: idx + 1,
                             ...each, headerAlign: 'center',
                             align: 'center',
                             sx: {
