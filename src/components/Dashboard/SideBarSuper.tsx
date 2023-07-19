@@ -19,8 +19,8 @@ const sidebarData = {
     {
       name: "Super Admin",
       items: [
-        { icon: cashflows, text: "Users", url:"users" },
-        { icon: cashflows, text: "Investment", url:"investment" },
+        { icon: cashflows, text: "Users", url: "users" },
+        { icon: cashflows, text: "Investment", url: "investment" },
       ],
     }
   ],
@@ -30,22 +30,22 @@ const SideBarSuper = (props: sidebarUtils) => {
 
   const url = window.location.href;
   const lastSegment = url.split('/').pop();
- 
-  useEffect(()=>{
+
+  useEffect(() => {
 
 
     const sections = sidebarData.sections;
 
-    sections.forEach((each)=>{
-      each.items.forEach((each)=>{
-          if(each.url == lastSegment) {
-            props.setSelectedItem(each.text)
-          }
+    sections.forEach((each) => {
+      each.items.forEach((each) => {
+        if (each.url == lastSegment) {
+          props.setSelectedItem(each.text)
+        }
 
       })
     })
 
-  },[lastSegment])
+  }, [lastSegment])
   const Logout = () => {
     if (localStorage.getItem("superTokens")) {
       const tokensObj = JSON.parse(localStorage.getItem("superTokens")!);
@@ -108,44 +108,44 @@ const SideBarSuper = (props: sidebarUtils) => {
                         {section.items.map((item) => {
                           return (
                             <React.Fragment key={item.text}>
-                              <Link to={'/dashboardSuper/'+ item.url}>
-                              <ListItem
-                                style={{
-                                  padding: "0rem",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => {
-                                  // props.setSelectedItem(item.text);
-                                  // props.setDrawerOpen(false);
-                                }}
-                              >
-                                <img
-                                  src={item.icon}
-                                  alt={item.text}
-                                  className="section-item-icon"
-                                  />
-                                  
-                                <Paper
-                                  elevation={0}
-                                  className="section-item-text"
+                              <Link to={'/dashboardSuper/' + item.url}>
+                                <ListItem
                                   style={{
-                                    background:
-                                      item.text === props.selectedItem
-                                        ? "white"
-                                        : "inherit",
-                                    color:
-                                      item.text === props.selectedItem
-                                        ? "#3594d4"
-                                        : "white",
-                                    boxShadow:
-                                      item.text === props.selectedItem
-                                        ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
-                                        : "0px 0px",
+                                    padding: "0rem",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => {
+                                    // props.setSelectedItem(item.text);
+                                    // props.setDrawerOpen(false);
                                   }}
                                 >
-                                  {item.text}
-                                </Paper>
-                              </ListItem>
+                                  <img
+                                    src={item.icon}
+                                    alt={item.text}
+                                    className="section-item-icon"
+                                  />
+
+                                  <Paper
+                                    elevation={0}
+                                    className="section-item-text"
+                                    style={{
+                                      background:
+                                        item.text === props.selectedItem
+                                          ? "white"
+                                          : "inherit",
+                                      color:
+                                        item.text === props.selectedItem
+                                          ? "#3594d4"
+                                          : "white",
+                                      boxShadow:
+                                        item.text === props.selectedItem
+                                          ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                                          : "0px 0px",
+                                    }}
+                                  >
+                                    {item.text}
+                                  </Paper>
+                                </ListItem>
                               </Link>
                             </React.Fragment>
                           );
@@ -188,7 +188,7 @@ const SideBarSuper = (props: sidebarUtils) => {
 
   return (
     <>
-      <Drawer
+      {/* <Drawer
         variant="temporary"
         open={props.drawerOpen}
         onClose={() => props.setDrawerOpen(false)}
@@ -204,11 +204,10 @@ const SideBarSuper = (props: sidebarUtils) => {
         }}
       >
         {sidebar}
-      </Drawer>
+      </Drawer> */}
       <Grid
         item
-        xs={12}
-        sx={{ display: { md: "flex", xs: "none" } }}
+        xs
         className="show-sidebar"
       >
         {sidebar}

@@ -18,6 +18,7 @@ import Upload_stepper from "./Upload_doc/upload_stepper";
 // import CreditManagement from "./CreditManagement";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
+import CreateOrderOTP from "./CreateOrderOTP";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -67,7 +68,10 @@ const DashboardAdmin = (props) => {
           user={{}} >
           <Redeem accessToken={accessToken} />
         </AdminLayout>} />
-
+        <Route path="/dashboardAdmin/investment/create-order-otp/:folio_id" element={<AdminLayout
+          user={{}} >
+          <CreateOrderOTP accessToken={accessToken} />
+        </AdminLayout>} />
         <Route path="/dashboardAdmin/investing" element={<AdminLayout user={user} >
           <Investment user={user} accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboardAdmin/cashflow" element={<AdminLayout user={user} >

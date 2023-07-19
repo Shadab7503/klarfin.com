@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { DataGrid, GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid";
+import { DataGrid, GridColDef,GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid";
 import axios from "axios";
 
 import Box from "@mui/material/Box";
@@ -60,19 +60,37 @@ export default function Investment(props: any) {
   };
 
   const [columns, setColumns] = useState([
-    { field: "idx", headerName: "SN", width: 80 },
-    { field: "org", headerName: "Name", width: 180 },
-    { field: "type", headerName: "Investment For", width: 180 },
+    { field: "idx", headerName: "SN", width: 80, renderHeader: () => (
+      <strong>
+        SN
+      </strong>)},
+    { field: "org", headerName: "Name", width: 180 ,renderHeader: () => (
+      <strong>
+        Name
+      </strong>)},
+    { field: "type", headerName: "Investment For", width: 180,renderHeader: () => (
+      <strong>
+        Investment For
+      </strong>) },
     //{ field: 'frequency', headerName: 'Frequency', width: 180 },
     // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
-    { field: "fund", headerName: "Fund", width: 180 },
-    { field: 'bank', headerName: 'Bank', width: 180 },
+    { field: "fund", headerName: "Fund", width: 180 ,renderHeader: () => (
+      <strong>
+        Fund
+      </strong>)},
+    { field: 'bank', headerName: 'Bank', width: 180,renderHeader: () => (
+      <strong>
+        Bank
+      </strong>) },
     // { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
     // { field: 'returns', headerName: 'Return generated', type: 'number' },
     {
       field: "Actions",
       headerName: "action",
-      width: 525,
+      width: 525,renderHeader: () => (
+        <strong>
+          Actions
+        </strong>),
       renderCell: (params: any) => {
         return (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -98,7 +116,7 @@ export default function Investment(props: any) {
                   px={2}
                   style={{ background: "green", marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(`/dashboardSuper/order/${params.row.folio.Folio}`);
+                    navigate(`/dashboardSuper/order/${params.row.folio.Folio}`, { state: params.row });
                   }}
                 >
                   Create Order
@@ -233,7 +251,7 @@ export default function Investment(props: any) {
       item
       xs={12}
       px={10}
-      mt={5}
+      mt={3}
       sx={{ maxWidth: "95vw", height: "100vh" }}
     >
       <Button
@@ -244,6 +262,7 @@ export default function Investment(props: any) {
           fontWeight: "bold",
           padding: "0.5rem 1rem",
           borderRadius: "2rem",
+          marginBottom:"10px",
           fontSize: "0.8rem",
           color: "#fff",
           "&:hover": {
@@ -288,7 +307,10 @@ export default function Investment(props: any) {
             };
           })}
           columns={columns.map((each) => {
-            return { ...each };
+            return { ...each,
+              // headerAlign: 'center',
+              // align: 'center',
+            };
           })}
         />
       </div>

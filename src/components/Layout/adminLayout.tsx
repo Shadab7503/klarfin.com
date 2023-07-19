@@ -11,7 +11,7 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
     const [name,setName] = useState(props.user.companyName)
 
     return (
-      <div className="dashboard">
+      <div className="dashboard" style={{height:"100vh",width:"100vw"}}>
         <Grid container className="dashboard-container">
           <Grid item lg="auto" md={2.5}>
             <SideBar

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -10,31 +10,31 @@ import receivables from "../../images/receivables.png";
 import bills from "../../images/bills.png";
 import banking from "../../images/banking.png";
 import logout from "../../images/logout.png";
-import {sidebarUtils} from "../../utils/interface";
+import { sidebarUtils } from "../../utils/interface";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const sidebarData = {
   sections: [
     {
       name: "Cash Management",
-      items: [{icon: banking, text: "Investments",isClickable:true, url: "investing"}],
+      items: [{ icon: banking, text: "Investments", isClickable: true, url: "investing" }],
     },
     {
       name: "Upcoming Features",
       items: [
-        {icon: cashflows, text: "Cash Flows",isClickable:false, url: "cashflow"},
-        {icon: receivables, text: "Receivables",isClickable:false, url: "receivables"},
-        {icon: insights, text: "Insights",isClickable:false, url: "insights"},
-        {icon: bills, text: "Bills to Pay",isClickable:false, url: "bills-to-pay"},
+        { icon: cashflows, text: "Cash Flows", isClickable: false, url: "cashflow" },
+        { icon: receivables, text: "Receivables", isClickable: false, url: "receivables" },
+        { icon: insights, text: "Insights", isClickable: false, url: "insights" },
+        { icon: bills, text: "Bills to Pay", isClickable: false, url: "bills-to-pay" },
         {
           icon: banking,
-          text: "Banking Transactions",isClickable:false,
+          text: "Banking Transactions", isClickable: false,
           url: "banking-transactions",
         },
       ],
     },
-    {name: "Credit Management", items: []},
+    { name: "Credit Management", items: [] },
   ],
 };
 
@@ -77,16 +77,16 @@ const SideBar = (props: sidebarUtils) => {
           <Grid container alignItems="center">
             <div>
               <span className="sidebar-logo logo">KLARFIN</span>
-              {sidebarData.sections.map((section)=> {
+              {sidebarData.sections.map((section) => {
                 return (
                   <React.Fragment key={section.name}>
-                    <Grid 
+                    <Grid
                       container
                       px={1}
                       py={1}
                       className="dashboard-section-heading"
                       style={{
-                        cursor:"pointer",
+                        cursor: "pointer",
                         borderRadius: "4px",
                         background:
                           section.name === props.selectedItem
@@ -106,60 +106,62 @@ const SideBar = (props: sidebarUtils) => {
                           ? (props.setSelectedItem(section.name),
                             props.setDrawerOpen(false))
                           : null
-                      }  
+                      }
                     >
                       {section.name}
                     </Grid>
                     <Grid container pl={1}>
                       <List className="section-items" >
-                        
+
                         {section.items.map(item => {
                           return (
                             <React.Fragment key={item.text}>
                               {item.isClickable ?
-                              <Link to={"/dashboardAdmin/" + item.url} >
-                                <ListItem
-                                  
-                                  style={{
-                                    padding: "0rem",
-                                    cursor: "pointer",
-                        
-                                  }}
-                                  onClick={() => {
-                                    // props.setSelectedItem(item.text);
-                                    // props.setDrawerOpen(false);
-                                  }}
-                                >
-                                  <img
-                                    src={item.icon}
-                                    alt={item.text}
-                                    className="section-item-icon"
-                                  />
+                                <Link to={"/dashboardAdmin/" + item.url} >
+                                  <ListItem
 
-                                  <Paper
-                                    elevation={0}
-                                    className="section-item-text"
                                     style={{
-                                      background:
-                                        item.text === props.selectedItem
-                                          ? "white"
-                                          : "inherit",
-                                      color:
-                                        item.text === props.selectedItem
-                                          ? "#3594d4"
-                                          : "white",
-                                      boxShadow:
-                                        item.text === props.selectedItem
-                                          ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
-                                          : "0px 0px",
+                                      padding: "0rem",
+                                      cursor: "pointer",
+                                      textDecoration: 'none',
+
                                     }}
-                                  
+                                    onClick={() => {
+                                      // props.setSelectedItem(item.text);
+                                      // props.setDrawerOpen(false);
+                                    }}
                                   >
-                                    {item.text}
-                                  </Paper>
-                                </ListItem>
-                              </Link>:<ListItem
-                                  
+                                    <img
+                                      src={item.icon}
+                                      alt={item.text}
+                                      className="section-item-icon"
+                                    />
+
+                                    <Paper
+                                      elevation={0}
+                                      className="section-item-text"
+                                      style={{
+                                        textDecoration: 'none',
+                                        background:
+                                          item.text === props.selectedItem
+                                            ? "white"
+                                            : "inherit",
+                                        color:
+                                          item.text === props.selectedItem
+                                            ? "#3594d4"
+                                            : "white",
+                                        boxShadow:
+                                          item.text === props.selectedItem
+                                            ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+                                            : "0px 0px",
+                                      }}
+
+                                    >
+                                      {item.text}
+                                    </Paper>
+                                  </ListItem>
+                                </Link> : <ListItem
+
                                   style={{
                                     padding: "0rem",
                                   }}
@@ -178,6 +180,7 @@ const SideBar = (props: sidebarUtils) => {
                                     elevation={0}
                                     className="section-item-text"
                                     style={{
+                                      textDecoration: 'none',
                                       background:
                                         item.text === props.selectedItem
                                           ? "white"
@@ -191,7 +194,7 @@ const SideBar = (props: sidebarUtils) => {
                                           ? "inset 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
                                           : "0px 0px",
                                     }}
-                                  
+
                                   >
                                     {item.text}
                                   </Paper>
@@ -207,29 +210,29 @@ const SideBar = (props: sidebarUtils) => {
               })}
             </div>
           </Grid>
-        </Grid>
-        <Grid item width="100%">
-          <Grid
-            container
-            alignItems="center"
-            mb={3}
-            ml={1}
-            className="dashboard-sidebar-section"
-          >
-            <img
-              src={logout}
-              alt="logout"
-              height="100%"
-              style={{cursor: "pointer"}}
-              onClick={() => Logout()}
-            />
-            <span
-              className="logout"
-              style={{cursor: "pointer"}}
-              onClick={() => Logout()}
+          <Grid item width="100%">
+            <Grid
+              container
+              alignItems="center"
+              mb={3}
+              ml={1}
+              className="dashboard-sidebar-section"
             >
-              Logout
-            </span>
+              <img
+                src={logout}
+                alt="logout"
+                height="100%"
+                style={{ cursor: "pointer" }}
+                onClick={() => Logout()}
+              />
+              <span
+                className="logout"
+                style={{ cursor: "pointer" }}
+                onClick={() => Logout()}
+              >
+                Logout
+              </span>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -238,7 +241,7 @@ const SideBar = (props: sidebarUtils) => {
 
   return (
     <>
-      <Drawer
+      {/* <Drawer
         variant="temporary"
         open={props.drawerOpen}
         onClose={() => props.setDrawerOpen(false)}
@@ -254,12 +257,11 @@ const SideBar = (props: sidebarUtils) => {
         }}
       >
         {sidebar}
-      </Drawer>
+      </Drawer> */}
       <Grid
         item
-        xs={12}
-        sx={{display: {md: "flex", xs: "none"}}}
         className="show-sidebar"
+        style={{height:"100%"}}
       >
         {sidebar}
       </Grid>

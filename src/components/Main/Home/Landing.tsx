@@ -24,7 +24,6 @@ const Landing = () => {
                   return (
                     <span
                       style={{
-                        textDecoration: "underline",
                         color: "#16213E",
                         fontFamily: "Montserrat",
                         fontWeight: 600,

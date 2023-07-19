@@ -23,7 +23,7 @@ const Scheme = (props) => {
         })
       .then(({ data }) => {
         setScheme(data.schemeData);
-        console.log(data.schemeData)
+        console.log("Scheme Data : ",data.schemeData)
         setLoading(false);
       });
 
@@ -39,7 +39,7 @@ const Scheme = (props) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6} md={6}>
-        <Paper elevation={3} sx={{ p: 2,height: '65%' }}>
+        <Paper elevation={3} sx={{ p: 2,height: '87%' }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Scheme Description
           </Typography>
@@ -47,7 +47,7 @@ const Scheme = (props) => {
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6} md={6} >
-        <Paper elevation={3} sx={{ p: 2,height: '65%' }}>
+        <Paper elevation={3} sx={{ p: 2,height: '87%' }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Folio
           </Typography>
@@ -94,7 +94,7 @@ const Scheme = (props) => {
       <Grid item xs={12} sm={6} md={6}>
         <Paper elevation={3} sx={{ p: 2 }}>
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-            InProcess Amount
+            In Process Amount
           </Typography>
           <Typography variant="body1">{FormatNumber(InProcessAmt)}</Typography>
         </Paper>
