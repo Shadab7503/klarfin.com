@@ -185,8 +185,6 @@ const CreateOrder = ({ accessToken }) => {
   }, []);
 
 
-
-
   const handleCloseSnackbar = () => {
     setIsFailure(false);
     setIsSuccess(false)
@@ -241,7 +239,7 @@ const CreateOrder = ({ accessToken }) => {
               label="Fund"
               name="Fund"
               value="Nippon India"
-              onChange={handleChange}
+              //onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -370,7 +368,6 @@ const CreateOrder = ({ accessToken }) => {
               label="Select Cheque Bank"
               name="ChqBank"
               onChange={handleChange}
-              defaultValue={bankNames[0]}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -403,8 +400,6 @@ const CreateOrder = ({ accessToken }) => {
                 NEFT
               </MenuItem>
             </TextField>
-
-
 
             <Button
               variant="contained"

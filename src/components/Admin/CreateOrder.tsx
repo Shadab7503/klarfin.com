@@ -113,6 +113,7 @@ const CreateOrder = ({ accessToken }) => {
     event.preventDefault();
     setIsLoading(true);
     if (formData.PayMode == "NEFT") {
+      
       axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
         {
           headers: { Authorization: `Bearer ${accessToken}` }
@@ -146,6 +147,7 @@ const CreateOrder = ({ accessToken }) => {
         setMsg("Minimum Amount is : 5000.00")
         return
       }
+      console.log("FormData : ",formData ,"State : ",state)
       axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`,formData,
         {
           headers: { Authorization: `Bearer ${accessToken}` }
@@ -193,7 +195,7 @@ const CreateOrder = ({ accessToken }) => {
               label="Fund"
               name="Fund"
               value="Nippon India"
-              onChange={handleChange}
+              //onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
@@ -232,7 +234,6 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.Scheme}
               select
             >
-
               {
                 schemes.map(each => {
                   return <MenuItem key={each.value} defaultChecked value={each.value}>
