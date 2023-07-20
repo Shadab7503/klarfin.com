@@ -58,10 +58,11 @@ function CreateOrderOTP({ accessToken }) {
       }
       ).catch(({ response }) => {
         setIsLoading(false);
+        console.log("response", response)
         const { data } = response;
         setIsFailure(true);
         setMsg(data.message);
-        setValidationErrors(data.validationErrors);
+        data.validationErrors&& setValidationErrors(data.validationErrors);
         return;
       })
   }

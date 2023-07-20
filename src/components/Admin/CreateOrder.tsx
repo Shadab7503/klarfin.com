@@ -141,12 +141,12 @@ const CreateOrder = ({ accessToken }) => {
           setValidationErrors(data.validationErrors);
         })
     } else if (formData.PayMode == "OTBM") {
-      if (Number(formData.Amount) < 5000) {
-        setIsLoading(false);
-        setIsFailure(true);
-        setMsg("Minimum Amount is : 5000.00")
-        return
-      }
+      // if (Number(formData.Amount) < 5000) {
+      //   setIsLoading(false);
+      //   setIsFailure(true);
+      //   setMsg("Minimum Amount is : 5000.00")
+      //   return
+      // }
       console.log("FormData : ",formData ,"State : ",state)
       axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`,formData,
         {
