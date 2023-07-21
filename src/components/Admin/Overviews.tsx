@@ -24,8 +24,8 @@ const Overviews = props => {
     }
 
     const [Funds, setFunds] = useState([{ fund: 'Nippon India Low Duration Fund (G)', ...scheme },
-    { fund: 'Nippon India Overnight Fund (G)', ...scheme },
     { fund: 'Nippon India Liquid Fund (G)', ...scheme },
+    { fund: 'Nippon India Overnight Fund (G)', ...scheme },
     ]);
 
     const [loading, setLoading] = useState(false);
@@ -42,13 +42,13 @@ const Overviews = props => {
                     { headers: { Authorization: `Bearer ${props.accessToken}` }, }
                 ),
                 axios.post(
-                    `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/scheme`, { acno: props.folio_id, plan: 'GP', scheme: 'ON' },
-                    { headers: { Authorization: `Bearer ${props.accessToken}` }, }
-                ),
-                axios.post(
                     `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/scheme`, { acno: props.folio_id, plan: 'IG', scheme: 'LF' },
                     { headers: { Authorization: `Bearer ${props.accessToken}` }, }
                 ),
+                axios.post(
+                    `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/scheme`, { acno: props.folio_id, plan: 'GP', scheme: 'ON' },
+                    { headers: { Authorization: `Bearer ${props.accessToken}` }, }
+                )
             ]);
             setSumInProcessAmt(0);
             setSumInvestedAmt(0);

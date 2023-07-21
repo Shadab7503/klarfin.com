@@ -176,12 +176,12 @@ export default function Orders(props: any) {
       <Box sx={{ width: '100%' }}>
         <TabContext value={value}  >
           <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: '#318ad6', color: 'white' }}>
-            <TabList onChange={(event, newValue) => handleChange(newValue)}   centered TabIndicatorProps={{
+            <TabList onChange={(event, newValue) => handleChange(newValue)} TabIndicatorProps={{
               style: { backgroundColor: 'white',color:'white' },
             }}>
-              <Tab style= {{ color:'white' ,marginRight:"60px"}} label="Portfolio" value="1" />
-              <Tab style= {{ color:'white' ,marginRight:"60px"}} label="Last 20 Transactions" value="2" />
-              <Tab style= {{ color:'white' }} label="Date Wise Transactions" value="3" />
+              <Tab style= {{ color:'white' ,fontWeight:650 }} label="Portfolio" value="1" />
+              <Tab style= {{ color:'white',fontWeight:650 }} label="Last 20 Transactions" value="2" />
+              <Tab style= {{ color:'white',fontWeight:650 }} label="Date Wise Transactions" value="3" />
             </TabList>
           </Box>
           <TabPanel value="1">

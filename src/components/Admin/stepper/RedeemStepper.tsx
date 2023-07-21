@@ -13,12 +13,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SendOTP from './sendOTP';
 import RedeemCreate from './RedeemCreate';
 
-const steps = [ 'Send OTP','Redeem'];
+const steps = ['Send OTP', 'Redeem'];
 
-export default function RedeemStepper({accessToken}) {
+export default function RedeemStepper({ accessToken }) {
   const [activeStep, setActiveStep] = React.useState(0);
-  const  { folio_id } = useParams();
-  const [capturedData,setCapturedData] = React.useState({folio_id});
+  const { folio_id } = useParams();
+  const [capturedData, setCapturedData] = React.useState({ folio_id });
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const navigate = useNavigate();
 
@@ -68,78 +68,69 @@ export default function RedeemStepper({accessToken}) {
   };
 
 
-  const dataCapture = (key,value)=>{
-    if(Array.isArray(key)) {
+  const dataCapture = (key, value) => {
+    if (Array.isArray(key)) {
       let obj = {};
-      key.forEach(each=>{
-        obj = {...obj,...each};
+      key.forEach(each => {
+        obj = { ...obj, ...each };
       })
-    setCapturedData({...capturedData,...obj})
-return;
+      setCapturedData({ ...capturedData, ...obj })
+      return;
     }
-    setCapturedData({...capturedData,[key]:value})
+    setCapturedData({ ...capturedData, [key]: value })
   }
 
-console.log('capturedData',capturedData);
 
   return (
-    <div style={{padding:'2rem'}}>
-    <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {};
-          const labelProps: {
-            optional?: React.ReactNode;
-          } = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography variant="caption">Optional</Typography>
+    <div style={{ padding: '2rem' }}>
+      <Box sx={{ width: '100%' }}>
+        <Stepper activeStep={activeStep}>
+          {steps.map((label, index) => {
+            const stepProps: { completed?: boolean } = {};
+            const labelProps: {
+              optional?: React.ReactNode;
+            } = {};
+            if (isStepOptional(index)) {
+              labelProps.optional = (
+                <Typography variant="caption">Optional</Typography>
+              );
+            }
+            if (isStepSkipped(index)) {
+              stepProps.completed = false;
+            }
+            return (
+              <Step key={label} {...stepProps}>
+                <StepLabel {...labelProps}>{label}</StepLabel>
+              </Step>
             );
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
+          })}
+        </Stepper>
 
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            Thank you!, Your are done with all the steps.
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Go to list</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <div style={{ minHeight: '80vh' }}>
+        {activeStep === steps.length ? (
+          <React.Fragment>
+            <Typography sx={{ mt: 2, mb: 1 }}>
+              Thank you!, Your are done with all the steps.
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+              <Box sx={{ flex: '1 1 auto' }} />
+              <Button onClick={handleReset}>Go to list</Button>
+            </Box>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <div style={{ minHeight: '80vh' }}>
 
-            <div style={{ marginTop: '4rem' }}>
-        
-              {
-
-              activeStep == 0 && <SendOTP accessToken={accessToken} capturedDataHandler={dataCapture} capturedData={capturedData}  handleNext={handleNext} />
-
-              }
-
-              {
-
-                activeStep == 1 && <RedeemCreate capturedDataHandler={dataCapture} capturedData={capturedData} handleNext={handleNext} accessToken={accessToken} />
-
-              }
-             
+              <div style={{ marginTop: '4rem' }}>
+                {
+                  activeStep == 0 && <RedeemCreate capturedDataHandler={setCapturedData} capturedData={capturedData} handleNext={handleNext} accessToken={accessToken} />
+                }
+                {
+                  activeStep == 1 && <SendOTP accessToken={accessToken} capturedDataHandler={setCapturedData} capturedData={capturedData} handleNext={handleNext} />
+                }
+              </div>
 
             </div>
-
-          </div>
-          {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
               disabled={activeStep === 0}
@@ -158,9 +149,9 @@ console.log('capturedData',capturedData);
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box> */}
-        </React.Fragment>
-      )}
-    </Box>
+          </React.Fragment>
+        )}
+      </Box>
     </div>
   );
 }

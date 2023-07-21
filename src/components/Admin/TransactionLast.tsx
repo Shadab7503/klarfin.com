@@ -19,7 +19,7 @@ export default function Transaction20(props: any) {
     const { folio_id } = useParams();
     const [columns, setColumns] = useState([
         {
-            field: 'id', headerName: 'S.No', width: 180, renderHeader: () => (
+            field: 'id', headerName: 'S.No', width: 90, renderHeader: () => (
                 <strong>
                     {'S.No'}
                 </strong>
@@ -28,7 +28,7 @@ export default function Transaction20(props: any) {
         {
             field: 'Transaction_type',
             headerName: 'Transaction Type',
-            width: 250,
+            width: 360,
             renderHeader: () => (
                 <strong>
                     {'Transaction Type'}
@@ -40,11 +40,11 @@ export default function Transaction20(props: any) {
                     Modeofpayment = 'NEFT';
                 }
                 const fullName = `${Transaction_type} ( ${Modeofpayment} )`;
-                return <div>{Modeofpayment && fullName}</div>;
+                return <div>{Modeofpayment? fullName : Transaction_type  }</div>;
             },
         },
         {
-            field: 'Amount', headerName: 'Amount', width: 250,
+            field: 'Amount', headerName: 'Amount', width: 340,
             renderHeader: () => (
                 <strong>
                     {'Amount'}
@@ -59,7 +59,7 @@ export default function Transaction20(props: any) {
             }
         },
         {
-            field: 'Transaction_Date', headerName: 'Transaction Date', width: 250, renderHeader: () => (
+            field: 'Transaction_Date', headerName: 'Transaction Date', width: 340, renderHeader: () => (
                 <strong>
                     {'Transaction Date'}
                 </strong>

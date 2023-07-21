@@ -9,7 +9,7 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
   const [formData, setFormData] = useState({
     "Pan": capturedData.pan,
     "Folio": "",
-    "Amount": "",
+    "Amount": "1000000",
     "ReturnUrl": "https://www.distributor.com/?Result=Failure",
     "url": "https://online.nipponindiaim.com/rmf/mowblyserver/wsapi/rmf/prod/wsapi/EmandateURL"
   });
@@ -118,7 +118,7 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => { navigate('/dashboardSuper/investment') }}
+            onClick={() => { navigate("/dashboardAdmin/add-investment/accountdetails",{state:{formData}}) }}
             disabled={isLoading}
             fullWidth
             sx={{ marginTop: 2 }}
