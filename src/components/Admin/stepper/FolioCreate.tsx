@@ -17,15 +17,15 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
       opt: "G",
     },
     {
-      value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
-      plan: "GP",
-      opt: "G",
-    },
-    {
       value: "LF",
       name: "LIQUID FUND ( 5-15 DAYS )",
       plan: "IG",
+      opt: "G",
+    },
+    {
+      value: "ON",
+      name: "OVERNIGHT FUND ( < 5 DAYS )",
+      plan: "GP",
       opt: "G",
     },
   ];
@@ -106,7 +106,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
 
     setValidationErrors({});
     setIsLoading(true);
-
+    console.log(formData);
     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/folio`, formData,
       {
         headers: { Authorization: `Bearer ${accessToken}` },

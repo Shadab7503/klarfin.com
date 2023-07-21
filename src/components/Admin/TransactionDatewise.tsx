@@ -107,17 +107,17 @@ export default function TransactionDatewise(props: any) {
             name: "LOW DURATION FUND",
             plan: "RG",
             opt: "G",
+        },        
+        {
+            value: "LF",
+            name: "LIQUID FUND",
+            plan: "IG",
+            opt: "G",
         },
         {
             value: "ON",
             name: "OVERNIGHT FUND",
             plan: "GP",
-            opt: "G",
-        },
-        {
-            value: "LF",
-            name: "LIQUID FUND",
-            plan: "IG",
             opt: "G",
         },
     ];
