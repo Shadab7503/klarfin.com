@@ -29,7 +29,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
       opt: "G",
     },
   ];
-  const Occupation = ['--SELECT--', 'SERVICE', 'BUSINESS', 'STUDENT', 'HOUSEHOLD', 'PROFESSIONAL', 'FARMER', 'RETIRED', 'OTHERS', 'LABOUR', 'SALARIED', 'SELF EMPLOYED']
+  const Occupation = [{id:0,value:'--SELECT--'}, {id:1,value:'SERVICE'},{id:2,value: 'BUSINESS'},{ id:11,value:'SELF EMPLOYED'}]
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
@@ -262,7 +262,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             select
           >
             {Occupation.map((ele, idx) => {
-              return <MenuItem key={idx} value={idx} >{ele}</MenuItem>
+              return <MenuItem key={idx} value={ele.id} >{ele.value}</MenuItem>
             })}
           </TextField>
 
