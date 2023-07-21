@@ -9,7 +9,7 @@ const OTBM = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =>
   const [formData, setFormData] = useState({
     "Pan": capturedData.pan,
     "Folio": "",
-    "Amount": "",
+    "Amount": "1000000",
     "ReturnUrl": "https://www.distributor.com/?Result=Failure",
     "url": "https://online.nipponindiaim.com/rmf/mowblyserver/wsapi/rmf/prod/wsapi/EmandateURL"
   });

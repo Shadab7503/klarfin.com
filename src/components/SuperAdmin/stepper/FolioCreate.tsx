@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -11,9 +11,9 @@ import {
   MenuItem
 } from "@mui/material";
 import axios from "axios";
-import {createFolio} from "../../../services/nippon.service";
-import {format} from "date-fns";
-import {DatePicker} from "@mui/x-date-pickers";
+import { createFolio } from "../../../services/nippon.service";
+import { format } from "date-fns";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const Folio = ({
   handleNext,
@@ -45,11 +45,12 @@ const Folio = ({
       opt: "G",
     },
   ];
+  const Occupation = ['--SELECT--','SERVICE', 'BUSINESS', 'STUDENT', 'HOUSEHOLD', 'PROFESSIONAL', 'FARMER', 'RETIRED', 'OTHERS', 'LABOUR', 'SALARIED', 'SELF EMPLOYED']
 
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: schemes[0].value,
-    plan:schemes[0].plan,
+    plan: schemes[0].plan,
     option: "G",
     email: capturedData.invtorInf[0],
     mobile: capturedData.invtorInf[1].toString(),
@@ -60,8 +61,8 @@ const Folio = ({
     PTI: "Y",
     BII: "Y",
     TAX: "INDIVIDUAL",
-    OCCUP: 3,
-    INCOME: "1-5L",
+    OCCUP: "",
+    INCOME: "NA",
     IFSC: "",
     ACTYPE: "SAVINGS",
     ACNUM: "",
@@ -72,14 +73,14 @@ const Folio = ({
     BypassURL: "Y",
     pincode: "",
     inv_id: capturedData.inv_id,
-    isNomOpt:"NO",
+    isNomOpt: "NO",
     NomName: "",
     NomAdd1: "",
     NomCity: "",
     NomState: "",
     NomPin: "",
     NomRel: "",
-    Nom1Per:"100"
+    Nom1Per: "100"
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -94,27 +95,28 @@ const Folio = ({
   };
 
   const handleChange = event => {
-    let {name, value} = event.target;
+    let { name, value } = event.target;
     if (name == "dob") {
       const date = dateConverter(value);
       value = date;
     }
-    if(name=="scheme"){
-      const data = schemes.find((each)=>each.value == value);
-      if(!data) return;
-      setFormData({...formData,plan:data.plan,scheme:data.value});
+    if (name == "scheme") {
+      const data = schemes.find((each) => each.value == value);
+      if (!data) return;
+      setFormData({ ...formData, plan: data.plan, scheme: data.value });
     }
-    if(name=="isNomOpt"){
-      if( value == "YES") setIsNomOpt(true);
-      if( value == "NO") setIsNomOpt(false);
+    if (name == "isNomOpt") {
+      if (value == "YES") setIsNomOpt(true);
+      if (value == "NO") setIsNomOpt(false);
     }
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
     }));
+    console.log(formData)
   };
 
-  const handleSubmit = async (event:any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
 
     setValidationErrors({});
@@ -122,14 +124,14 @@ const Folio = ({
 
     axios
       .post(`${process.env.REACT_APP_BACKEND_HOST}v1/super/folio`, formData, {
-        headers: {Authorization: `Bearer ${accessToken}`},
+        headers: { Authorization: `Bearer ${accessToken}` },
         params: {
           inv_id: capturedData.inv_id,
         },
       })
       .then(res => {
         // navigate(`/dashboardSuper/investment`)
-        const {data} = res;
+        const { data } = res;
         setIsLoading(false);
         if (!data.succ) {
           setMessage(data.message);
@@ -139,9 +141,9 @@ const Folio = ({
         capturedDataHandler("folio", data.folio);
         handleNext();
       })
-      .catch(({response}) => {
+      .catch(({ response }) => {
         setIsLoading(false);
-        const {data} = response;
+        const { data } = response;
         setValidationErrors(data.validationErrors);
       });
   };
@@ -151,9 +153,9 @@ const Folio = ({
   };
 
   return (
-    <Card sx={{maxWidth: 600, margin: "0 auto"}}>
+    <Card sx={{ maxWidth: 600, margin: "0 auto" }}>
       <CardContent>
-        <form onSubmit={handleSubmit} style={{width: "100%"}}>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <Typography variant="subtitle1" gutterBottom>
             Create Folio
           </Typography>
@@ -171,22 +173,22 @@ const Folio = ({
           />
 
           <TextField
-              label="Scheme"
-              name="scheme"
-              onChange={handleChange}
-              defaultValue={schemes[0].value}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!validationErrors.Scheme}
-              helperText={validationErrors.Scheme}
-              select
-            >
-              {schemes.map((ele)=>{
-                return <MenuItem value={ele.value} defaultChecked key={ele.value}>{ele.name}</MenuItem>
-              })}
-            </TextField>
-{/* 
+            label="Scheme"
+            name="scheme"
+            onChange={handleChange}
+            defaultValue={schemes[0].value}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.Scheme}
+            helperText={validationErrors.Scheme}
+            select
+          >
+            {schemes.map((ele) => {
+              return <MenuItem value={ele.value} defaultChecked key={ele.value}>{ele.name}</MenuItem>
+            })}
+          </TextField>
+          {/* 
           <TextField
             label="Scheme"
             name="scheme"
@@ -211,7 +213,7 @@ const Folio = ({
             helperText={validationErrors.plan} // Display the error message
           /> */}
 
-          <TextField
+          {/* <TextField
             label="Option"
             name="option"
             value={formData.option}
@@ -221,7 +223,7 @@ const Folio = ({
             fullWidth
             error={!!validationErrors.option} // Check if the field has an error
             helperText={validationErrors.option} // Display the error message
-          />
+          /> */}
 
           <TextField
             label="Email"
@@ -262,6 +264,24 @@ const Folio = ({
           />
 
           <TextField
+            label="Occupation"
+            name="OCCUP"
+            value={formData.OCCUP}
+            onChange={handleChange}
+            variant="standard"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.OCCUP} // Check if the field has an error
+            helperText={validationErrors.OCCUP} // Display the error message
+            select
+          >
+            {Occupation.map((ele, idx) => {
+              return <MenuItem key={idx} value={idx} >{ele}</MenuItem>
+            })}
+          </TextField>
+
+
+          <TextField
             label="Pincode"
             name="pincode"
             value={formData.pincode}
@@ -272,23 +292,23 @@ const Folio = ({
             error={!!validationErrors.pincode} // Check if the field has an error
             helperText={validationErrors.pincode} // Display the error message
           />
-          <TextField 
-          label="NOMINEE OPTION"
-          name="isNomOpt"
-          value={formData.isNomOpt}
-          onChange={handleChange}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          select
+          <TextField
+            label="NOMINEE OPTION"
+            name="isNomOpt"
+            value={formData.isNomOpt}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            select
           >
             {
-                ["YES","NO"].map(each=>{
-                 return <MenuItem key={each} defaultChecked value={each}>
+              ["YES", "NO"].map(each => {
+                return <MenuItem key={each} defaultChecked value={each}>
                   {each}
                 </MenuItem>
-                })
-              }
+              })
+            }
           </TextField>
           {isNomOpt && (
             <>
@@ -314,7 +334,7 @@ const Folio = ({
                 error={!!validationErrors.NomAdd1} // Check if the field has an error
                 helperText={validationErrors.NomAdd1} // Display the error message
               />
-              
+
               <TextField
                 label="Nominee City"
                 name="NomCity"
@@ -368,7 +388,7 @@ const Folio = ({
             type="submit"
             disabled={isLoading}
             fullWidth
-            sx={{marginTop: 2}}
+            sx={{ marginTop: 2 }}
           >
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
@@ -383,13 +403,13 @@ const Folio = ({
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
         message="PAN submitted successfully!"
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       />
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
         <Alert severity="error">{message}</Alert>
       </Snackbar>
