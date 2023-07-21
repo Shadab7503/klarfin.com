@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   TextField,
   Button,
@@ -100,7 +100,7 @@ const RedeemCreate = ({
     entdate: getDate(),
     ShowInstaStatus: "Y",
     OTP: "",
-    OTPReference: capturedData.refNo,
+    OTPReference:"",
     SelfValidate: "Y",
     deviceid: "PARTNERAPI",
     appVersion: "1.0.1",
@@ -110,10 +110,10 @@ const RedeemCreate = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
+  const [phone,setPhone] = useState("");
   const [Msg, setMsg] = useState("");
   const [validationErrors, setValidationErrors] = useState<any>({});
-  const Navigate = useNavigate();
-
+  const [pan, setPan] = useState(capturedData.pan);
   const handleChange = event => {
     const { name, value } = event.target;
     if (name == "scheme") {
@@ -121,48 +121,62 @@ const RedeemCreate = ({
       if (!data) return;
       setFormData({ ...formData, plan: data.plan, scheme: data.value });
     }
+    
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
     }));
   };
+  
+  const handleSubmit = async (e) => {
 
-  const handleSubmit = async event => {
-    event.preventDefault();
+    e.preventDefault();
     setValidationErrors({});
     setIsLoading(true);
-
-    axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeem`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      )
-      .then(res => {
-        // navigate(`/dashboardSuper/investment`)
-        const { data } = res;
-        if (!data.succ) {
-          setIsFailure(true);
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Acno: formData.acno,Folio: formData.acno},
+      {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).then(res => {
+        const data = res.data;
+        if(!data.succ){
           setIsLoading(false);
+          setIsSuccess(false);
           setMsg(data.message);
           return;
         }
+        setIsLoading(false);
+        setPan("");
         setIsSuccess(true);
-        setIsLoading(false);
-
-        setMsg(`Redeem request submitted successfully for Rs ${formData.UnitAmtValue}`)
+        setMsg(`OTP has been sent to ${phone}`);
+        capturedDataHandler({...formData ,"OTPReference": data.OTPData.RefNo});
         setTimeout(() => {
-          Navigate(`/dashboardAdmin/investment/details/${formData.acno}`);
+          handleNext();
         }, 3000);
-      })
-      .catch(({ response }) => {
+      }).catch(({ response }) => {
         setIsLoading(false);
+        setIsFailure(true);
+        setMsg("OTP sending failed!")
         const { data } = response;
         setValidationErrors(data.validationErrors);
-      });
+      })
+
   };
+
+  useEffect(()=>{
+    try {
+      const res = axios.get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/folio`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).then((res)=>{
+        const {data} = res;
+        setPhone(data.phone);
+      })
+    } catch (error) {
+      setIsFailure(true);
+      setMsg("Unable to Fetch Phone Number From Folio DB");
+      return;
+    }
+  },[])
+  
   const handleCloseSnackbar = () => {
     setIsFailure(false);
   };
@@ -185,6 +199,7 @@ const RedeemCreate = ({
             error={!!validationErrors.fund}
             helperText={validationErrors.fund}
             disabled
+            required
           />
 
           <TextField
@@ -198,6 +213,7 @@ const RedeemCreate = ({
             error={!!validationErrors.bank}
             helperText={validationErrors.bank}
             disabled
+            required
           />
           <TextField
             label="Scheme"
@@ -210,6 +226,7 @@ const RedeemCreate = ({
             error={!!validationErrors.Scheme}
             helperText={validationErrors.Scheme}
             select
+            required
           >
             {schemes.map(ele => {
               return (
@@ -231,9 +248,10 @@ const RedeemCreate = ({
             error={!!validationErrors.UnitAmtValue}
             helperText={validationErrors.UnitAmtValue}
             type="number"
+            required
           />
 
-          <TextField
+          {/* <TextField
             label="OTP"
             name="OTP"
             value={formData.OTP}
@@ -243,7 +261,7 @@ const RedeemCreate = ({
             fullWidth
             error={!!validationErrors.OTP}
             helperText={validationErrors.OTP}
-          />
+          /> */}
 
           {/* <TextField
             label="Account Number"
@@ -320,7 +338,6 @@ const RedeemCreate = ({
             error={!!validationErrors.Tpin}
             helperText={validationErrors.Tpin}
           /> 
-
 
           <TextField
             label="Old IHNO"

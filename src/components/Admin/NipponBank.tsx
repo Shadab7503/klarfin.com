@@ -82,7 +82,7 @@ function NipponBank({ accessToken }) {
               navigate(`/dashboardAdmin/order/${folio_id}`,
                 { state: state });
             }}>
-            Create Order
+            Create New Order
           </Button>
           <Button variant="contained" style={{ background: "orange", marginRight: "1rem" }}
             onClick={() => {

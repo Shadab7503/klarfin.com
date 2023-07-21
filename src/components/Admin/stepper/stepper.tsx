@@ -17,6 +17,7 @@ const steps = ["Investment", "KYC check", "Create Folio", "EOTBM"];
 export default function HorizontalLinearStepper({ accessToken }) {
   const location: any = useLocation().state;
   const [activeStep, setActiveStep] = React.useState(location.status);
+  //const [activeStep, setActiveStep] = React.useState(3);
   const [capturedData, setCapturedData] = React.useState({
     inv_id: location._id,
     pan: location.folio?.pan,

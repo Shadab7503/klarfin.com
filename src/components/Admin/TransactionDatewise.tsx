@@ -25,7 +25,7 @@ export default function TransactionDatewise(props: any) {
     const [message, setMessage] = useState("");
     const [columns, setColumns] = useState([
         {
-            field: 'id', headerName: 'S.No', width: 180, renderHeader: () => (
+            field: 'id', headerName: 'S.No', width: 90, renderHeader: () => (
                 <strong>
                     {'S.No'}
                 </strong>
@@ -34,7 +34,7 @@ export default function TransactionDatewise(props: any) {
         {
             field: 'Transaction_type',
             headerName: 'Transaction Type',
-            width: 250, renderHeader: () => (
+            width: 360, renderHeader: () => (
                 <strong>
                     {'Transaction Type'}
                 </strong>
@@ -45,11 +45,11 @@ export default function TransactionDatewise(props: any) {
                     Modeofpayment = 'NEFT';
                 }
                 const fullName = `${Transaction_type} ( ${Modeofpayment} )`;
-                return <div>{Modeofpayment && fullName}</div>;
+                return <div>{Modeofpayment ? fullName : Transaction_type}</div>;
             },
         },
         {
-            field: 'Amount', headerName: 'Amount', width: 250, renderHeader: () => (
+            field: 'Amount', headerName: 'Amount', width: 340, renderHeader: () => (
                 <strong>
                     {'Amount'}
                 </strong>
@@ -63,7 +63,7 @@ export default function TransactionDatewise(props: any) {
             }
         },
         {
-            field: 'Transaction_Date', headerName: 'Transaction Date', width: 250, renderHeader: () => (
+            field: 'Transaction_Date', headerName: 'Transaction Date', width: 340, renderHeader: () => (
                 <strong>
                     {'Transaction Date'}
                 </strong>
@@ -86,7 +86,7 @@ export default function TransactionDatewise(props: any) {
         var year = date.getFullYear();
         return `${mnth}/${day}/${year}`;
     };
-
+    const [isDisable,SetisDisable] = useState(false);
     const [IntervalDate, setIntervalDate] = useState({
         startDate: DateConverter(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
         endDate: DateConverter(new Date().getTime()),
@@ -183,11 +183,21 @@ export default function TransactionDatewise(props: any) {
         if (value[0] == 0 || value[1] == 0) {
             setError(true);
             setMessage("Please Enter Valid Date Range");
+            setIntervalDate({
+                startDate: IntervalDate.startDate,
+                endDate: IntervalDate.endDate
+            })
+            SetisDisable(true)
             return;
         }
         if (value[0] > new Date() || value[1] > new Date()) {
             setError(true);
             setMessage("Please Enter Valid Date Range,Future Data Not Available")
+            setIntervalDate({
+                startDate: IntervalDate.startDate,
+                endDate: IntervalDate.endDate
+            })
+            SetisDisable(true)
             return;
         }
 
@@ -196,6 +206,11 @@ export default function TransactionDatewise(props: any) {
         if (new Date(endDate).getTime() - new Date(startDate).getTime() > 2 * 24 * 60 * 60 * 1000) {
             setError(true)
             setMessage("Please Enter Valid Date Range ,Date interval should be maximum 3 Days")
+            setIntervalDate({
+                startDate: IntervalDate.startDate,
+                endDate: IntervalDate.endDate
+            })
+            SetisDisable(true);
             return;
         } else if (new Date(endDate).getTime() - new Date(startDate).getTime() < 2 * 24 * 60 * 60 * 1000) {
             setIntervalDate({
@@ -203,6 +218,7 @@ export default function TransactionDatewise(props: any) {
                 endDate: DateConverter(value[1])
             })
         }
+        SetisDisable(false);
     }
 
 
@@ -245,10 +261,13 @@ export default function TransactionDatewise(props: any) {
                             onOk={(value) => CheckRangeHandler(value)}
                             placement="bottomEnd"
                             editable={true}
-                            defaultValue={[new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), new Date()]}
+                            defaultValue={[new Date(IntervalDate.startDate), new Date(IntervalDate.endDate)]}
                             showOneCalendar={true}
                             character="  to  "
                             format="dd-MM-yyyy"
+                            ranges={[]}
+                            onChange={(value)=>CheckRangeHandler(value)}
+                            cleanable={false}
                         />
                     </div>
                     {/* <TextField
@@ -268,7 +287,7 @@ export default function TransactionDatewise(props: any) {
                     }}
                     sx={{ m: 1 }}
                 /> */}
-                    <Button style={{ marginTop: "-3px", height: "37px" }} variant="contained" color="primary" onClick={getDataHandler}>
+                    <Button style={{ marginTop: "-3px", height: "37px"}}  variant="contained" disabled={isDisable} color="primary" onClick={getDataHandler}>
                         Search
                     </Button>
                 </Toolbar>

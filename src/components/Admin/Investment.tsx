@@ -91,11 +91,13 @@ export default function Investment(props: any) {
         </strong>
       ),
     },
-    { field: 'bank', headerName: 'Bank', width: 180,renderHeader: () => (
-      <strong>
-        {'Bank'}
-      </strong>
-    ), },
+    {
+      field: 'bank', headerName: 'Bank', width: 180, renderHeader: () => (
+        <strong>
+          {'Bank'}
+        </strong>
+      ),
+    },
     // { field: 'portfolio', headerName: 'Current Portfolio amount', width: 180 },
     // { field: 'returns', headerName: 'Return generated', type: 'number' },
     {
@@ -267,7 +269,7 @@ export default function Investment(props: any) {
       xs={12}
       px={10}
       mt={5}
-      sx={{ maxWidth: "95vw", height: "100vh" }}
+      sx={{ minWidthidth: "100vw", height: "100vh" }}
     >
       {/* <Button
         type="submit"
@@ -289,37 +291,61 @@ export default function Investment(props: any) {
       >
         Add Investor
       </Button> */}
-
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "70vw", marginBottom: "10px", height: "60px" }} >
-        <h2 style={{
-          fontFamily: "Work Sans",
-          fontWeight: "bold",
-          padding: "0.1rem 0.4rem",
-          borderRadius: "0.5rem",
-          fontSize: "1.4rem",
-        }}>All Investments</h2>
-        <Button
-          type="submit"
-          style={{ height: "50px" }}
-          sx={{
-            background: "#231955",
+      <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "70vw", marginBottom: "10px", height: "60px" }} >
+        <Grid item xs={8.1} >
+          <h2 style={{
             fontFamily: "Work Sans",
             fontWeight: "bold",
-            padding: "0.01rem 0.6rem",
-            borderRadius: "1rem",
-            fontSize: "0.8rem",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#231955",
-            },
-          }}
-          onClick={() => {
-            navigate(`/dashboardAdmin/upload-doc`, { state: { status: 0 } });
-          }}
-        >
-          Upload Documents
-        </Button>
-      </div>
+            padding: "0.1rem 0.4rem",
+            borderRadius: "0.5rem",
+            fontSize: "1.4rem",
+          }}>All Investments</h2>
+        </Grid>
+        <Grid xs={3.9} sx={{display:"flex" ,justifyContent:"space-between",p:0,mr:-2.6 }}>
+          <Button
+            type="submit"
+            style={{ height: "45px" ,width:"170px" }}
+            sx={{
+              background: "#3088d6",
+              fontFamily: "Work Sans",
+              fontWeight: "bold",
+              padding: "0.01rem 0.6rem",
+              borderRadius: "0.5rem",
+              fontSize: "0.8rem",
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: "#3caecd",
+              },
+            }}
+            onClick={() => {
+              navigate(`/dashboardAdmin/add-investment`, { state: { status: 0 } });
+            }}
+          >
+            Add Investor
+          </Button>
+          <Button
+            type="submit"
+            style={{ height: "45px" ,width:"170px" }}
+            sx={{
+              background: "#3088d6",
+              fontFamily: "Work Sans",
+              fontWeight: "bold",
+              padding: "0.01rem 0.6rem",
+              borderRadius: "0.5rem",
+              fontSize: "0.8rem",
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: "#3caecd",
+              },
+            }}
+            onClick={() => {
+              navigate(`/dashboardAdmin/upload-doc`, { state: { status: 0 } });
+            }}
+          >
+            Upload Documents
+          </Button>
+        </Grid>
+      </Grid>
 
       <div style={{ height: "100vh", width: "100%" }}>
         <DataGrid

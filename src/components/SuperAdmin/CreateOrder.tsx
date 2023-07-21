@@ -18,15 +18,15 @@ const CreateOrder = ({ accessToken }) => {
       opt: "G",
     },
     {
-      value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
-      plan: "GP",
-      opt: "G",
-    },
-    {
       value: "LF",
       name: "LIQUID FUND ( 5-15 DAYS )",
       plan: "IG",
+      opt: "G",
+    },
+    {
+      value: "ON",
+      name: "OVERNIGHT FUND ( < 5 DAYS )",
+      plan: "GP",
       opt: "G",
     },
 

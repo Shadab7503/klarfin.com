@@ -19,6 +19,7 @@ import Upload_stepper from "./Upload_doc/upload_stepper";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
 import CreateOrderOTP from "./CreateOrderOTP";
+import NEFTAccountDetails from "./stepper/NEFTAccountDetails";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -44,10 +45,10 @@ const DashboardAdmin = (props) => {
           user={{}} >
           <NipponBank  accessToken={accessToken} />
         </AdminLayout>} />
-        {/* <Route path="/dashboardAdmin/add-investment" element={<AdminLayout
+        <Route path="/dashboardAdmin/add-investment" element={<AdminLayout
           user={{}} >
           <HorizontalLinearStepper  accessToken={accessToken} />
-        </AdminLayout>} /> */}
+        </AdminLayout>} />
         <Route path="/dashboardAdmin/redeem/:folio_id" element={<AdminLayout
           user={{}} >
           <RedeemStepper accessToken={accessToken} />
@@ -67,6 +68,10 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/investment/redeem/:folio_id" element={<AdminLayout
           user={{}} >
           <Redeem accessToken={accessToken} />
+        </AdminLayout>} />
+        <Route path="/dashboardAdmin/add-investment/accountdetails" element={<AdminLayout
+          user={{}} >
+          <NEFTAccountDetails accessToken={accessToken} />
         </AdminLayout>} />
         <Route path="/dashboardAdmin/investment/create-order-otp/:folio_id" element={<AdminLayout
           user={{}} >
