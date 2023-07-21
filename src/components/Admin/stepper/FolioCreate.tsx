@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button,Alert,MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, Alert, MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import { createFolio } from '../../../services/nippon.service';
 import { format } from 'date-fns';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
   //console.log(capturedData);
-  const [message,setMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [isNomOpt, setIsNomOpt] = useState<boolean>(false);
   const relationArray = ["Father", "Mother", "Husband", "Wife", "Brother", "Sister"];
   const schemes = [
@@ -29,16 +29,16 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
       opt: "G",
     },
   ];
-
+  const Occupation = ['--SELECT--', 'SERVICE', 'BUSINESS', 'STUDENT', 'HOUSEHOLD', 'PROFESSIONAL', 'FARMER', 'RETIRED', 'OTHERS', 'LABOUR', 'SALARIED', 'SELF EMPLOYED']
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
     plan: 'IG',
     option: 'G',
-    email:"",
-    mobile:"",
-    // email: capturedData.invtorInf[0],
-    // mobile:capturedData.invtorInf[1].toString(),
+    // email: "",
+    // mobile: "",
+    email: capturedData.invtorInf[0],
+    mobile:capturedData.invtorInf[1].toString(),
     dob: '23/11/1991',
     RI: 'Y',
     PEP: 'N',
@@ -46,8 +46,8 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     PTI: 'Y',
     BII: 'Y',
     TAX: 'INDIVIDUAL',
-    OCCUP: 3,
-    INCOME: '1-5L',
+    OCCUP: 0,
+    INCOME: 'NA',
     IFSC: '',
     ACTYPE: 'SAVINGS',
     ACNUM: '',
@@ -58,48 +58,48 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     BypassURL: 'Y',
     pincode: '',
     inv_id: capturedData.inv_id,
-    isNomOpt:"NO",
+    isNomOpt: "NO",
     NomName: "",
     NomAdd1: "",
     NomCity: "",
     NomState: "",
     NomPin: "",
     NomRel: "",
-    Nom1Per:"100"
+    Nom1Per: "100"
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
   const [validationErrors, setValidationErrors] = useState<any>({});
 
-  const dateConverter = (str) =>{
+  const dateConverter = (str) => {
     var date = new Date(str);
-    var mnth = ("0" + (date.getMonth()+1)).slice(-2);
-    var day  = ("0" + date.getDate()).slice(-2);
+    var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
     var year = date.getFullYear();
     return `${day}/${mnth}/${year}`;
- }
+  }
 
- const handleChange = event => {
-  let {name, value} = event.target;
-  if (name == "dob") {
-    const date = dateConverter(value);
-    value = date;
-  }
-  if(name=="scheme"){
-    const data = schemes.find((each)=>each.value == value);
-    if(!data) return;
-    setFormData({...formData,plan:data.plan,scheme:data.value});
-  }
-  if(name=="isNomOpt"){
-    if( value == "YES") setIsNomOpt(true);
-    if( value == "NO") setIsNomOpt(false);
-  }
-  setFormData(prevData => ({
-    ...prevData,
-    [name]: value,
-  }));
-};
+  const handleChange = event => {
+    let { name, value } = event.target;
+    if (name == "dob") {
+      const date = dateConverter(value);
+      value = date;
+    }
+    if (name == "scheme") {
+      const data = schemes.find((each) => each.value == value);
+      if (!data) return;
+      setFormData({ ...formData, plan: data.plan, scheme: data.value });
+    }
+    if (name == "isNomOpt") {
+      if (value == "YES") setIsNomOpt(true);
+      if (value == "NO") setIsNomOpt(false);
+    }
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -117,7 +117,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
         // navigate(`/dashboardSuper/investment`)
         const { data } = res;
         setIsLoading(false);
-        if (!data.succ){
+        if (!data.succ) {
           setMessage(data.message)
           setIsFailure(true)
           return;
@@ -139,9 +139,9 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
   };
 
   return (
-    <Card sx={{maxWidth: 600, margin: "0 auto"}}>
+    <Card sx={{ maxWidth: 600, margin: "0 auto" }}>
       <CardContent>
-        <form onSubmit={handleSubmit} style={{width: "100%"}}>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <Typography variant="subtitle1" gutterBottom>
             Create Folio
           </Typography>
@@ -159,22 +159,22 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
           />
 
           <TextField
-              label="Scheme"
-              name="scheme"
-              onChange={handleChange}
-              defaultValue={schemes[0].value}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!validationErrors.Scheme}
-              helperText={validationErrors.Scheme}
-              select
-            >
-              {schemes.map((ele)=>{
-                return <MenuItem value={ele.value} defaultChecked key={ele.value}>{ele.name}</MenuItem>
-              })}
-            </TextField>
-{/* 
+            label="Scheme"
+            name="scheme"
+            onChange={handleChange}
+            defaultValue={schemes[0].value}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.Scheme}
+            helperText={validationErrors.Scheme}
+            select
+          >
+            {schemes.map((ele) => {
+              return <MenuItem value={ele.value} defaultChecked key={ele.value}>{ele.name}</MenuItem>
+            })}
+          </TextField>
+          {/* 
           <TextField
             label="Scheme"
             name="scheme"
@@ -199,7 +199,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             helperText={validationErrors.plan} // Display the error message
           /> */}
 
-          <TextField
+          {/* <TextField
             label="Option"
             name="option"
             value={formData.option}
@@ -209,7 +209,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             fullWidth
             error={!!validationErrors.option} // Check if the field has an error
             helperText={validationErrors.option} // Display the error message
-          />
+          /> */}
 
           <TextField
             label="Email"
@@ -250,6 +250,23 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
           />
 
           <TextField
+            label="Occupation"
+            name="OCCUP"
+            value={formData.OCCUP}
+            onChange={handleChange}
+            variant="standard"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.OCCUP} // Check if the field has an error
+            helperText={validationErrors.OCCUP} // Display the error message
+            select
+          >
+            {Occupation.map((ele, idx) => {
+              return <MenuItem key={idx} value={idx} >{ele}</MenuItem>
+            })}
+          </TextField>
+
+          <TextField
             label="Pincode"
             name="pincode"
             value={formData.pincode}
@@ -260,23 +277,23 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             error={!!validationErrors.pincode} // Check if the field has an error
             helperText={validationErrors.pincode} // Display the error message
           />
-          <TextField 
-          label="NOMINEE OPTION"
-          name="isNomOpt"
-          value={formData.isNomOpt}
-          onChange={handleChange}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          select
+          <TextField
+            label="NOMINEE OPTION"
+            name="isNomOpt"
+            value={formData.isNomOpt}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            select
           >
             {
-                ["YES","NO"].map(each=>{
-                 return <MenuItem key={each} defaultChecked value={each}>
+              ["YES", "NO"].map(each => {
+                return <MenuItem key={each} defaultChecked value={each}>
                   {each}
                 </MenuItem>
-                })
-              }
+              })
+            }
           </TextField>
           {isNomOpt && (
             <>
@@ -302,7 +319,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
                 error={!!validationErrors.NomAdd1} // Check if the field has an error
                 helperText={validationErrors.NomAdd1} // Display the error message
               />
-              
+
               <TextField
                 label="Nominee City"
                 name="NomCity"
@@ -349,7 +366,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
                 helperText={validationErrors.NomRel} // Display the error message
               >
                 {
-                  relationArray.map((ele,idx)=>{
+                  relationArray.map((ele, idx) => {
                     return <MenuItem key={idx} value={ele} > {ele} </MenuItem>
                   })
                 }
@@ -363,7 +380,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
             type="submit"
             disabled={isLoading}
             fullWidth
-            sx={{marginTop: 2}}
+            sx={{ marginTop: 2 }}
           >
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
@@ -378,13 +395,13 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
         autoHideDuration={3000}
         onClose={() => setIsSuccess(false)}
         message="PAN submitted successfully!"
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       />
       <Snackbar
         open={isFailure}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
         <Alert severity="error">{message}</Alert>
       </Snackbar>

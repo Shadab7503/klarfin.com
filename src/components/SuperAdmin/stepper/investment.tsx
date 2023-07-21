@@ -301,6 +301,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             onChange={handleChange}
             variant="outlined"
             margin="normal"
+            type="password"
             fullWidth
             error={!!validationErrors.ACNUM} // Check if the field has an error
             helperText={validationErrors.ACNUM} // Display the error message
