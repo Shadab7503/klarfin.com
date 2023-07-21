@@ -19,6 +19,7 @@ import { DataGrid } from "@mui/x-data-grid";
 function NEFTAccountDetails({ accessToken }) {
     const navigate = useNavigate();
     const { state }: any = useLocation();
+    console.log(state)
 
     return (
         <Card sx={{p:0,m:0}}>
@@ -40,7 +41,7 @@ function NEFTAccountDetails({ accessToken }) {
                         <Typography variant="h6" gutterBottom>
                             Beneficiary Account Number
                         </Typography>
-                        <Typography variant="body1">{`2203${state.formData.pan}`}</Typography>
+                        <Typography variant="body1">{`2203${state.formData.Pan}`}</Typography>
 
                         <Typography variant="h6" gutterBottom>
                             Beneficiary Bank IFSC code

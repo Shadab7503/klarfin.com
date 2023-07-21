@@ -304,7 +304,7 @@ export default function Investment(props: any) {
         <Grid xs={3.9} sx={{display:"flex" ,justifyContent:"space-between",p:0,mr:-2.6 }}>
           <Button
             type="submit"
-            style={{ height: "45px" ,width:"170px" }}
+            style={{ height: "45px" ,width:"170px",marginRight:"20px" }}
             sx={{
               background: "#3088d6",
               fontFamily: "Work Sans",

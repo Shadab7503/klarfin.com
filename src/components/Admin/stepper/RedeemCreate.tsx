@@ -30,9 +30,9 @@ const RedeemCreate = ({
 
   const schemes = [
     {
-      value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
-      plan: "GP",
+      value: "LP",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
+      plan: "RG",
       opt: "G",
     },
     {
@@ -42,9 +42,9 @@ const RedeemCreate = ({
       opt: "G",
     },
     {
-      value: "LP",
-      name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
+      value: "ON",
+      name: "OVERNIGHT FUND ( < 5 DAYS )",
+      plan: "GP",
       opt: "G",
     },
   ];
@@ -129,7 +129,6 @@ const RedeemCreate = ({
   };
   
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     setValidationErrors({});
     setIsLoading(true);
@@ -147,7 +146,7 @@ const RedeemCreate = ({
         setIsLoading(false);
         setPan("");
         setIsSuccess(true);
-        setMsg(`OTP has been sent to ${phone}`);
+        setMsg(`OTP has been sent to XXXXXXXXX${phone}`);
         capturedDataHandler({...formData ,"OTPReference": data.OTPData.RefNo});
         setTimeout(() => {
           handleNext();
@@ -168,7 +167,8 @@ const RedeemCreate = ({
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then((res)=>{
         const {data} = res;
-        setPhone(data.phone);
+        const phone = data.phone+""
+        setPhone(phone.slice(-2));
       })
     } catch (error) {
       setIsFailure(true);
