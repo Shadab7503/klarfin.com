@@ -160,7 +160,7 @@ const Overviews = props => {
                 <Divider sx={{ mb: 2, mt: 3 }} />
                 {Funds.map((each, idx) => {
                     return <>
-                        <div style={{ display: 'flex', flexDirection: 'row', minWidth: '69vw', justifyContent: 'center' }}>
+                        <div key={idx} style={{ display: 'flex', flexDirection: 'row', minWidth: '69vw', justifyContent: 'center' }}>
                             <Grid item xs={12} sm={6} md={4}>
                                 <Typography style={{ fontWeight: 600 }} variant="body1">
                                     {each.fund}
