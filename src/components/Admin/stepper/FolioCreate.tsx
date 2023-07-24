@@ -29,7 +29,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
       opt: "G",
     },
   ];
-  const Occupation = [{id:0,value:'--SELECT--'}, {id:1,value:'SERVICE'},{id:2,value: 'BUSINESS'},{ id:11,value:'SELF EMPLOYED'}]
+  const Occupation = [{ id: 0, value: '--SELECT--' }, { id: 1, value: 'SERVICE' }, { id: 2, value: 'BUSINESS' }, { id: 11, value: 'SELF EMPLOYED' }]
   const [formData, setFormData] = useState({
     pan: capturedData.pan,
     scheme: 'LF',
@@ -38,7 +38,7 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     // email: "",
     // mobile: "",
     email: capturedData.invtorInf[0],
-    mobile:capturedData.invtorInf[1].toString(),
+    mobile: capturedData.invtorInf[1].toString(),
     dob: '23/11/1991',
     RI: 'Y',
     PEP: 'N',

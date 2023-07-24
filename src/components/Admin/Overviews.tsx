@@ -32,6 +32,7 @@ const Overviews = props => {
     const [SumInProcessAmt, setSumInProcessAmt] = useState(0);
     const [SumTotalAmt, setSumTotalAmount] = useState(0);
     const [SumInvestedAmt, setSumInvestedAmt] = useState(0);
+    const str = "en-IN";
 
     const getSchemeData = async () => {
         setLoading(true);

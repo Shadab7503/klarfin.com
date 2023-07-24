@@ -60,8 +60,8 @@ const Scheme = (props) => {
             Gain/Loss
           </Typography>
           <Typography variant="body1">
-            {(parseFloat(TotalAmt) -
-              (parseFloat(InvestedAmt) - parseFloat(InProcessAmt)))}
+            {FormatNumber((parseFloat(TotalAmt) -
+              (parseFloat(InvestedAmt) - parseFloat(InProcessAmt))))}
           </Typography>
         </Paper>
       </Grid>
@@ -71,7 +71,7 @@ const Scheme = (props) => {
             Actual Amount Invested
           </Typography>
           <Typography variant="body1">
-            {(parseInt(InvestedAmt) - parseInt(InProcessAmt))}
+            {FormatNumber((parseInt(InvestedAmt) - parseInt(InProcessAmt)))}
           </Typography>
         </Paper>
       </Grid>

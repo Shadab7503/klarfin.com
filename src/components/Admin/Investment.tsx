@@ -103,7 +103,7 @@ export default function Investment(props: any) {
     {
       field: "Actions",
       headerName: "Action",
-      width: 440,
+      minWidth: 525,
       renderHeader: () => (
         <strong>
           {'Action'}
@@ -111,7 +111,7 @@ export default function Investment(props: any) {
       ),
       renderCell: (params: any) => {
         return (
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: "flex",minWidth:"100%"}}>
             {params.row.status >= 2 && (
               <>
                 {/* <Grid
@@ -168,7 +168,7 @@ export default function Investment(props: any) {
                 >
                   Redeem
                 </Grid>
-                {/* { params.row.is_OTBM == 0 && <>
+                { params.row.is_OTBM == 0 && <>
                   <Grid
                     item
                     className="bills-pay"
@@ -181,9 +181,9 @@ export default function Investment(props: any) {
                       });
                     }}
                       >
-                    OBTM
+                    Auto Debit
                   </Grid>
-                </>} */}
+                </>}
               </>
             )}
 
@@ -292,7 +292,7 @@ export default function Investment(props: any) {
         Add Investor
       </Button> */}
       <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "70vw", marginBottom: "10px", height: "60px" }} >
-        <Grid item xs={8.1} >
+        <Grid item xs={6.8} >
           <h2 style={{
             fontFamily: "Work Sans",
             fontWeight: "bold",
@@ -301,10 +301,10 @@ export default function Investment(props: any) {
             fontSize: "1.4rem",
           }}>All Investments</h2>
         </Grid>
-        <Grid xs={3.9} sx={{display:"flex" ,justifyContent:"space-between",p:0,mr:-2.6 }}>
+        <Grid xs={4.2} sx={{display:"flex" ,justifyContent:"space-between",p:0,mr:-1 }}>
           <Button
             type="submit"
-            style={{ height: "45px" ,width:"170px",marginRight:"20px" }}
+            style={{ height: "45px" ,minWidth:"160px",marginRight:"20px" }}
             sx={{
               background: "#3088d6",
               fontFamily: "Work Sans",
@@ -325,7 +325,7 @@ export default function Investment(props: any) {
           </Button>
           <Button
             type="submit"
-            style={{ height: "45px" ,width:"170px" }}
+            style={{ display:"flex",height: "45px" ,minWidth:"165px" }}
             sx={{
               background: "#3088d6",
               fontFamily: "Work Sans",
