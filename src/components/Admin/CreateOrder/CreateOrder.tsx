@@ -3,6 +3,8 @@ import { TextField, Button, MenuItem, CircularProgress, Alert, Snackbar, Card, C
 import axios from 'axios';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { url } from 'inspector';
+import FormNippon from './FormNippon';
+import FormNSE from './FormNSE';
 
 
 const schemes = [
@@ -68,8 +70,10 @@ const CreateOrder = ({ accessToken }) => {
     "YES BANK"
   ];
 
+  const Funds = [{ key: "RMF", name: "Nippon India" }, { key: "NSE", name: "NSE" }];
+
   const [formData, setFormData] = useState({
-    "Fund": "RMF",
+    "Fund": Funds[0].key,
     "Scheme": "LP",
     "Plan": "RG",
     "Options": "G",
@@ -113,7 +117,7 @@ const CreateOrder = ({ accessToken }) => {
     event.preventDefault();
     setIsLoading(true);
     if (formData.PayMode == "NEFT") {
-      
+
       axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
         {
           headers: { Authorization: `Bearer ${accessToken}` }
@@ -147,8 +151,8 @@ const CreateOrder = ({ accessToken }) => {
       //   setMsg("Minimum Amount is : 5000.00")
       //   return
       // }
-      console.log("FormData : ",formData ,"State : ",state)
-      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`,formData,
+
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`, formData,
         {
           headers: { Authorization: `Bearer ${accessToken}` }
         }).then(res => {
@@ -160,11 +164,11 @@ const CreateOrder = ({ accessToken }) => {
             return;
           }
           setIsSuccess(true);
-          setMsg(`OTP is sending to ${state.user_id.email}`)
+          setMsg(`OTP sent to ${state.user_id.email}`)
           setIsLoading(false);
           //axios.post('url',{data},{header}).then((res)=>{})
           setTimeout(() => {
-            navigate(`/dashboardAdmin/investment/create-order-otp/${folio}`, { state:{ state ,formData} })
+            navigate(`/dashboardAdmin/investment/create-order-otp/${folio}`, { state: { state, formData } })
           }, 5000);
           return;
         }).catch(({ response }) => {
@@ -194,17 +198,25 @@ const CreateOrder = ({ accessToken }) => {
             <TextField
               label="Fund"
               name="Fund"
-              value="Nippon India"
-              //onChange={handleChange}
+              onChange={handleChange}
               variant="outlined"
               margin="normal"
               fullWidth
-              // error={!!validationErrors.Fund}
-              // helperText={validationErrors.Fund}
-              disabled
-            />
+              select
+            //error={!!validationErrors.Fund}
+            //helperText={validationErrors.Fund}
+            >
+              {
+                Funds.map((ele, idx) => {
+                  return <MenuItem key={idx} value={ele.key} defaultValue={ele.key} >{ele.name}</MenuItem>
+                })
+              }
+            </TextField>
+            {
+              formData.Fund == "RMF" ? <FormNippon schemes={schemes} formData={formData} setCaptureData={handleChange} /> : <FormNSE formData={formData} setCaptureData={handleChange} />
+            }
 
-            <TextField
+            {/* <TextField
               label="Your Bank"
               name="ChqBank"
               value={formData.ChqBank}
@@ -216,12 +228,12 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.ChqBank}
               disabled
             >
-              {/* {bankNames.map((ele, index) => {
+              {bankNames.map((ele, index) => {
                 return <MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
-              })} */}
-            </TextField>
+              })}
+            </TextField> */}
 
-            <TextField
+            {/* <TextField
               label="Scheme"
               name="Scheme"
               value={formData.Scheme}
@@ -241,7 +253,7 @@ const CreateOrder = ({ accessToken }) => {
                   </MenuItem>
                 })
               }
-            </TextField>
+            </TextField> */}
 
             {/* <TextField
               label="Plan"
@@ -280,7 +292,7 @@ const CreateOrder = ({ accessToken }) => {
               disabled
             /> */}
 
-            <TextField
+            {/* <TextField
               label="Amount"
               name="Amount"
               value={formData.Amount}
@@ -290,7 +302,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.Amount}
               helperText={validationErrors.Amount}
-            />
+            /> */}
 
             {/* <TextField
               label="Transaction Type"
@@ -343,7 +355,7 @@ const CreateOrder = ({ accessToken }) => {
               helperText={validationErrors.EUINDecFlag}
             /> */}
 
-            <TextField
+            {/* <TextField
               label="Payment Mode"
               name="PayMode"
               select
@@ -360,7 +372,7 @@ const CreateOrder = ({ accessToken }) => {
               <MenuItem value="NEFT">
                 NEFT
               </MenuItem>
-            </TextField>
+            </TextField> */}
             <Button
               variant="contained"
               color="primary"

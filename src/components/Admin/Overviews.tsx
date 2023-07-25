@@ -22,6 +22,9 @@ const Overviews = props => {
         ActualAmt: "",
         currValue: ""
     }
+    // const GetMarketValue = (data:scheme)=>{
+    //     if(data.)
+    // }
 
     const [Funds, setFunds] = useState([{ fund: 'Nippon India Low Duration Fund (G)', ...scheme },
     { fund: 'Nippon India Liquid Fund (G)', ...scheme },
