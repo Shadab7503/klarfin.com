@@ -25,7 +25,7 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
                 disabled
-            />
+                required />
             <TextField
                 label="Appln ID"
                 name="appln_id"
@@ -36,8 +36,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-              
-            />
+                required 
+                />
             <TextField
                 label="Password"
                 name="password"
@@ -48,8 +48,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-         
-            />
+                required 
+                />
             <TextField
                 label="Broker Code"
                 name="broker_code"
@@ -60,8 +60,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-            
-            />
+                required 
+                />
             <TextField
                 label="IIN"
                 name="iin"
@@ -72,8 +72,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-               
-            />
+                required 
+                />
             <TextField
                 label="Account Number"
                 name="ac_no"
@@ -84,8 +84,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-             
-            />
+                required 
+                />
             <TextField
                 label="Bank IFSC Code"
                 name="ifsc_code"
@@ -96,8 +96,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-             
-            />
+                required 
+                />
             <TextField
                 label="EUIN"
                 name="euin"
@@ -108,8 +108,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-          
-            />
+                required 
+                />
             <TextField
                 label="Instrument Amount"
                 name="instrm_amount"
@@ -120,8 +120,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-           
-            />
+                required 
+                />
             <TextField
                 label="Bank Holder Name"
                 name="Bank_holder_name"
@@ -132,30 +132,9 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-            
-            />
-         
-            {/* <TextField
-                label="Scheme"
-                name="Scheme"
-                value={formData.Scheme}
-                onChange={handleChange}
-                defaultValue={schemes[0].value}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.Scheme}
-                helperText={validationErrors.Scheme}
-                select
-            >
-                {
-                    schemes.map(each => {
-                        return <MenuItem key={each.value} defaultChecked value={each.value}>
-                            {each.name}
-                        </MenuItem>
-                    })
-                }
-            </TextField> */}
+                required 
+                />
+
             <TextField
                 label="Amount"
                 name="Amount"
@@ -166,7 +145,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.Amount}
                 helperText={validationErrors.Amount}
-            />
+                required 
+                />
 
             <TextField
                 label="Payment Mode"
@@ -178,6 +158,7 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.PayMode}
                 helperText={validationErrors.PayMode}
+                required
             >
                 <MenuItem defaultChecked value="OTBM">
                     Auto Debit

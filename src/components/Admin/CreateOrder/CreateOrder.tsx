@@ -73,7 +73,7 @@ const CreateOrder = ({ accessToken }) => {
   const Funds = [{ key: "RMF", name: "Nippon India" }, { key: "NSE", name: "NSE" }];
 
   const [formData, setFormData] = useState({
-    "Fund": Funds[0].key,
+    "Fund": "",
     "Scheme": "LP",
     "Plan": "RG",
     "Options": "G",
@@ -203,6 +203,7 @@ const CreateOrder = ({ accessToken }) => {
               margin="normal"
               fullWidth
               select
+              required
             //error={!!validationErrors.Fund}
             //helperText={validationErrors.Fund}
             >
@@ -213,7 +214,10 @@ const CreateOrder = ({ accessToken }) => {
               }
             </TextField>
             {
-              formData.Fund == "RMF" ? <FormNippon schemes={schemes} formData={formData} setCaptureData={handleChange} /> : <FormNSE formData={formData} setCaptureData={handleChange} />
+              formData.Fund == "RMF"&& <FormNippon schemes={schemes} formData={formData} setCaptureData={handleChange} />
+            }
+            {
+              formData.Fund == "NSE"&& <FormNSE formData={formData} setCaptureData={handleChange} />
             }
 
             {/* <TextField
