@@ -31,23 +31,23 @@ const RedeemCreate = ({
   const schemes = [
     {
       value: "LP",
-      name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
-      opt: "G",
-    },
-    {
-      value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
-      plan: "GP",
-      opt: "G",
+      name: "LOW DURATION FUND (> 2 WEEKS)",
+      plan: "IG",
+      opt: "G"
     },
     {
       value: "LF",
-      name: "LIQUID FUND ( 5-15 DAYS )",
+      name: "LIQUID FUND (5-15 DAYS)",
       plan: "IG",
-      opt: "G",
+      opt: "G"
     },
-  ];
+    {
+      value: "ON",
+      name: "OVERNIGHT FUND ( < 5 DAYS)",
+      plan: "GP",
+      opt: "G"
+    },
+  ]
 
   const bankNames = [
     "--SELECT--",

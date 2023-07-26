@@ -12,23 +12,24 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
   const schemes = [
     {
       value: "LP",
-      name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
-      opt: "G",
+      name: "LOW DURATION FUND (> 2 WEEKS)",
+      plan: "IG",
+      opt: "G"
     },
     {
       value: "LF",
-      name: "LIQUID FUND ( 5-15 DAYS )",
+      name: "LIQUID FUND (5-15 DAYS)",
       plan: "IG",
-      opt: "G",
+      opt: "G"
     },
     {
       value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
+      name: "OVERNIGHT FUND ( < 5 DAYS)",
       plan: "GP",
-      opt: "G",
+      opt: "G"
     },
-  ];
+  
+  ]
   const Occupation = [{ id: 0, value: '--SELECT--' }, { id: 1, value: 'SERVICE' }, { id: 2, value: 'BUSINESS' }, { id: 11, value: 'SELF EMPLOYED' }]
   const [formData, setFormData] = useState({
     pan: capturedData.pan,

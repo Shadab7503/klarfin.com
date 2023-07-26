@@ -103,24 +103,25 @@ export default function TransactionDatewise(props: any) {
 
     const schemes = [
         {
-            value: "LP",
-            name: "LOW DURATION FUND",
-            plan: "RG",
-            opt: "G",
-        },        
-        {
-            value: "LF",
-            name: "LIQUID FUND",
-            plan: "IG",
-            opt: "G",
+          value: "LP",
+          name: "LOW DURATION FUND (> 2 WEEKS)",
+          plan: "IG",
+          opt: "G"
         },
         {
-            value: "ON",
-            name: "OVERNIGHT FUND",
-            plan: "GP",
-            opt: "G",
+          value: "LF",
+          name: "LIQUID FUND (5-15 DAYS)",
+          plan: "IG",
+          opt: "G"
         },
-    ];
+        {
+          value: "ON",
+          name: "OVERNIGHT FUND ( < 5 DAYS)",
+          plan: "GP",
+          opt: "G"
+        },
+      
+      ]
 
     const getTranxData = async () => {
         setLoading(true);

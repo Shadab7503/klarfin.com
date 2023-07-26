@@ -9,7 +9,7 @@ const schemes = [
   {
     value: "LP",
     name: "LOW DURATION FUND (> 2 WEEKS)",
-    plan: "RG",
+    plan: "IG",
     opt: "G"
   },
   {
@@ -71,7 +71,7 @@ const CreateOrder = ({ accessToken }) => {
   const [formData, setFormData] = useState({
     "Fund": "RMF",
     "Scheme": "LP",
-    "Plan": "RG",
+    "Plan": "IG",
     "Options": "G",
     "AcNo": folio,
     "Amount": '',
@@ -81,7 +81,7 @@ const CreateOrder = ({ accessToken }) => {
     "EUIN": "E493979",
     "EUINDecFlag": "Y",
     "ChqBank": (state.BANK ? state.BANK : " "),
-    "PayMode": "",
+    "PayMode": " ",
     "AppName": "Klarfin"
   });
 
@@ -202,6 +202,7 @@ const CreateOrder = ({ accessToken }) => {
               // error={!!validationErrors.Fund}
               // helperText={validationErrors.Fund}
               disabled
+              required
             />
 
             <TextField
@@ -215,6 +216,7 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.ChqBank}
               helperText={validationErrors.ChqBank}
               disabled
+              required
             >
               {/* {bankNames.map((ele, index) => {
                 return <MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
@@ -233,6 +235,7 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.Scheme}
               helperText={validationErrors.Scheme}
               select
+              required
             >
               {
                 schemes.map(each => {
@@ -290,6 +293,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.Amount}
               helperText={validationErrors.Amount}
+              required
             />
 
             {/* <TextField
@@ -353,6 +357,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
+              required
             >
               <MenuItem defaultChecked value="OTBM">
                 Auto Debit

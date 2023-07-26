@@ -13,24 +13,24 @@ const CreateOrder = ({ accessToken }) => {
   const schemes = [
     {
       value: "LP",
-      name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
-      opt: "G",
+      name: "LOW DURATION FUND (> 2 WEEKS)",
+      plan: "IG",
+      opt: "G"
     },
     {
       value: "LF",
-      name: "LIQUID FUND ( 5-15 DAYS )",
+      name: "LIQUID FUND (5-15 DAYS)",
       plan: "IG",
-      opt: "G",
+      opt: "G"
     },
     {
       value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
+      name: "OVERNIGHT FUND ( < 5 DAYS)",
       plan: "GP",
-      opt: "G",
+      opt: "G"
     },
-
-  ];
+  
+  ]
   console.log("state",state);
   const bankNames = [
     "--SELECT--",
@@ -69,7 +69,7 @@ const CreateOrder = ({ accessToken }) => {
   const [formData, setFormData] = useState({
     "Fund": "RMF",
     "Scheme": "LP",
-    "Plan": "RG",
+    "Plan": "IG",
     "Options": "G",
     "AcNo": folio,
     "Amount": '',
