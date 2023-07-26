@@ -88,24 +88,23 @@ export default function Transaction20(props: any) {
     const schemes = [
         {
           value: "LP",
-          name: "LOW DURATION FUND (> 2 WEEKS)",
+          name: "LOW DURATION FUND",
           plan: "IG",
-          opt: "G"
-        },
-        {
-          value: "LF",
-          name: "LIQUID FUND (5-15 DAYS)",
-          plan: "IG",
-          opt: "G"
+          opt: "G",
         },
         {
           value: "ON",
-          name: "OVERNIGHT FUND ( < 5 DAYS)",
+          name: "OVERNIGHT FUND",
           plan: "GP",
-          opt: "G"
+          opt: "G",
         },
-      
-      ]
+        {
+          value: "LF",
+          name: "LIQUID FUND",
+          plan: "IG",
+          opt: "G",
+        },
+      ];
 
     const filterHandler = (data) => {
         getLastTwentyTransaction()
