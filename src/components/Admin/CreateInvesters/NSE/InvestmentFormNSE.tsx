@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
+import React from 'react'
+import { TextField, Button, Alert, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Alert } from '../../../utils/components';
 
-const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
+function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleNext }) {
   const [isConfirm, setisConfirm] = useState(false);
   const [message, setMessage] = useState("");
-  const [formData, setFormData] = useState({
-    IFSC: '',
-    ACTYPE: 'SAVINGS',
-    ACNUM: '',
-    BANK: '',
-    CONMACNUM: "",
-    user_id: ""
-  });
 
-  const AccTypes = ['SAVINGS', 'CURRENT'];
+  const BranchContry = [{ code: "IND", title: "INDIA" }];
+  const BankName = [{code:"HDF" , title:"HDFC BANK LTD"}]
+  const AccTypes = [{ code: "SB", title: "SAVINGS" }, { code: "CA", title: 'CURRENT' }];
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",
@@ -54,11 +48,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [existInvester, setExitInvester] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
-
-
   const [users, setUsers] = useState<any>({});
-  const [funds, setFunds] = useState<any>([]);
-
   const [validationErrors, setValidationErrors] = useState<any>({});
 
   const getAdmins = () => {
@@ -76,7 +66,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             response.data.message === "Admin"
           ) {
             setUsers({ ...response.data.admin[0] });
-            setFormData({ ...formData, "user_id": response.data.admin[0].id })
+            capturedDataHandler("user_id",response.data.admin[0].id)
             console.log({ ...response.data.admin[0] })
           }
         })
@@ -86,39 +76,14 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
     }
   }
 
-  const getFunds = () => {
-    axios
-      .get(
-        process.env.REACT_APP_BACKEND_HOST + "v1/user/investment/funds",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      )
-      .then((response) => {
-        if (
-          response.data.succ
-        ) {
-          setFunds([...response.data.funds]);
-          console.log(response)
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   useEffect(() => {
     getAdmins()
-    getFunds()
   }, [])
 
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    capturedDataHandler(name,value);
   };
 
   const handleCloseSnackbar = () => {
@@ -127,16 +92,17 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
 
   const saveHandler = (e) => {
     e.preventDefault();
-    console.log(formData)
+    console.log(capturedData)
     setValidationErrors({});
     setIsLoading(true);
-    //console.log(formData)
-    if (formData.ACNUM != formData.CONMACNUM) {
+    //console.log(capturedData)
+    if (capturedData.ACNUM != capturedData.CONMACNUM) {
       setIsLoading(false);
       setisConfirm(true);
       return;
     } else {
-      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, formData,
+      console.log("capturedData : ",capturedData)
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, capturedData,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -222,47 +188,38 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
               Company
             </MenuItem>
           </TextField>
-
           <TextField
-            label="Fund"
+            label="Pan Number"
+            name="pan"
             onChange={handleChange}
-            name="fund_id"
-            required
-            select
             variant="outlined"
             margin="normal"
             fullWidth
-            error={!!validationErrors.fund_id} // Check if the field has an error
-            helperText={validationErrors.fund_id} // Display the error message
-          >
-            {funds.map(option => (
-              <MenuItem key={option._id} value={option._id}>
-                {option.name}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
+            required
+            error={!!validationErrors.PAN}
+            helperText={validationErrors.PAN}
+          ></TextField>
+           <TextField
             label="Bank Name"
             name="BANK"
             onChange={handleChange}
-            defaultValue={bankNames[0]}
             variant="outlined"
             margin="normal"
             fullWidth
             select
+            required
             error={!!validationErrors.BANK}
             helperText={validationErrors.BANK}
           >
-            {bankNames.map((ele, index) => {
-              return <MenuItem value={ele} key={index} >{ele}</MenuItem>
+            {BankName.map((ele,indx)=>{
+              return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
             })}
           </TextField>
 
           <TextField
             label="IFSC"
             name="IFSC"
-            value={formData.IFSC}
+            value={capturedData.IFSC}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -273,6 +230,66 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             // onPaste={(e)=>{e.preventDefault()}}
             autoComplete="off"
           />
+          <TextField
+            label="Branch Name"
+            name="branch_name"
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            error={!!validationErrors.branch_name}
+            helperText={validationErrors.branch_name}
+          ></TextField>
+          <TextField
+            label="Branch Address"
+            name="branch_addr1"
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            error={!!validationErrors.branch_addr1}
+            helperText={validationErrors.branch_addr1}
+          ></TextField>
+          <TextField
+            label="Branch City"
+            name="branch_city"
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            error={!!validationErrors.branch_city}
+            helperText={validationErrors.branch_city}
+          ></TextField>
+          <TextField
+            label="Branch Contry"
+            name="branch_contry"
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            select
+            required
+            error={!!validationErrors.branch_contry}
+            helperText={validationErrors.branch_contry}
+          >
+            {BranchContry.map((ele,indx)=>{
+              return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
+            })}
+          </TextField>
+          <TextField
+            label="Branch Pincode"
+            name="branch_pincode"
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            required
+            error={!!validationErrors.branch_pincode}
+            helperText={validationErrors.branch_pincode}
+          ></TextField>
 
           <TextField
             label="Account Type"
@@ -283,13 +300,12 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            defaultValue="SAVINGS"
             error={!!validationErrors.ACTYPE} // Check if the field has an error
             helperText={validationErrors.ACTYPE} // Display the error message
           >
-            {AccTypes.map(each => (
-              <MenuItem key={each} value={each}>
-                {each}
+            {AccTypes.map((each, idx) => (
+              <MenuItem key={idx} value={each.code}>
+                {each.title}
               </MenuItem>
             ))}
           </TextField>
@@ -297,7 +313,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           <TextField
             label="Account Number"
             name="ACNUM"
-            value={formData.ACNUM}
+            value={capturedData.ACNUM}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -314,7 +330,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           <TextField
             label="Confirm Account Number"
             name="CONMACNUM"
-            value={formData.CONMACNUM}
+            value={capturedData.CONMACNUM}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -378,7 +394,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
         <Alert severity='error' >Investment Not Created ,Please Try Again</Alert>
       </Snackbar>
     </Card>
-  );
-};
+  )
+}
 
-export default Investment;
+export default InvestmentForm

@@ -74,7 +74,7 @@ export default function TransactionDatewise(props: any) {
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(format(today, 'MM/dd/yyyy'))
     const [filter, setFilter] = useState({
-        plan: 'RG',
+        plan: 'IG',
         scheme: 'LP',
         date: date
     });
@@ -105,7 +105,7 @@ export default function TransactionDatewise(props: any) {
         {
             value: "LP",
             name: "LOW DURATION FUND",
-            plan: "RG",
+            plan: "IG",
             opt: "G",
         },        
         {

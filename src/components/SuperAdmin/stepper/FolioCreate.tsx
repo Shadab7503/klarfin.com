@@ -29,7 +29,7 @@ const Folio = ({
     {
       value: "LP",
       name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
+      plan: "IG",
       opt: "G",
     },
     {

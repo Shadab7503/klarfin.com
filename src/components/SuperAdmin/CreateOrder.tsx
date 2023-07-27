@@ -14,7 +14,7 @@ const CreateOrder = ({ accessToken }) => {
     {
       value: "LP",
       name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
+      plan: "IG",
       opt: "G",
     },
     {
@@ -69,7 +69,7 @@ const CreateOrder = ({ accessToken }) => {
   const [formData, setFormData] = useState({
     "Fund": "RMF",
     "Scheme": "LP",
-    "Plan": "RG",
+    "Plan": "IG",
     "Options": "G",
     "AcNo": folio,
     "Amount": '',

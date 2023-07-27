@@ -7,7 +7,7 @@ import HorizontalLinearStepper from "./CreateInvesters/stepper";
 import CreateOrder from "./CreateOrder/CreateOrder";
 import Orders from "./orders";
 import Transactions from "./Transaction-bkt";
-import RedeemStepper from "./CreateInvesters/RedeemStepper";
+import RedeemStepper from "./RedeemOrder/RedeemStepper";
 import Redeem from "./redeems";
 import CashFlows from "./CashFlows";
 import Insights from "./Insights";
@@ -19,7 +19,7 @@ import Upload_stepper from "./Upload_doc/upload_stepper";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
 import CreateOrderOTP from "./CreateOrderOTP";
-import NEFTAccountDetails from "./CreateInvesters/NEFTAccountDetails";
+import NEFTAccountDetails from "./CreateInvesters/Nippon/NEFTAccountDetails";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;

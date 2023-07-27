@@ -7,7 +7,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
     const handleChange = (event) => {
         setCaptureData(event)
     };
-
+    const ProductCode = [{ code: "ONGPGR", title: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" }]
+    const BankName = [{code:"HDF" , title:"HDFC BANK LTD"}]
     return (
         <form style={{ width: '100%' }}>
             <Typography variant="subtitle1" sx={{ width: "100%", textAlign: "center" }} gutterBottom>
@@ -15,65 +16,32 @@ const FormNSE = ({ formData, setCaptureData }) => {
             </Typography>
 
             <TextField
-                label="Your Bank"
-                name="ChqBank"
-                value={formData.ChqBank}
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                disabled
-                required />
-            <TextField
-                label="Appln ID"
-                name="appln_id"
-                value="MFS264077"
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
-            <TextField
-                label="Password"
-                name="password"
-                value="8H9QWA0K"
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
-            <TextField
-                label="Broker Code"
-                name="broker_code"
-                value="ARN-264077"
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
-            <TextField
                 label="IIN"
                 name="iin"
-                value="5011228926"
+                value={formData.iin}
                 onChange={handleChange}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
+                error={!!validationErrors.iin}
+                helperText={validationErrors.iin}
+                required />
+            <TextField
+                label="Bank"
+                name="bank"
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.bank}
+                helperText={validationErrors.bank}
+                required
+                select
+            >
+                {BankName.map((ele,indx)=>{
+                    return <MenuItem key={indx} value = {ele.code} >{ele.title}</MenuItem>
+                })}
+            </TextField>
             <TextField
                 label="Account Number"
                 name="ac_no"
@@ -82,46 +50,60 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
+                error={!!validationErrors.ac_no}
+                helperText={validationErrors.ac_no}
+                required
+            />
             <TextField
                 label="Bank IFSC Code"
                 name="ifsc_code"
-                value="HDFC0003895"
                 onChange={handleChange}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
+                error={!!validationErrors.ifsc_code}
+                helperText={validationErrors.ifsc_code}
+                required
+            />
             <TextField
                 label="EUIN"
-                name="euin"
-                value="E493979"
+                name="EUIN"
+                value={formData.EUIN}
                 onChange={handleChange}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
+                error={!!validationErrors.euin}
+                helperText={validationErrors.euin}
+                required
+            />
+            <TextField
+                label="Bill Desk Bank"
+                name="billdesk_bank"
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.euin}
+                helperText={validationErrors.euin}
+                required
+                select
+            >
+                {BankName.map((ele,indx)=>{
+                    return <MenuItem key={indx} value = {ele.code} >{ele.title}</MenuItem>
+                })}
+            </TextField>
             <TextField
                 label="Instrument Amount"
                 name="instrm_amount"
-                value={"5000"}
                 onChange={handleChange}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                error={!!validationErrors.ChqBank}
-                helperText={validationErrors.ChqBank}
-                required 
-                />
+                error={!!validationErrors.instrm_amount}
+                helperText={"Equal to Sum of Transaction amount"}
+                required
+            />
             <TextField
                 label="Bank Holder Name"
                 name="Bank_holder_name"
@@ -132,21 +114,39 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 fullWidth
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
-                required 
-                />
+                required
+            />
 
             <TextField
                 label="Amount"
-                name="Amount"
-                value={formData.Amount}
+                name="amount"
+                value={formData.amount}
                 onChange={handleChange}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                error={!!validationErrors.Amount}
-                helperText={validationErrors.Amount}
-                required 
-                />
+                error={!!validationErrors.amount}
+                helperText={validationErrors.amount}
+                required
+            />
+            <TextField
+                label="Product Code"
+                name="product_code"
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.product_code}
+                helperText={validationErrors.product_code}
+                required
+                select
+            >
+                {ProductCode.map((each, idx) => (
+                    <MenuItem key={idx} value={each.code}>
+                        {each.title}
+                    </MenuItem>
+                ))}
+            </TextField>
 
             <TextField
                 label="Payment Mode"

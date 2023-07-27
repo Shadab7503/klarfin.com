@@ -32,7 +32,7 @@ const RedeemCreate = ({
     {
       value: "LP",
       name: "LOW DURATION FUND ( > 2 WEEKS )",
-      plan: "RG",
+      plan: "IG",
       opt: "G",
     },
     {

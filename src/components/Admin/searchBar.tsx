@@ -25,7 +25,7 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
     {
       value: "LP",
       name: "LOW DURATION FUND",
-      plan: "RG",
+      plan: "IG",
       opt: "G",
     },
     {

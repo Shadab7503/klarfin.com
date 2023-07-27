@@ -11,7 +11,7 @@ const schemes = [
   {
     value: "LP",
     name: "LOW DURATION FUND (> 2 WEEKS)",
-    plan: "RG",
+    plan: "IG",
     opt: "G"
   },
   {
@@ -73,9 +73,9 @@ const CreateOrder = ({ accessToken }) => {
   const Funds = [{ key: "RMF", name: "Nippon India" }, { key: "NSE", name: "NSE" }];
 
   const [formData, setFormData] = useState({
-    "Fund": "",
+    "Fund": "RMF",
     "Scheme": "LP",
-    "Plan": "RG",
+    "Plan": "IG",
     "Options": "G",
     "AcNo": folio,
     "Amount": '',
@@ -86,9 +86,92 @@ const CreateOrder = ({ accessToken }) => {
     "EUINDecFlag": "Y",
     "ChqBank": (state.BANK ? state.BANK : " "),
     "PayMode": "",
-    "AppName": "Klarfin"
+    "AppName": "Klarfin",
+    "appln_id": "MFS264077",
+    "password": "8H9QWA0K",
+    "broker_code": "ARN-264077",
+    "iin": 5011228926,
+    "sub_trxn_type": "N",
+    "poa": "N",
+    "poa_bank_trxn_type": "",
+    "trxn_acceptance": "OL",
+    "demat_user": "N",
+    "dp_id": "",
+    "bank": "HDF",
+    "ac_no": 50100165499362,
+    "ifsc_code": "",
+    "sub_broker_arn_code": "",
+    "sub_broker_code": "",
+    "euin_opted": "Y",
+    "euin": "E493979",
+    "trxn_execution": "",
+    "remarks": "",
+    "payment_mode": "OL",
+    "billdesk_bank": "",
+    "instrm_bank": "",
+    "instrm_ac_no": "",
+    "instrm_no": "",
+    "instrm_amount":"" ,
+    "instrm_date": "",
+    "instrm_branch": "",
+    "instrm_charges": "",
+    "micr": "",
+    "rtgs_code": "",
+    "neft_ifsc": "",
+    "advisory_charge": "",
+    "dd_charge": "",
+    "cheque_deposit_mode": "",
+    "debit_amount_type": "",
+    "sip_micr_no": "",
+    "sip_bank": "",
+    "sip_branch": "",
+    "sip_acc_no": "",
+    "sip_ac_type": "",
+    "sip_ifsc_code": "",
+    "sip_paymech": "",
+    "umrn": "",
+    "ach_amt": "",
+    "ach_fromdate": "",
+    "ach_enddate": "",
+    "until_cancelled": "",
+    "Return_paymnt_flag": "N",
+    "Client_callback_url": "",
+    "Bank_holder_name": "",
+    "Bank_holder_name1": "",
+    "Bank_holder_name2": "",
+    "trxn_initiator": "",
+    "trans_count": 1,
+    "utr_no": "",
+    "transfer_date": "",
+    "investor_auth_log": "",
+    "ach_exist": "",
+    "process_mode": "",
+    "channel_type": "",
+    "amc": "RMF",
+    "folio": "",
+    "product_code": "",
+    "ft_acc_no": "",
+    "reinvest": "Z",
+    "amount": "",
+    "sip_from_date": "",
+    "sip_end_date": "",
+    "sip_freq": "",
+    "sip_amount": "",
+    "sip_period_day": "",
+    "input_ref_no": "",
+    "perpetual_flag": "",
+    "insurance_enabled": "",
+    "GOAL_BASED_SIP": "",
+    "GOAL_TYPE": "",
+    "GOAL_AMOUNT": "",
+    "FREEDOM_SIP": "",
+    "FREEDOM_TARGET_SCHEME": "",
+    "FREEDOM_TENURE": "",
+    "FREEDOM_SWP_AMOUNT": "",
+    "FREEDOM_SCHEME_OPTION": "",
+    "funds":"",
   });
-
+  
   const [validationErrors, setValidationErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -116,8 +199,8 @@ const CreateOrder = ({ accessToken }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
+    console.log("formData : ",formData)
     if (formData.PayMode == "NEFT") {
-
       axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
         {
           headers: { Authorization: `Bearer ${accessToken}` }
@@ -197,7 +280,7 @@ const CreateOrder = ({ accessToken }) => {
             </Typography>
             <TextField
               label="Fund"
-              name="Fund"
+              name="funds"
               onChange={handleChange}
               variant="outlined"
               margin="normal"
@@ -214,10 +297,10 @@ const CreateOrder = ({ accessToken }) => {
               }
             </TextField>
             {
-              formData.Fund == "RMF"&& <FormNippon schemes={schemes} formData={formData} setCaptureData={handleChange} />
+              formData.funds == "RMF" && <FormNippon schemes={schemes} formData={formData} setCaptureData={handleChange} />
             }
             {
-              formData.Fund == "NSE"&& <FormNSE formData={formData} setCaptureData={handleChange} />
+              formData.funds == "NSE" && <FormNSE formData={formData} setCaptureData={handleChange} />
             }
 
             {/* <TextField
@@ -377,7 +460,7 @@ const CreateOrder = ({ accessToken }) => {
                 NEFT
               </MenuItem>
             </TextField> */}
-            <Button
+            { formData.funds !==""&& <Button
               variant="contained"
               color="primary"
               type="submit"
@@ -386,7 +469,7 @@ const CreateOrder = ({ accessToken }) => {
               sx={{ marginTop: 2 }}
             >
               {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
-            </Button>
+            </Button>}
           </form>
         </CardContent>
         <Snackbar
