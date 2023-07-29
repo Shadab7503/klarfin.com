@@ -18,15 +18,16 @@ const stepsNse = ["Investment", "Create Folio"];
 
 export default function HorizontalLinearStepper({ accessToken }) {
   const location: any = useLocation().state;
-  const [activeStep, setActiveStep] = React.useState(location.status);
-  //const [activeStep, setActiveStep] = React.useState(1);
+  //const [activeStep, setActiveStep] = React.useState(location.status);
+  const [activeStep, setActiveStep] = React.useState(1);
   const [validationErrors, setValidationErrors] = React.useState<any>({})
-  const [selectedForm, setSelectedForm] = React.useState<any>("");
   const [capturedData, setCapturedData] = React.useState({
     inv_id: location._id,
     pan: location.folio?.pan,
     folio: location.folio?.Folio,
-    fund_id: '',
+    fund_id:"",
+    fundType:"",
+    ACTYPE:"SAVINGS"
   });
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const navigate = useNavigate();
@@ -106,22 +107,24 @@ export default function HorizontalLinearStepper({ accessToken }) {
       return;
     }
     setCapturedData({ ...capturedData, [key]: value });
+    console.log("formData : ",capturedData);
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setCapturedData((prevData) => ({
       ...prevData,
-      [name]: value,
+      "fund_id":value._id,
+      "fundType":value.name,
     }));
-    console.log("captureData", event)
+    console.log(capturedData);
   };
   
 
   return (
     <div style={{ padding: "2rem" }}>
       <Box sx={{ width: "100%"}}>
-        {capturedData.fund_id == "" &&<Paper sx={{width:"100%",height:"30vh",p:2,display:"flex",flexDirection:"column" ,alignItems:"center"}} >
+        {capturedData.fund_id == "" &&<Paper sx={{width:"100%",minHeight:"30vh",p:2,display:"flex",flexDirection:"column" ,alignItems:"center"}} >
           <Typography variant="h5" sx={{m:3}}>Select Funds in Which Want You to Invest</Typography>
           <TextField
             label="Fund"
@@ -136,14 +139,14 @@ export default function HorizontalLinearStepper({ accessToken }) {
             helperText={validationErrors.fund_id} // Display the error message
           >
             {funds.map(option => (
-              <MenuItem key={option._id} value={option._id}>
+              <MenuItem key={option._id} value={option}>
                 {option.name}
               </MenuItem>
             ))}
           </TextField>
         </Paper>}
         {
-          capturedData.fund_id == "644a08c3d69f5e1b803eb7d2" &&<>
+          capturedData.fundType == "Nippon India" &&<>
           <Stepper activeStep={activeStep}>
           {stepsNippon.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
@@ -182,6 +185,7 @@ export default function HorizontalLinearStepper({ accessToken }) {
                 {activeStep == 0 && (
                   <Investment
                     capturedDataHandler={dataCapture}
+                    captureData={capturedData}
                     accessToken={accessToken}
                     handleNext={handleNext}
                   />
@@ -218,7 +222,7 @@ export default function HorizontalLinearStepper({ accessToken }) {
           </>
         }
         {
-          capturedData.fund_id == "64c227460accf04ea8e95a96" &&<>
+          capturedData.fundType == "NSE" &&<>
           <Stepper activeStep={activeStep}>
           {stepsNse.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
@@ -240,7 +244,7 @@ export default function HorizontalLinearStepper({ accessToken }) {
             );
           })}
         </Stepper>
-        {activeStep === stepsNippon.length ? (
+        {activeStep === stepsNse.length ? (
           <React.Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>
               Thank you!, Your are done with all the steps.

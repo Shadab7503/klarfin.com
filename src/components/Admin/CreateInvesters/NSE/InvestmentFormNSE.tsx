@@ -67,7 +67,7 @@ function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleN
           ) {
             setUsers({ ...response.data.admin[0] });
             capturedDataHandler("user_id",response.data.admin[0].id)
-            console.log({ ...response.data.admin[0] })
+            console.log(" USERDATA : ",{ ...response.data.admin[0] })
           }
         })
         .catch((err) => {
@@ -75,7 +75,6 @@ function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleN
         });
     }
   }
-
   useEffect(() => {
     getAdmins()
   }, [])
@@ -84,6 +83,7 @@ function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleN
   const handleChange = (event) => {
     const { name, value } = event.target;
     capturedDataHandler(name,value);
+    console.log(name,value);
   };
 
   const handleCloseSnackbar = () => {
@@ -142,10 +142,10 @@ function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleN
 
           <TextField
             label="Investor"
-            //onChange={handleChange}
+            onChange={handleChange}
             focused
             value={users.name}
-            name="user_id"
+            name="user_name"
             autoComplete='off'
             required
             //select

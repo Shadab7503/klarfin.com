@@ -33,6 +33,9 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
     const Occupation = [{ id: 1, value: 'SERVICE' }, { id: 2, value: 'BUSINESS' }, { id: 11, value: 'SELF EMPLOYED' }]
     const [formData, setFormData] = useState({
         ...capturedData,
+        "appln_id":"MFS264077",
+        "password":"8H9QWA0K",
+        "broker_code":"ARN-264077",
         "process_mode": "D",
         "title": "",
         "valid_pan": "Y",
@@ -178,32 +181,32 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
     const handleSubmit = async (event) => {
         event.preventDefault();
         console.log("formData : ", formData);
-        // setValidationErrors({});
-        // setIsLoading(true);
-        // console.log(formData);
-        // axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/folio`, formData,
-        //     {
-        //         headers: { Authorization: `Bearer ${accessToken}` },
-        //         params: {
-        //             inv_id: capturedData.inv_id
-        //         }
-        //     }).then(res => {
-        //         // navigate(`/dashboardSuper/investment`)
-        //         const { data } = res;
-        //         setIsLoading(false);
-        //         if (!data.succ) {
-        //             setMessage(data.message)
-        //             setIsFailure(true)
-        //             return;
-        //         }
-        //         capturedDataHandler('folio', data.folio)
-        //         handleNext();
-        //     }).catch(({ response }) => {
-        //         setIsLoading(false);
-        //         setIsFailure(true)
-        //         const { data } = response;
-        //         setValidationErrors(data.validationErrors);
-        //     })
+        setValidationErrors({});
+        setIsLoading(true);
+        console.log(formData);
+        axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/folio`, formData,
+            {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                params: {
+                    inv_id: capturedData.inv_id
+                }
+            }).then(res => {
+                // navigate(`/dashboardSuper/investment`)
+                const { data } = res;
+                setIsLoading(false);
+                if (!data.succ) {
+                    setMessage(data.message)
+                    setIsFailure(true)
+                    return;
+                }
+                capturedDataHandler('folio', data.folio)
+                handleNext();
+            }).catch(({ response }) => {
+                setIsLoading(false);
+                setIsFailure(true)
+                const { data } = response;
+                setValidationErrors(data.validationErrors);
+            })
 
 
     };
@@ -312,16 +315,16 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
                         })}
                     </TextField>
                     <TextField
-                        label="Contry"
-                        name="contry"
+                        label="Country"
+                        name="country"
                         onChange={handleChange}
                         variant="outlined"
                         margin="normal"
                         fullWidth
                         required
                         select
-                        error={!!validationErrors.contry} // Check if the field has an error
-                        helperText={validationErrors.contry} // Display the error message
+                        error={!!validationErrors.country} // Check if the field has an error
+                        helperText={validationErrors.country} // Display the error message
                     >
                         {Country.map((ele, indx) => {
                             return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
@@ -377,7 +380,7 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
                                 label="Nominee Date of Birth"
                                 name="nominee1_dob"
                                 type='date'
-                                value={formData.nominee1_dob}
+                                
                                 onChange={handleChange}
                                 variant="outlined"
                                 margin="normal"
