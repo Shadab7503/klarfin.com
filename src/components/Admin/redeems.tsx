@@ -89,7 +89,7 @@ export default function Redeems(props: any) {
     
     const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
     const [filter, setFilter] = useState({
-        plan: 'RG',
+        plan: 'IG',
         scheme: 'LP',
         date: date
     });
