@@ -33,7 +33,7 @@ export default function Orders(props: any) {
   const today = new Date();
   const [date, setDate] = useState(format(today, 'MM/dd/yyyy'))
   const [filter, setFilter] = useState({
-    plan: "RG",
+    plan: "IG",
     scheme: "LP",
     date: date,
   });

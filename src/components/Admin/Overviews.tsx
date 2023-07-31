@@ -39,7 +39,7 @@ const Overviews = props => {
         try {
             const res = await Promise.all([
                 axios.post(
-                    `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/scheme`, { acno: props.folio_id, plan: 'RG', scheme: 'LP' },
+                    `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/scheme`, { acno: props.folio_id, plan: 'IG', scheme: 'LP' },
                     { headers: { Authorization: `Bearer ${props.accessToken}` }, }
                 ),
                 axios.post(

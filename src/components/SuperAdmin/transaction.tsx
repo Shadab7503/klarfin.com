@@ -44,7 +44,7 @@ export default function Transactions(props: any) {
 
 
     const [filter, setFilter] = useState({
-        plan: 'RG',
+        plan: 'IG',
         scheme: 'LP',
         date: date
     });
