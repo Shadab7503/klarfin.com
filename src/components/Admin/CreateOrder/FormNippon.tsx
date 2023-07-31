@@ -20,6 +20,7 @@ const FormNippon = ({ schemes,formData, setCaptureData }) => {
               onChange={handleChange}
               variant="outlined"
               margin="normal"
+              required
               fullWidth
               error={!!validationErrors.ChqBank}
               helperText={validationErrors.ChqBank}
@@ -39,6 +40,7 @@ const FormNippon = ({ schemes,formData, setCaptureData }) => {
               variant="outlined"
               margin="normal"
               fullWidth
+              required
               error={!!validationErrors.Scheme}
               helperText={validationErrors.Scheme}
               select
@@ -59,6 +61,7 @@ const FormNippon = ({ schemes,formData, setCaptureData }) => {
               variant="outlined"
               margin="normal"
               fullWidth
+              required
               error={!!validationErrors.Amount}
               helperText={validationErrors.Amount}
             />
@@ -67,6 +70,7 @@ const FormNippon = ({ schemes,formData, setCaptureData }) => {
               label="Payment Mode"
               name="PayMode"
               select
+              required
               onChange={handleChange}
               variant="outlined"
               margin="normal"

@@ -1,14 +1,101 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
 
-const FormNSE = ({ formData, setCaptureData }) => {
-    const [validationErrors, setValidationErrors] = useState<any>({});
+const FormNSE = ({ formData, setCaptureData, setFormData }) => {
 
+    const [validationErrors, setValidationErrors] = useState<any>({});
+    useEffect(() => {
+        setFormData((formData) => ({
+            ...formData,
+            "appln_id": "MFS264077",
+            "password": "8H9QWA0K",
+            "broker_code": "ARN-264077",
+            "iin": 5011228926,
+            "sub_trxn_type": "N",
+            "poa": "N",
+            "poa_bank_trxn_type": "",
+            "trxn_acceptance": "OL",
+            "demat_user": "N",
+            "dp_id": "",
+            "bank": "HDF",
+            "ac_no": 50100165499362,
+            "ifsc_code": "HDFC0003895",
+            "sub_broker_arn_code": "",
+            "sub_broker_code": "",
+            "euin_opted": "Y",
+            "euin": "E493979",
+            "trxn_execution": "",
+            "remarks": "",
+            "payment_mode": "OL",
+            "billdesk_bank": "HDF",
+            "instrm_bank": "",
+            "instrm_ac_no": "",
+            "instrm_no": "",
+            "instrm_amount": "5000",
+            "instrm_date": "",
+            "instrm_branch": "",
+            "instrm_charges": "",
+            "micr": "",
+            "rtgs_code": "",
+            "neft_ifsc": "",
+            "advisory_charge": "",
+            "dd_charge": "",
+            "cheque_deposit_mode": "",
+            "debit_amount_type": "",
+            "sip_micr_no": "",
+            "sip_bank": "",
+            "sip_branch": "",
+            "sip_acc_no": "",
+            "sip_ac_type": "",
+            "sip_ifsc_code": "",
+            "sip_paymech": "",
+            "umrn": "",
+            "ach_amt": "",
+            "ach_fromdate": "",
+            "ach_enddate": "",
+            "until_cancelled": "",
+            "Return_paymnt_flag": "N",
+            "Client_callback_url": "",
+            "Bank_holder_name": "Siddhant Gupta",
+            "Bank_holder_name1": "",
+            "Bank_holder_name2": "",
+            "trxn_initiator": "",
+            "trans_count": 1,
+            "utr_no": "",
+            "transfer_date": "",
+            "investor_auth_log": "",
+            "ach_exist": "",
+            "process_mode": "",
+            "channel_type": "",
+            "amc": "RMF",
+            "folio": "",
+            "product_code": "ONGPGR",
+            "ft_acc_no": "",
+            "reinvest": "Z",
+            "amount": "5000",
+            "sip_from_date": "",
+            "sip_end_date": "",
+            "sip_freq": "",
+            "sip_amount": "",
+            "sip_period_day": "",
+            "input_ref_no": "",
+            "perpetual_flag": "",
+            "insurance_enabled": "",
+            "GOAL_BASED_SIP": "",
+            "GOAL_TYPE": "",
+            "GOAL_AMOUNT": "",
+            "FREEDOM_SIP": "",
+            "FREEDOM_TARGET_SCHEME": "",
+            "FREEDOM_TENURE": "",
+            "FREEDOM_SWP_AMOUNT": "",
+            "FREEDOM_SCHEME_OPTION": "",
+        }))
+    }, [])
     const handleChange = (event) => {
         setCaptureData(event)
     };
     const ProductCode = [{ code: "ONGPGR", title: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" }]
-    const BankName = [{code:"HDF" , title:"HDFC BANK LTD"}]
+    const BankName = [{ code: "HDF", title: "HDFC BANK LTD" }]
     return (
         <form style={{ width: '100%' }}>
             <Typography variant="subtitle1" sx={{ width: "100%", textAlign: "center" }} gutterBottom>
@@ -38,8 +125,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 required
                 select
             >
-                {BankName.map((ele,indx)=>{
-                    return <MenuItem key={indx} value = {ele.code} >{ele.title}</MenuItem>
+                {BankName.map((ele, indx) => {
+                    return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
                 })}
             </TextField>
             <TextField
@@ -89,8 +176,8 @@ const FormNSE = ({ formData, setCaptureData }) => {
                 required
                 select
             >
-                {BankName.map((ele,indx)=>{
-                    return <MenuItem key={indx} value = {ele.code} >{ele.title}</MenuItem>
+                {BankName.map((ele, indx) => {
+                    return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
                 })}
             </TextField>
             <TextField
