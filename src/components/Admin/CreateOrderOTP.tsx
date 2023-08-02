@@ -41,7 +41,7 @@ function CreateOrderOTP({ accessToken }) {
             }
             setIsLoading(false);
             setIsSuccess(true);
-            setMsg(`Order submitted successfully for Rs ${formData.Amount}`)
+            setMsg(`Order submitted successfully for Rs ${formData.Amount? formData.Amount:formData.instrm_amount }`)
             setTimeout(() => {
               navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
             }, 3000)

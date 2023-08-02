@@ -84,7 +84,7 @@ const RedeemCreate = ({
     "YES BANK"
   ];
   const { state }: any = useLocation();
-  const Funds = [{ code: "RMF", title: "Nippon India" }, { code: "NSE", title: "NSE" }]
+  const Funds = [{ code: "Nippon India", title: "Nippon India" }, { code: "NSE", title: "NSE" }]
   const [formData, setFormData] = useState({
     fund: "RMF",
     acno: capturedData.folio_id,
@@ -102,7 +102,6 @@ const RedeemCreate = ({
     ShowInstaStatus: "Y",
     OTP: "",
     OTPReference: "",
-    funds: "",
     SelfValidate: "Y",
     deviceid: "PARTNERAPI",
     appVersion: "1.0.1",
@@ -129,7 +128,8 @@ const RedeemCreate = ({
     amt_unit_type: "Amount",
     amt_unit: 5000,
     all_units: "N",
-    input_ref_no: ""
+    input_ref_no: "",
+    fundType:""
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -216,7 +216,7 @@ const RedeemCreate = ({
           </Typography>
           <TextField
             label="Fund Name"
-            name="funds"
+            name="fundType"
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -230,7 +230,7 @@ const RedeemCreate = ({
               return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
             })}
           </TextField>
-          {formData.funds == "RMF" && <>
+          {formData.fundType == "RMF" && <>
             <TextField
               label="Your Bank"
               name="bank"
@@ -282,7 +282,7 @@ const RedeemCreate = ({
 
           </>}
           {
-            formData.funds == "NSE" && <>
+            formData.fundType == "NSE" && <>
               <TextField
                 label="IIN"
                 name="iin"
@@ -318,7 +318,6 @@ const RedeemCreate = ({
                 helperText={validationErrors.acc_no}
                 disabled
               />
-
 
               <TextField
                 label="Bank Name"
@@ -534,7 +533,7 @@ const RedeemCreate = ({
             helperText={validationErrors.SelfValidate}
           /> */}
 
-          {formData.funds !== "" && <Button
+          {formData.fundType !== "" && <Button
             variant="contained"
             color="primary"
             type="submit"

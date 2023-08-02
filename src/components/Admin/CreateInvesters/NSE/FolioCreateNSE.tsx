@@ -43,7 +43,7 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
         "exempt_category": "N",
         "exempt_ref_no": "N",
         "hold_nature": "SI",
-        "tax_status": 1,
+        "tax_status": "01",
         "kyc": "Y",
         "fh_ckyc": "N",
         "fh_ckyc_refno": "",
@@ -145,7 +145,12 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
         "JH2_EMAIL_RELATION": "DP",
         "NOM1_GUARDIAN_RELATION": "",
         "NOM2_GUARDIAN_RELATION": "",
-        "NOM3_GUARDIAN_RELATION": ""
+        "NOM3_GUARDIAN_RELATION": "",
+        "appName":"Klarfin",
+        "appVersion":"1.0.1",
+        "deviceid":"PARTNERAPI",
+        "TAX":"INDIVIDUAL",
+        "INCOME":"NA",
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -154,9 +159,10 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
     const states = [{ code: "ND", title: "NEW DELHI" }];
 
     const dateConverter = (str) => {
-        const month = ["Jan", "Feb", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        const month = ["Jan", "Feb","Mar","Apr","May" ,"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         var date = new Date(str);
         var mnth = (date.getMonth());
+        console.log("mnth",month[mnth])
         var day = ("0" + date.getDate()).slice(-2);
         var year = date.getFullYear();
         return `${day}-${month[mnth]}-${year}`;
@@ -199,8 +205,12 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
                     setIsFailure(true)
                     return;
                 }
+                setMessage(data.message);
+                setIsSuccess(true);
                 capturedDataHandler('folio', data.folio)
-                handleNext();
+                setTimeout(() => {
+                    handleNext();
+                }, 2000);
             }).catch(({ response }) => {
                 setIsLoading(false);
                 setIsFailure(true)
@@ -380,7 +390,6 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
                                 label="Nominee Date of Birth"
                                 name="nominee1_dob"
                                 type='date'
-                                
                                 onChange={handleChange}
                                 variant="outlined"
                                 margin="normal"
@@ -482,9 +491,10 @@ const FolioCreateNSE = ({ handleNext, accessToken, capturedData, capturedDataHan
                 open={isSuccess}
                 autoHideDuration={3000}
                 onClose={() => setIsSuccess(false)}
-                message="PAN submitted successfully!"
                 sx={{ marginBottom: 2 }}
-            />
+            >
+                <Alert severity='success'> {message} </Alert>
+            </Snackbar>
             <Snackbar
                 open={isFailure}
                 autoHideDuration={3000}

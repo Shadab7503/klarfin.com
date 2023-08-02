@@ -18,8 +18,8 @@ const stepsNse = ["Investment", "Create Folio"];
 
 export default function HorizontalLinearStepper({ accessToken }) {
   const location: any = useLocation().state;
-  //const [activeStep, setActiveStep] = React.useState(location.status);
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(location.status);
+  //const [activeStep, setActiveStep] = React.useState(1);
   const [validationErrors, setValidationErrors] = React.useState<any>({})
   const [capturedData, setCapturedData] = React.useState({
     inv_id: location._id,

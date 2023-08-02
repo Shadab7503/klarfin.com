@@ -190,7 +190,7 @@ function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleN
           </TextField>
           <TextField
             label="Pan Number"
-            name="pan"
+            name="PAN"
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -264,8 +264,8 @@ function InvestmentForm({ capturedDataHandler,capturedData ,accessToken, handleN
             helperText={validationErrors.branch_city}
           ></TextField>
           <TextField
-            label="Branch Contry"
-            name="branch_contry"
+            label="Branch Country"
+            name="branch_country"
             onChange={handleChange}
             variant="outlined"
             margin="normal"

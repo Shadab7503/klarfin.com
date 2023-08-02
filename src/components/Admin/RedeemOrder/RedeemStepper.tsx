@@ -22,9 +22,6 @@ export default function RedeemStepper({ accessToken }) {
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const navigate = useNavigate();
 
-
-
-
   const isStepOptional = (step: number) => {
     return step === 5;
   };

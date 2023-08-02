@@ -84,6 +84,8 @@ const SendOTP = ({ handleNext, capturedDataHandler, capturedData, accessToken })
       .catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
+        setIsFailure(true);
+        setMsg("Validation Errors!")
         setValidationErrors(data.validationErrors);
       });
   };

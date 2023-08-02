@@ -132,7 +132,7 @@ const CreateOrder = ({ accessToken }) => {
         }
         setIsLoading(false);
         setIsSuccess(true);
-        setMsg(`Order submitted successfully for Rs ${formData.Amount}`)
+        setMsg(`Order submitted successfully for Rs ${formData.Amount?formData.Amount:data.order.Amt}`)
         setTimeout(() => {
           if (formData.PayMode == 'NEFT') {
             navigate(`/dashboardAdmin/nippon-bank/${folio}`, { state: state })
