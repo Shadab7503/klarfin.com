@@ -31,6 +31,7 @@ const schemes = [
 
 const CreateOrder = ({ accessToken }) => {
   const { state }: any = useLocation();
+  console.log("state",state);
   const [msg, setMsg] = useState("");
   const { folio }: any = useParams();
   const navigate = useNavigate();
@@ -217,7 +218,7 @@ const CreateOrder = ({ accessToken }) => {
               formData.fundType == "Nippon India" && <FormNippon schemes={schemes} formData={formData} setCaptureData={handleChange} />
             }
             {
-              formData.fundType == "NSE" && <FormNSE formData={formData} setCaptureData={handleChange} setFormData={setFormData} />
+              formData.fundType == "NSE" && <FormNSE formData={formData} setCaptureData={handleChange} data={state} setFormData={setFormData} />
             }
 
             {/* <TextField

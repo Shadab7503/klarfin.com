@@ -81,15 +81,15 @@ function InvestmentForm({ capturedDataHandler, capturedData, accessToken, handle
         }
         setMessage(data.message);
         setIsSuccess(true);
-        handleNext();
+        setTimeout(() => {
+          handleNext();
+        }, 2000);
       })
-
       .catch(({ response }) => {
         setIsLoading(false);
         setIsFailure(true);
         response?.data && setValidationErrors(response.data.validationErrors);
       });
-
   }
 
   return (

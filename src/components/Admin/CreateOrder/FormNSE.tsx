@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
 
-const FormNSE = ({ formData, setCaptureData, setFormData }) => {
+const FormNSE = ({ formData, data ,setCaptureData, setFormData }) => {
 
     const [validationErrors, setValidationErrors] = useState<any>({});
     useEffect(() => {
         setFormData((formData) => ({
             ...formData,
-            "appln_id": "MFS264077",
-            "password": "8H9QWA0K",
-            "broker_code": "ARN-264077",
-            "iin": 5011228926,
+            "iin": data.folio.Folio,
             "sub_trxn_type": "N",
             "poa": "N",
             "poa_bank_trxn_type": "",
             "trxn_acceptance": "OL",
             "demat_user": "N",
             "dp_id": "",
-            "bank": "HDF",
-            "ac_no": 50100165499362,
-            "ifsc_code": "HDFC0003895",
+            "bank": data.BANK,
+            "ac_no": data.ACNUM,
+            "ifsc_code": data.IFSC,
             "sub_broker_arn_code": "",
             "sub_broker_code": "",
             "euin_opted": "Y",
-            "euin": "E493979",
             "trxn_execution": "",
             "remarks": "",
             "payment_mode": "OL",
@@ -31,7 +27,7 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
             "instrm_bank": "",
             "instrm_ac_no": "",
             "instrm_no": "",
-            "instrm_amount": "5000",
+            "instrm_amount":formData.amount,
             "instrm_date": "",
             "instrm_branch": "",
             "instrm_charges": "",
@@ -56,7 +52,7 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
             "until_cancelled": "",
             "Return_paymnt_flag": "N",
             "Client_callback_url": "",
-            "Bank_holder_name": "Siddhant Gupta",
+            "Bank_holder_name": "Siddhant Gupta", //have to fetch from Investment or folio after added its.
             "Bank_holder_name1": "",
             "Bank_holder_name2": "",
             "trxn_initiator": "",
@@ -67,7 +63,7 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
             "ach_exist": "",
             "process_mode": "",
             "channel_type": "",
-            "amc": "RMF",
+            "amc": "RMF", //should fetch from data
             "folio": "",
             "product_code": "ONGPGR",
             "ft_acc_no": "",
@@ -94,15 +90,18 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
     const handleChange = (event) => {
         setCaptureData(event)
     };
-    const ProductCode = [{ code: "ONGPGR", title: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" }]
+    const ProductCode = [
+        { code: "LPIGGR", title: "NIPPON INDIA LOW DURATION FUND (G)"},
+        { code: "LFIGGR", title: "NIPPON INDIA LIQUID FUND (G)"},
+        { code: "ONGPGR", title: "NIPPON INDIA OVERNIGHT FUND (G)" },
+    ]
     const BankName = [{ code: "HDF", title: "HDFC BANK LTD" }]
     return (
         <form style={{ width: '100%' }}>
             <Typography variant="subtitle1" sx={{ width: "100%", textAlign: "center" }} gutterBottom>
                 NSE
             </Typography>
-
-            <TextField
+            {/* <TextField
                 label="IIN"
                 name="iin"
                 value={formData.iin}
@@ -110,9 +109,10 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
+                disabled
                 error={!!validationErrors.iin}
                 helperText={validationErrors.iin}
-                required />
+                required /> */}
             <TextField
                 label="Bank"
                 name="bank"
@@ -140,10 +140,12 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 error={!!validationErrors.ac_no}
                 helperText={validationErrors.ac_no}
                 required
+                disabled
             />
             <TextField
                 label="Bank IFSC Code"
                 name="ifsc_code"
+                value={formData.ifsc_code}
                 onChange={handleChange}
                 variant="outlined"
                 margin="normal"
@@ -151,8 +153,9 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 error={!!validationErrors.ifsc_code}
                 helperText={validationErrors.ifsc_code}
                 required
+                disabled
             />
-            <TextField
+            {/* <TextField
                 label="EUIN"
                 name="EUIN"
                 value={formData.EUIN}
@@ -163,8 +166,8 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 error={!!validationErrors.euin}
                 helperText={validationErrors.euin}
                 required
-            />
-            <TextField
+            /> */}
+            {/* <TextField
                 label="Bill Desk Bank"
                 name="billdesk_bank"
                 onChange={handleChange}
@@ -179,8 +182,8 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 {BankName.map((ele, indx) => {
                     return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
                 })}
-            </TextField>
-            <TextField
+            </TextField> */}
+            {/* <TextField
                 label="Instrument Amount"
                 name="instrm_amount"
                 onChange={handleChange}
@@ -190,8 +193,8 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 error={!!validationErrors.instrm_amount}
                 helperText={"Equal to Sum of Transaction amount"}
                 required
-            />
-            <TextField
+            /> */}
+            {/* <TextField
                 label="Bank Holder Name"
                 name="Bank_holder_name"
                 value="Siddhant Gupta"
@@ -202,7 +205,7 @@ const FormNSE = ({ formData, setCaptureData, setFormData }) => {
                 error={!!validationErrors.ChqBank}
                 helperText={validationErrors.ChqBank}
                 required
-            />
+            /> */}
 
             <TextField
                 label="Amount"
