@@ -19,6 +19,11 @@ import { Stack } from '@mui/joy';
 import { Typography } from '@material-ui/core';
 
 export default function TransactionDatewiseNSE(props: any) {
+    const SchemeType = {
+        "ONGPGR":"NIPPON INDIA OVERNIGHT FUND (G)",
+        "LPIGGR":"NIPPON INDIA LOW DURATION FUND (G)",
+        "LFIGGR":"NIPPON INDIA LIQUID FUND (G)",
+    }
     const [tranx, setTranx] = useState<any>([]);
     const { folio_id } = useParams();
     const [isError, setError] = useState(false);
@@ -32,14 +37,15 @@ export default function TransactionDatewiseNSE(props: any) {
             ),
         },
         {
-            field:'AMC_NAME', headerName: 'Fund', width: 280, renderHeader: () => (
+            field:'SCHEME_NAME', headerName: 'Fund', width: 280, renderHeader: () => (
                 <strong>
                     {'Fund'}
                 </strong>
             ),
             renderCell:(params)=>{
-                let { AMC_NAME } = params.row;
-                return<div>{AMC_NAME.split("/")[1]}</div>
+                let { SCHEME_NAME } = params.row;
+                const scheme = SchemeType[SCHEME_NAME.split("/")[0]]
+                return<div>{scheme}</div>
             }
         },
         {
@@ -56,7 +62,7 @@ export default function TransactionDatewiseNSE(props: any) {
             },
         },
         {
-            field: 'AMOUNT', headerName: 'Amount', width: 240, renderHeader: () => (
+            field: 'AMOUNT', headerName: 'Amount', width: 180, renderHeader: () => (
                 <strong>
                     {'Amount'}
                 </strong>

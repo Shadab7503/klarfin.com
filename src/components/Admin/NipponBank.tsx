@@ -86,10 +86,7 @@ function NipponBank({ accessToken }) {
           </Button>
           <Button variant="contained" style={{ background: "orange", marginRight: "1rem" }}
             onClick={() => {
-              navigate(
-                `/dashboardAdmin/investment/details/${folio_id}`,
-              );
-            }}>
+              {state.fundType === "Various funds through NSE" ? navigate(`/dashboardAdmin/investment/nse/details/${folio_id}`):navigate(`/dashboardAdmin/investment/details/${folio_id}`) }}}>
             View Reports
           </Button>
         </Grid>
