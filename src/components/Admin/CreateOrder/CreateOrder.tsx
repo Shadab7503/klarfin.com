@@ -231,6 +231,7 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.ChqBank}
               helperText={validationErrors.ChqBank}
               disabled
+              required
             >
               {bankNames.map((ele, index) => {
                 return <MenuItem value={ele} defaultChecked key={index} >{ele}</MenuItem>
@@ -249,6 +250,7 @@ const CreateOrder = ({ accessToken }) => {
               error={!!validationErrors.Scheme}
               helperText={validationErrors.Scheme}
               select
+              required
             >
               {
                 schemes.map(each => {
@@ -369,6 +371,7 @@ const CreateOrder = ({ accessToken }) => {
               fullWidth
               error={!!validationErrors.PayMode}
               helperText={validationErrors.PayMode}
+              required
             >
               <MenuItem defaultChecked value="OTBM">
                 Auto Debit

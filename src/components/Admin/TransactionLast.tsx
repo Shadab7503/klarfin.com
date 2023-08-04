@@ -40,7 +40,7 @@ export default function Transaction20(props: any) {
                     Modeofpayment = 'NEFT';
                 }
                 const fullName = `${Transaction_type} ( ${Modeofpayment} )`;
-                return <div>{Modeofpayment? fullName : Transaction_type  }</div>;
+                return <div>{Modeofpayment ? fullName : Transaction_type}</div>;
             },
         },
         {
@@ -97,7 +97,7 @@ export default function Transaction20(props: any) {
             name: "LIQUID FUND",
             plan: "IG",
             opt: "G",
-        },
+        }, 
         {
             value: "ON",
             name: "OVERNIGHT FUND",
@@ -120,7 +120,7 @@ export default function Transaction20(props: any) {
                 setLasttranx(data.tranxData);
                 console.log(data.tranxData)
                 setLoading(false);
-            }); 
+            });
     }
     useEffect(() => {
         getLastTwentyTransaction()

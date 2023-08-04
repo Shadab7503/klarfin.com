@@ -113,14 +113,15 @@ export default function TransactionDatewise(props: any) {
             name: "LIQUID FUND",
             plan: "IG",
             opt: "G",
-        },
+          },
         {
-            value: "ON",
-            name: "OVERNIGHT FUND",
-            plan: "GP",
-            opt: "G",
+          value: "ON",
+          name: "OVERNIGHT FUND",
+          plan: "GP",
+          opt: "G",
         },
-    ];
+        
+      ];
 
     const getTranxData = async () => {
         setLoading(true);

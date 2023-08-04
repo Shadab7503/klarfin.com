@@ -33,18 +33,19 @@ const Folio = ({
       opt: "G",
     },
     {
-      value: "ON",
-      name: "OVERNIGHT FUND ( < 5 DAYS )",
-      plan: "GP",
-      opt: "G",
+      value: "LF",
+      name: "LIQUID FUND (5-15 DAYS)",
+      plan: "IG",
+      opt: "G"
     },
     {
-      value: "LF",
-      name: "LIQUID FUND ( 5-15 DAYS )",
-      plan: "IG",
-      opt: "G",
+      value: "ON",
+      name: "OVERNIGHT FUND ( < 5 DAYS)",
+      plan: "GP",
+      opt: "G"
     },
-  ];
+  
+  ]
   const Occupation = ['--SELECT--','SERVICE', 'BUSINESS', 'STUDENT', 'HOUSEHOLD', 'PROFESSIONAL', 'FARMER', 'RETIRED', 'OTHERS', 'LABOUR', 'SALARIED', 'SELF EMPLOYED']
 
   const [formData, setFormData] = useState({

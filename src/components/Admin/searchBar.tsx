@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,15 +10,15 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
-import {format} from "date-fns";
+import { format } from "date-fns";
 
-const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
+const FilterBar = ({ filterDataHandler, filter: defaultValues, setDate }) => {
   const [filter, setFilter] = useState({
     ...defaultValues,
   });
 
   const filterHandler = (key, value) => {
-    setFilter({...filter, [key]: value});
+    setFilter({ ...filter, [key]: value });
   };
 
   const schemes = [
@@ -42,16 +42,16 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
     },
   ];
 
-  const changeHandler =(event)=>{
-    const {name,value} = event.target;
-    if(name=="scheme"){
-      const data = schemes.find(each=>each.value == value);
-      if(!data){ return ;}
-      setFilter({...filter,"plan":data.plan,"scheme":value});
+  const changeHandler = (event) => {
+    const { name, value } = event.target;
+    if (name == "scheme") {
+      const data = schemes.find(each => each.value == value);
+      if (!data) { return; }
+      setFilter({ ...filter, "plan": data.plan, "scheme": value });
     }
   }
 
-  
+
   const DateConverter = str => {
     var date = new Date(str);
     var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -77,24 +77,24 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
     return `${year}-${month}-${day}`;
   };
   return (
-    <AppBar style={{backgroundColor: "white"}} position="static" elevation={0}>
+    <AppBar style={{ backgroundColor: "white" }} position="static" elevation={0}>
       <Toolbar>
         <Typography
           variant="h6"
           component="div"
-          sx={{flexGrow: 1}}
+          sx={{ flexGrow: 1 }}
         ></Typography>
         <TextField
           label="Scheme"
           name="scheme"
           onChange={changeHandler}
           value={filter.scheme}
-          sx={{m: 1, minWidth: 120}}
+          sx={{ m: 1, minWidth: 120 }}
           select
         >
           {schemes.map((each, idx) => {
             return (
-              <MenuItem key={idx}  value={each.value}>
+              <MenuItem key={idx} value={each.value}>
                 {each.name}
               </MenuItem>
             );
@@ -115,7 +115,7 @@ const FilterBar = ({filterDataHandler, filter: defaultValues, setDate}) => {
           InputLabelProps={{
             shrink: true,
           }}
-          sx={{m: 1}}
+          sx={{ m: 1 }}
         />
         <Button variant="contained" color="primary" onClick={handleSearchClick}>
           Filter
