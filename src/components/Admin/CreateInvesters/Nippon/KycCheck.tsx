@@ -1,7 +1,7 @@
 import React, { useState ,useEffect} from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { checkKYC } from '../../../services/nippon.service';
+import { checkKYC } from '../../../../services/nippon.service';
 import axios from 'axios';
 
 const useStyles = makeStyles({

@@ -103,11 +103,11 @@ export default function TransactionDatewise(props: any) {
 
     const schemes = [
         {
-          value: "LP",
-          name: "LOW DURATION FUND",
-          plan: "IG",
-          opt: "G",
-        },
+            value: "LP",
+            name: "LOW DURATION FUND",
+            plan: "IG",
+            opt: "G",
+        },        
         {
             value: "LF",
             name: "LIQUID FUND",

@@ -106,6 +106,7 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             hidden
             focused
             margin="normal"
+            helperText="Only PDF format allowed"
             fullWidth
           ></TextField>
           <TextField
@@ -118,6 +119,7 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             hidden
             focused
             margin="normal"
+            helperText="Only PDF format allowed"
             fullWidth
           ></TextField>
           <TextField
@@ -130,6 +132,7 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             hidden
             focused
             margin="normal"
+            helperText="Only PDF format allowed"
             fullWidth
           ></TextField>
           <TextField
@@ -141,6 +144,7 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             variant="outlined"
             hidden
             focused
+            helperText="Only PDF format allowed"
             margin="normal"
             fullWidth
           ></TextField>
@@ -151,6 +155,7 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             type="file"
             required
             variant="outlined"
+            helperText="Only PDF format allowed"
             hidden
             focused
             margin="normal"
@@ -163,18 +168,20 @@ function CompanyDocument({accessToken, handleNext, user,capturedData}) {
             type="file"
             required
             variant="outlined"
+            helperText="Only PDF format allowed"
             hidden
             focused
             margin="normal"
             fullWidth
           ></TextField>
           <TextField
-            label="Upload Cancelled Cheque"
+            label="Upload Cancelled Cheque/ Bank Statement"
             onChange={fileChangeHandler}
             name="cancel_cheque"
             type="file"
             required
             variant="outlined"
+            helperText="Only PDF format allowed"
             hidden
             focused
             margin="normal"

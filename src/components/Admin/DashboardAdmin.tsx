@@ -3,11 +3,11 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "../Layout/adminLayout";
 import Form from "./Form";
 import Users from "./Users";
-import HorizontalLinearStepper from "./stepper/stepper";
-import CreateOrder from "./CreateOrder";
+import HorizontalLinearStepper from "./CreateInvesters/stepper";
+import CreateOrder from "./CreateOrder/CreateOrder";
 import Orders from "./orders";
 import Transactions from "./Transaction-bkt";
-import RedeemStepper from "./stepper/RedeemStepper";
+import RedeemStepper from "./RedeemOrder/RedeemStepper";
 import Redeem from "./redeems";
 import CashFlows from "./CashFlows";
 import Insights from "./Insights";
@@ -19,7 +19,8 @@ import Upload_stepper from "./Upload_doc/upload_stepper";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
 import CreateOrderOTP from "./CreateOrderOTP";
-import NEFTAccountDetails from "./stepper/NEFTAccountDetails";
+import NEFTAccountDetails from "./CreateInvesters/Nippon/NEFTAccountDetails";
+import TransactionDatewiseNSE from "./TransactionDatewiseNSE";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -60,6 +61,10 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/investment/details/:folio_id" element={<AdminLayout
           user={{}} >
           <Orders accessToken={accessToken} />
+        </AdminLayout>} />
+        <Route path="/dashboardAdmin/investment/nse/details/:folio_id" element={<AdminLayout
+          user={{}} >
+          <TransactionDatewiseNSE accessToken={accessToken} />
         </AdminLayout>} />
         <Route path="/dashboardAdmin/investment/tranx/:folio_id" element={<AdminLayout
           user={{}} >

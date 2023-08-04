@@ -199,6 +199,7 @@ function DirectorsDetails({accessToken, handleNext, user, capturedData}) {
             type="file"
             required
             variant="outlined"
+            helperText="Only PDF format allowed"
             hidden
             focused
             margin="normal"
@@ -211,6 +212,7 @@ function DirectorsDetails({accessToken, handleNext, user, capturedData}) {
             type="file"
             required
             variant="outlined"
+            helperText="Only PDF format allowed"
             hidden
             focused
             margin="normal"

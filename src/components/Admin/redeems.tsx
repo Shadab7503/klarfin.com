@@ -14,11 +14,11 @@ import Popup from './model';
 export default function Redeems(props: any) {
 
     const [tranx, setTranx] = useState([]);
-    const [refno,setRefno] = useState();
-    const [popup,setPopup] = useState(false);
-    
+    const [refno, setRefno] = useState();
+    const [popup, setPopup] = useState(false);
 
-    const  { folio_id } = useParams();
+
+    const { folio_id } = useParams();
     const [columns, setColumns] = useState([
         { field: 'fund', headerName: 'Fund', width: 180 },
         { field: 'acno', headerName: 'Acno', width: 180 },
@@ -40,23 +40,23 @@ export default function Redeems(props: any) {
         { field: 'Return_code', headerName: 'Return_code', width: 180 },
         { field: 'REFNO', headerName: 'REFNO', width: 180 },
         { field: 'Date_Time', headerName: 'Date_Time', width: 180 },
-        {field: "createdAt", headerName: "Created At", width: 230},
+        { field: "createdAt", headerName: "Created At", width: 230 },
 
         {
             field: 'Actions', headerName: 'action', width: 420, renderCell: (params: any) => {
-            
-                return <div style={{ display: 'flex', justifyContent:'space-between' }}>
+
+                return <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                     <Grid
                         item
                         className="bills-pay"
                         py={1}
                         px={2}
-                        style={{marginRight:'1rem'}}
-                        onClick={()=>{
+                        style={{ marginRight: '1rem' }}
+                        onClick={() => {
                             setRefno(params.row.REFNO);
                             setPopup(true);
-                         }}
+                        }}
 
                     >
                         Check status
@@ -64,15 +64,15 @@ export default function Redeems(props: any) {
                 </div>
             }
         }
-      ]);
+    ]);
 
 
     const [loading, setLoading] = useState(false);
     const getTranxData = () => {
         setLoading(true);
-  
+
         axios
-            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeems`,{acno:folio_id,plan:filter.plan,scheme:filter.scheme,trdate:filter.date},
+            .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeems`, { acno: folio_id, plan: filter.plan, scheme: filter.scheme, trdate: filter.date },
                 {
                     headers: { Authorization: `Bearer ${props.accessToken}` }
                 })
@@ -83,11 +83,11 @@ export default function Redeems(props: any) {
 
     }
 
-  
+
 
     const today = new Date();
-    
-    const [date,setDate] = useState(format(today, 'MM/dd/yyyy'))
+
+    const [date, setDate] = useState(format(today, 'MM/dd/yyyy'))
     const [filter, setFilter] = useState({
         plan: 'IG',
         scheme: 'LP',
@@ -104,10 +104,10 @@ export default function Redeems(props: any) {
 
     if (loading) return <Loading />;
 
-    return    <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
+    return <Grid item xs={12} px={10} mt={5} sx={{ maxWidth: "95vw", height: '100vh' }}>
 
-<Popup handleClose={setPopup} accessToken={props.accessToken} isOpen={popup} refno={refno} ></Popup>
-<SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate}/>
+        <Popup handleClose={setPopup} accessToken={props.accessToken} isOpen={popup} refno={refno} ></Popup>
+        <SearchBar filter={filter} filterDataHandler={filterHandler} setDate={setDate} />
 
         <h2 style={{ marginBottom: '20px' }}>Redeems</h2>
 
@@ -117,10 +117,10 @@ export default function Redeems(props: any) {
             <DataGrid
                 //  hideFooter={true}
                 rowsPerPageOptions={[50, 100, 1000]}
-             
+
                 rows={tranx.map((each: any, idx: number) => {
-                    return {...each,id:idx+1};
-                  
+                    return { ...each, id: idx + 1 };
+
                 })}
 
                 columns={columns.map(each => {

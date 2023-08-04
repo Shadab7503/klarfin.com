@@ -28,7 +28,6 @@ const FilterBar = ({ filterDataHandler, filter: defaultValues, setDate }) => {
       plan: "IG",
       opt: "G",
     },
-
     {
       value: "LF",
       name: "LIQUID FUND",

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Alert, MenuItem, CircularProgress, Snackbar, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { createFolio } from '../../../services/nippon.service';
+import { createFolio } from '../../../../services/nippon.service';
 import { format } from 'date-fns';
 
 const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) => {
@@ -12,9 +12,9 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
   const schemes = [
     {
       value: "LP",
-      name: "LOW DURATION FUND (> 2 WEEKS)",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
       plan: "IG",
-      opt: "G"
+      opt: "G",
     },
     {
       value: "LF",
@@ -36,10 +36,10 @@ const Folio = ({ handleNext, accessToken, capturedData, capturedDataHandler }) =
     scheme: 'LF',
     plan: 'IG',
     option: 'G',
-    // email: "",
-    // mobile: "",
-    email: capturedData.invtorInf[0],
-    mobile: capturedData.invtorInf[1].toString(),
+     email: "",
+     mobile: "",
+    //email: capturedData.invtorInf[0],
+    //mobile: capturedData.invtorInf[1].toString(),
     dob: '23/11/1991',
     RI: 'Y',
     PEP: 'N',

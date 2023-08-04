@@ -28,9 +28,9 @@ const Folio = ({
   const schemes = [
     {
       value: "LP",
-      name: "LOW DURATION FUND (> 2 WEEKS)",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
       plan: "IG",
-      opt: "G"
+      opt: "G",
     },
     {
       value: "LF",

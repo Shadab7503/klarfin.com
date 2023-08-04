@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, CircularProgress, Snackbar, Card, CardContent, Typography, MenuItem } from '@mui/material';
 import axios from 'axios';
-import { Alert } from '../../../utils/components';
+import { Alert } from '../../../../utils/components';
 
-const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
+const Investment = ({ handleNext,captureData ,accessToken, capturedDataHandler }) => {
   const [isConfirm, setisConfirm] = useState(false);
   const [message, setMessage] = useState("");
-  const [formData, setFormData] = useState({
-    IFSC: '',
-    ACTYPE: 'SAVINGS',
-    ACNUM: '',
-    BANK: '',
-    CONMACNUM: "",
-    user_id: ""
-  });
+  
 
   const AccTypes = ['SAVINGS', 'CURRENT'];
   const bankNames = [
@@ -76,7 +69,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             response.data.message === "Admin"
           ) {
             setUsers({ ...response.data.admin[0] });
-            setFormData({ ...formData, "user_id": response.data.admin[0].id })
+            capturedDataHandler("user_id", response.data.admin[0].id)
             console.log({ ...response.data.admin[0] })
           }
         })
@@ -115,10 +108,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    capturedDataHandler(name,value);
   };
 
   const handleCloseSnackbar = () => {
@@ -127,16 +117,16 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
 
   const saveHandler = (e) => {
     e.preventDefault();
-    console.log(formData)
+    console.log("captureData :",captureData)
     setValidationErrors({});
     setIsLoading(true);
-    //console.log(formData)
-    if (formData.ACNUM != formData.CONMACNUM) {
+    //console.log(captureData)
+    if (captureData.ACNUM != captureData.CONMACNUM) {
       setIsLoading(false);
       setisConfirm(true);
       return;
     } else {
-      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, formData,
+      axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/invest`, captureData,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -224,25 +214,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           </TextField>
 
           <TextField
-            label="Fund"
-            onChange={handleChange}
-            name="fund_id"
-            required
-            select
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            error={!!validationErrors.fund_id} // Check if the field has an error
-            helperText={validationErrors.fund_id} // Display the error message
-          >
-            {funds.map(option => (
-              <MenuItem key={option._id} value={option._id}>
-                {option.name}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
             label="Bank Name"
             name="BANK"
             onChange={handleChange}
@@ -262,7 +233,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           <TextField
             label="IFSC"
             name="IFSC"
-            value={formData.IFSC}
+            value={captureData.IFSC}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -283,7 +254,6 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            defaultValue="SAVINGS"
             error={!!validationErrors.ACTYPE} // Check if the field has an error
             helperText={validationErrors.ACTYPE} // Display the error message
           >
@@ -297,7 +267,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           <TextField
             label="Account Number"
             name="ACNUM"
-            value={formData.ACNUM}
+            value={captureData.ACNUM}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -314,7 +284,7 @@ const Investment = ({ handleNext, accessToken, capturedDataHandler }) => {
           <TextField
             label="Confirm Account Number"
             name="CONMACNUM"
-            value={formData.CONMACNUM}
+            value={captureData.CONMACNUM}
             onChange={handleChange}
             variant="outlined"
             margin="normal"

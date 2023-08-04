@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { createFolio } from "../../../services/nippon.service";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const RedeemCreate = ({
   handleNext,
@@ -31,9 +31,9 @@ const RedeemCreate = ({
   const schemes = [
     {
       value: "LP",
-      name: "LOW DURATION FUND (> 2 WEEKS)",
+      name: "LOW DURATION FUND ( > 2 WEEKS )",
       plan: "IG",
-      opt: "G"
+      opt: "G",
     },
     {
       value: "LF",
@@ -47,9 +47,8 @@ const RedeemCreate = ({
       plan: "GP",
       opt: "G"
     },
-  
-  ]
-
+  ];
+  const BankName = [{code:"HDF" , title:"HDFC BANK LTD"}]
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",
@@ -84,7 +83,8 @@ const RedeemCreate = ({
     "UNION BANK OF INDIA",
     "YES BANK"
   ];
-  const { state  }:any = useLocation();
+  const { state }: any = useLocation();
+  const Funds = [{ code: "Nippon India", title: "Nippon India" }, { code: "NSE", title: "NSE" }]
   const [formData, setFormData] = useState({
     fund: "RMF",
     acno: capturedData.folio_id,
@@ -95,23 +95,48 @@ const RedeemCreate = ({
     UnitamtFlag: "A",
     UnitAmtValue: "",
     Tpin: "A",
-    bank: (state.BANK ? state.BANK:" " ),
+    bank: (state.BANK ? state.BANK : " "),
     oldihno: 0,
     trdate: getDate(),
     entdate: getDate(),
     ShowInstaStatus: "Y",
     OTP: "",
-    OTPReference:"",
+    OTPReference: "",
     SelfValidate: "Y",
     deviceid: "PARTNERAPI",
     appVersion: "1.0.1",
     appName: "Klarcap",
+    appln_id: "MFS264077",
+    password: "8H9QWA0K",
+    broker_code: "ARN-264077",
+    iin: 5011228926,
+    poa: "N",
+    poa_bank_trxn_type: "",
+    trxn_acceptance: "OL",
+    dp_id: "",
+    acc_no: 50100165499362,
+    bank_name: "HDF",
+    ifsc_code: "HDFC0003895",
+    remarks: "test",
+    trxn_initiator: "I/O",
+    trans_count: 1,
+    investor_auth_log: "",
+    amc: "RMF",
+    folio: 5011228926,
+    product_code: "SIP3G",
+    ft_acc_no: "",
+    amt_unit_type: "Amount",
+    amt_unit: 5000,
+    all_units: "N",
+    input_ref_no: "",
+    fundType:""
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
-  const [phone,setPhone] = useState("");
+  const [selectedFund, setSelectedFund] = useState("");
+  const [phone, setPhone] = useState("");
   const [Msg, setMsg] = useState("");
   const [validationErrors, setValidationErrors] = useState<any>({});
   const [pan, setPan] = useState(capturedData.pan);
@@ -122,23 +147,23 @@ const RedeemCreate = ({
       if (!data) return;
       setFormData({ ...formData, plan: data.plan, scheme: data.value });
     }
-    
+
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
     }));
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationErrors({});
     setIsLoading(true);
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Acno: formData.acno,Folio: formData.acno},
+    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Acno: formData.acno, Folio: formData.acno },
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
         const data = res.data;
-        if(!data.succ){
+        if (!data.succ) {
           setIsLoading(false);
           setIsSuccess(false);
           setMsg(data.message);
@@ -148,7 +173,7 @@ const RedeemCreate = ({
         setPan("");
         setIsSuccess(true);
         setMsg(`OTP has been sent to XXXXXXXXX${phone}`);
-        capturedDataHandler({...formData ,"OTPReference": data.OTPData.RefNo});
+        capturedDataHandler({ ...formData, "OTPReference": data.OTPData.RefNo });
         setTimeout(() => {
           handleNext();
         }, 3000);
@@ -162,13 +187,13 @@ const RedeemCreate = ({
 
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     try {
       const res = axios.get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/folio`, {
         headers: { Authorization: `Bearer ${accessToken}` }
-      }).then((res)=>{
-        const {data} = res;
-        const phone = data.phone+""
+      }).then((res) => {
+        const { data } = res;
+        const phone = data.phone + ""
         setPhone(phone.slice(-2));
       })
     } catch (error) {
@@ -176,8 +201,8 @@ const RedeemCreate = ({
       setMsg("Unable to Fetch Phone Number From Folio DB");
       return;
     }
-  },[])
-  
+  }, [])
+
   const handleCloseSnackbar = () => {
     setIsFailure(false);
   };
@@ -191,66 +216,157 @@ const RedeemCreate = ({
           </Typography>
           <TextField
             label="Fund Name"
-            name="fund"
-            value="Nippon India"
+            name="fundType"
             onChange={handleChange}
             variant="outlined"
             margin="normal"
             fullWidth
             error={!!validationErrors.fund}
             helperText={validationErrors.fund}
-            disabled
             required
-          />
-
-          <TextField
-            label="Your Bank"
-            name="bank"
-            defaultValue={formData.bank}
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            error={!!validationErrors.bank}
-            helperText={validationErrors.bank}
-            disabled
-            required
-          />
-          <TextField
-            label="Scheme"
-            name="scheme"
-            onChange={handleChange}
-            defaultValue={schemes[0].value}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            error={!!validationErrors.Scheme}
-            helperText={validationErrors.Scheme}
             select
-            required
           >
-            {schemes.map(ele => {
-              return (
-                <MenuItem value={ele.value} defaultChecked key={ele.value}>
-                  {ele.name}
-                </MenuItem>
-              );
+            {Funds.map((ele, indx) => {
+              return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
             })}
           </TextField>
+          {formData.fundType == "RMF" && <>
+            <TextField
+              label="Your Bank"
+              name="bank"
+              defaultValue={formData.bank}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!!validationErrors.bank}
+              helperText={validationErrors.bank}
+              disabled
+              required
+            />
+            <TextField
+              label="Scheme"
+              name="scheme"
+              onChange={handleChange}
+              defaultValue={schemes[0].value}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!!validationErrors.Scheme}
+              helperText={validationErrors.Scheme}
+              select
+              required
+            >
+              {schemes.map(ele => {
+                return (
+                  <MenuItem value={ele.value} defaultChecked key={ele.value}>
+                    {ele.name}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
 
-          <TextField
-            label="Amount"
-            name="UnitAmtValue"
-            value={formData.UnitAmtValue}
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            error={!!validationErrors.UnitAmtValue}
-            helperText={validationErrors.UnitAmtValue}
-            type="number"
-            required
-          />
+            <TextField
+              label="Amount"
+              name="UnitAmtValue"
+              value={formData.UnitAmtValue}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!!validationErrors.UnitAmtValue}
+              helperText={validationErrors.UnitAmtValue}
+              type="number"
+              required
+            />
+
+          </>}
+          {
+            formData.fundType == "NSE" && <>
+              <TextField
+                label="IIN"
+                name="iin"
+                value={formData.iin}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.OTP}
+                helperText={validationErrors.OTP}
+              />
+              <TextField
+                label="Folio"
+                name="folio"
+                value={formData.folio}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.folio}
+                helperText={validationErrors.folio}
+              />
+
+              <TextField
+                label="Account Number"
+                name="acc_no"
+                value={formData.acc_no}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.acc_no}
+                helperText={validationErrors.acc_no}
+                disabled
+              />
+
+              <TextField
+                label="Bank Name"
+                name="bank_name"
+                value={formData.bank_name}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.bank_name}
+                helperText={validationErrors.bank_name}
+                select
+                required
+              >
+                {
+                  BankName.map((ele,indx)=>{
+                    return<MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
+                  })
+                }
+              </TextField>
+
+              <TextField
+                label="IFSC"
+                name="ifsc_code"
+                value={formData.ifsc_code}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.ifsc_code}
+                helperText={validationErrors.ifsc_code}
+              />
+
+              <TextField
+                label="Amount"
+                name="amt_unit"
+                value={formData.amt_unit}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!!validationErrors.amt_unit}
+                helperText={validationErrors.amt_unit}
+              />
+            </>
+          }
+
+
+
 
           {/* <TextField
             label="OTP"
@@ -417,7 +533,7 @@ const RedeemCreate = ({
             helperText={validationErrors.SelfValidate}
           /> */}
 
-          <Button
+          {formData.fundType !== "" && <Button
             variant="contained"
             color="primary"
             type="submit"
@@ -430,7 +546,7 @@ const RedeemCreate = ({
             ) : (
               "Submit"
             )}
-          </Button>
+          </Button>}
         </form>
       </CardContent>
       <Snackbar
