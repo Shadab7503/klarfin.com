@@ -17,9 +17,17 @@ export default function Investment(props: any) {
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
   const [investmentList, setInvestmentList] = useState([]);
-  const [invtType, setInvtType] = useState(["Individual", "Proprietorship", "Partnership", "Company"])
+  const [invtType, setInvtType] = useState([{code:1,name:"Individual"},{code:2,name:"Proprietorship"},{code:3,name: "Partnership"},{code:4,name: "Company"}])
   const [statusOfinvestMentList, setstatusOfinvestMentList] = useState(1);
-
+  const [Banks,setBanks] = useState({
+    "HDF" : "HDFC Bank",
+    "ICI" :"ICICI Bank",
+    "IDB" :"IDBI Bank",
+    "INB" :"Indian Bank",
+    "SBI" :"State Bank of India"
+  })
+  
+  
 
   const actionHandler = (type, id) => {
     setLoading(true);
@@ -85,7 +93,7 @@ export default function Investment(props: any) {
     //{ field: 'frequency', headerName: 'Frequency', width: 180 },
     // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
     {
-      field: "fund", headerName: "Fund", width: 180, renderHeader: () => (
+      field: "fund", headerName: "Fund", width: 220, renderHeader: () => (
         <strong>
           {'Fund'}
         </strong>
@@ -146,10 +154,9 @@ export default function Investment(props: any) {
                   px={2}
                   style={{ background: "orange", marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(
-                      `/dashboardAdmin/investment/details/${params.row.folio.Folio}`,
-                    );
-                  }}
+                    { params.row.fundType == "Various funds through NSE" ? navigate(`/dashboardAdmin/investment/nse/details/${params.row.folio.Folio}`):
+                     navigate(`/dashboardAdmin/investment/details/${params.row.folio.Folio}`,);}                  
+                    }}
                 >
                   View Reports
                 </Grid>
@@ -370,9 +377,9 @@ export default function Investment(props: any) {
               org: each.user_id.name,
               fund: each.fund_id.name,
               is_OTBM: each.is_OTBM,
-              bank: each.BANK,
+              bank: Banks[each.BANK]?Banks[each.BANK]:each.BANK,
               status: each.status,
-              type: invtType[each.type],
+              type: invtType.filter((ele)=>ele.code == each.type)[0]?.name,
             };
           })}
           columns={columns.map((each) => {

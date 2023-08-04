@@ -20,6 +20,7 @@ import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
 import CreateOrderOTP from "./CreateOrderOTP";
 import NEFTAccountDetails from "./CreateInvesters/Nippon/NEFTAccountDetails";
+import TransactionDatewiseNSE from "./TransactionDatewiseNSE";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -60,6 +61,10 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/investment/details/:folio_id" element={<AdminLayout
           user={{}} >
           <Orders accessToken={accessToken} />
+        </AdminLayout>} />
+        <Route path="/dashboardAdmin/investment/nse/details/:folio_id" element={<AdminLayout
+          user={{}} >
+          <TransactionDatewiseNSE accessToken={accessToken} />
         </AdminLayout>} />
         <Route path="/dashboardAdmin/investment/tranx/:folio_id" element={<AdminLayout
           user={{}} >

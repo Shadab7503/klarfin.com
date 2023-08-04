@@ -74,7 +74,7 @@ export default function Investment(props: any) {
       </strong>) },
     //{ field: 'frequency', headerName: 'Frequency', width: 180 },
     // { field: 'amount', headerName: 'Amount of Investment', width: 180 },
-    { field: "fund", headerName: "Fund", width: 180 ,renderHeader: () => (
+    { field: "fund", headerName: "Fund", width: 220 ,renderHeader: () => (
       <strong>
         Fund
       </strong>)},

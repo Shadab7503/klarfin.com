@@ -14,7 +14,7 @@ import InvestmentFormNSE from "./NSE/InvestmentFormNSE";
 import FolioCreateNSE from "./NSE/FolioCreateNSE";
 
 const stepsNippon = ["Investment", "KYC check", "Create Folio", "EOTBM"];
-const stepsNse = ["Investment", "Create Folio"];
+const stepsNse = ["Investment", "Final"];
 
 export default function HorizontalLinearStepper({ accessToken }) {
   const location: any = useLocation().state;
@@ -222,7 +222,7 @@ export default function HorizontalLinearStepper({ accessToken }) {
           </>
         }
         {
-          capturedData.fundType == "NSE" &&<>
+          capturedData.fundType == "Various funds through NSE" &&<>
           <Stepper activeStep={activeStep}>
           {stepsNse.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
@@ -244,7 +244,7 @@ export default function HorizontalLinearStepper({ accessToken }) {
             );
           })}
         </Stepper>
-        {activeStep === stepsNse.length ? (
+        {activeStep === stepsNse.length - 1 ? (
           <React.Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>
               Thank you!, Your are done with all the steps.
@@ -264,14 +264,6 @@ export default function HorizontalLinearStepper({ accessToken }) {
                     accessToken={accessToken}
                     handleNext={handleNext}
                     capturedData = {capturedData}
-                  />
-                )}
-                {activeStep == 1 && (
-                  <FolioCreateNSE
-                    capturedDataHandler={dataCapture}
-                    capturedData={capturedData}
-                    accessToken={accessToken}
-                    handleNext={handleNext}
                   />
                 )}
               </div>
