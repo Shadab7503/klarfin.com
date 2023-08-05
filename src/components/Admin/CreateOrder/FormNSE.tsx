@@ -27,7 +27,6 @@ const FormNSE = ({ formData, data ,setCaptureData, setFormData }) => {
             "instrm_bank": "",
             "instrm_ac_no": "",
             "instrm_no": "",
-            "instrm_amount":formData.amount,
             "instrm_date": "",
             "instrm_branch": "",
             "instrm_charges": "",
@@ -85,6 +84,7 @@ const FormNSE = ({ formData, data ,setCaptureData, setFormData }) => {
             "FREEDOM_TENURE": "",
             "FREEDOM_SWP_AMOUNT": "",
             "FREEDOM_SCHEME_OPTION": "",
+            "instrm_amount":formData.amount,
         }))
     }, [])
     const handleChange = (event) => {
