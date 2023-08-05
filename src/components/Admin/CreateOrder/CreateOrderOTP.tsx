@@ -43,7 +43,10 @@ function CreateOrderOTP({ accessToken }) {
             setIsSuccess(true);
             setMsg(`Order submitted successfully for Rs ${formData.Amount? formData.Amount:formData.instrm_amount }`)
             setTimeout(() => {
-              navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
+              formData.fundType == "Various funds through NSE" ? 
+                navigate(`/dashboardAdmin/investment/nse/details/${state.state.folio.Folio}`):
+                navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
+              //navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
             }, 3000)
 
           }).catch(({ response }) => {
