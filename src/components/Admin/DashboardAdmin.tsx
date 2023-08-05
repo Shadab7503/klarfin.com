@@ -4,7 +4,8 @@ import AdminLayout from "../Layout/adminLayout";
 import Form from "./Form";
 import Users from "./Users";
 import HorizontalLinearStepper from "./CreateInvesters/stepper";
-import CreateOrder from "./CreateOrder/CreateOrder";
+import CreateOrderNippon from "./CreateOrder/CreateOrderNippon";
+import CreateOrderNSE from "./CreateOrder/CreateOrderNSE";
 import Orders from "./orders";
 import Transactions from "./Transaction-bkt";
 import RedeemStepper from "./RedeemOrder/RedeemStepper";
@@ -18,7 +19,7 @@ import Upload_stepper from "./Upload_doc/upload_stepper";
 // import CreditManagement from "./CreditManagement";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
-import CreateOrderOTP from "./CreateOrderOTP";
+import CreateOrderOTP from "./CreateOrder/CreateOrderOTP";
 import NEFTAccountDetails from "./CreateInvesters/Nippon/NEFTAccountDetails";
 import TransactionDatewiseNSE from "./TransactionDatewiseNSE";
 
@@ -39,9 +40,12 @@ const DashboardAdmin = (props) => {
         </AdminLayout>} />
         <Route path="/dashboardAdmin/order/:folio" element={<AdminLayout
           user={{}} >
-          <CreateOrder accessToken={accessToken} />
+          <CreateOrderNippon accessToken={accessToken} />
         </AdminLayout>} />
-
+        <Route path="/dashboardAdmin/nse/order/:folio" element={<AdminLayout
+          user={{}} >
+          <CreateOrderNSE accessToken={accessToken} />
+        </AdminLayout>} />
         <Route path="/dashboardAdmin/nippon-bank/:folio_id" element={<AdminLayout
           user={{}} >
           <NipponBank  accessToken={accessToken} />

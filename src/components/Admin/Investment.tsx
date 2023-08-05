@@ -1,14 +1,9 @@
 import { Grid } from "@mui/material";
-import { DataGrid, GridCellEditStopParams, GridValueFormatterParams, GridColDef, MuiEvent } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { makeStyles } from '@mui/styles';
 import React, { useEffect, useState } from "react";
-import Form from "./Form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "../Dashboard/Loading";
 
 export default function Investment(props: any) {
@@ -27,8 +22,6 @@ export default function Investment(props: any) {
     "SBI" :"State Bank of India"
   })
   
-  
-
   const actionHandler = (type, id) => {
     setLoading(true);
 
@@ -141,8 +134,10 @@ export default function Investment(props: any) {
                   px={2}
                   style={{ background: "green", marginRight: "1rem" }}
                   onClick={() => {
-                    navigate(`/dashboardAdmin/order/${params.row.folio.Folio}`,
-                      { state: params.row });
+                    { params.row.fundType == "Various funds through NSE" ? navigate(`/dashboardAdmin/nse/order/${params.row.folio.Folio}`,{ state: params.row }):
+                     navigate(`/dashboardAdmin/order/${params.row.folio.Folio}`,{ state: params.row });} 
+                    // navigate(`/dashboardAdmin/order/${params.row.folio.Folio}`,
+                    //   { state: params.row });
                   }}
                 >
                   Create Order
