@@ -31,6 +31,7 @@ const getRole = (role: string) => {
 const UserManagement = (props: UserManagementProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [validating, setValidating] = useState<boolean>(false);
+  const [message,setMessage] = useState("");
   const [openInvite, setOpenInvite] = useState<boolean>(false);
   const [users, setUsers] = useState<member[]>([]);
   const [inviteStatus, setInviteStatus] = useState<"error" | "success" | "">(
@@ -69,13 +70,18 @@ const UserManagement = (props: UserManagementProps) => {
     setValidating(true);
     if (!validateNotEmpty(invite.name) || !validateEmail(invite.email)) return;
 
-    axios
-      .post(process.env.REACT_APP_BACKEND_HOST + "v1/admin/addMember", invite, {
+    const res = axios.post(process.env.REACT_APP_BACKEND_HOST + "v1/admin/addMember", invite, {
         headers: {
           Authorization: `Bearer ${props.accessToken}`,
         },
       })
-      .then((response) => {
+      .then(({data}) => {
+        if(!data.success){
+          setMessage(data.message)
+          setInviteStatus("error");
+          return;
+        }
+        console.log("response",data)
         setInviteStatus("success");
       })
       .catch((err) => {
@@ -283,7 +289,7 @@ const UserManagement = (props: UserManagementProps) => {
             sx={{ width: "100%" }}
             className="snack"
           >
-            Invite Failed
+            {message}
           </Alert>
         </Snackbar>
       </Grid>
