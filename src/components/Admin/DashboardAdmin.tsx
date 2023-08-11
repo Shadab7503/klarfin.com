@@ -22,6 +22,9 @@ import NipponBank from "./NipponBank";
 import CreateOrderOTP from "./CreateOrder/CreateOrderOTP";
 import NEFTAccountDetails from "./CreateInvesters/Nippon/NEFTAccountDetails";
 import TransactionDatewiseNSE from "./TransactionDatewiseNSE";
+import OnlinePayment from "./CreateOrder/OnlinePayment";
+import RTGSPayment from "./CreateOrder/RTGSPayment";
+import ContactUs from "./ContactUs";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -45,6 +48,19 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/nse/order/:folio" element={<AdminLayout
           user={{}} >
           <CreateOrderNSE accessToken={accessToken} />
+        </AdminLayout>} />
+
+        <Route path="/dashboardAdmin/nse/order/rtgs/:folio" element={<AdminLayout
+          user={{}} >
+          <RTGSPayment accessToken={accessToken} />
+        </AdminLayout>} />
+        <Route path="/dashboardAdmin/nse/order/online/:folio" element={<AdminLayout
+          user={{}} >
+          <OnlinePayment accessToken={accessToken}/>
+        </AdminLayout>} />
+        <Route path="/dashboardAdmin/contact" element={<AdminLayout
+          user={{}} >
+          <ContactUs/>
         </AdminLayout>} />
         <Route path="/dashboardAdmin/nippon-bank/:folio_id" element={<AdminLayout
           user={{}} >
@@ -86,6 +102,7 @@ const DashboardAdmin = (props) => {
           user={{}} >
           <CreateOrderOTP accessToken={accessToken} />
         </AdminLayout>} />
+        
         <Route path="/dashboardAdmin/investing" element={<AdminLayout user={user} >
           <Investment user={user} accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboardAdmin/cashflow" element={<AdminLayout user={user} >

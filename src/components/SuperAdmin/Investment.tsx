@@ -257,7 +257,7 @@ export default function Investment(props: any) {
       <Button
         type="submit"
         sx={{
-          background: "#231955",
+          background: "#2f85d7",
           fontFamily: "Work Sans",
           fontWeight: "bold",
           padding: "0.5rem 1rem",
@@ -266,7 +266,7 @@ export default function Investment(props: any) {
           fontSize: "0.8rem",
           color: "#fff",
           "&:hover": {
-            backgroundColor: "#231955",
+            backgroundColor: "#39a6cf",
           },
         }}
         onClick={() => {

@@ -37,15 +37,15 @@ export default function TransactionDatewiseNSE(props: any) {
             ),
         },
         {
-            field:'SCHEME_NAME', headerName: 'Fund', width: 280, renderHeader: () => (
+            field:'SCHEME_NAME', headerName: 'Fund', width: 380, renderHeader: () => (
                 <strong>
                     {'Fund'}
                 </strong>
             ),
             renderCell:(params)=>{
                 let { SCHEME_NAME } = params.row;
-                const scheme = SchemeType[SCHEME_NAME.split("/")[0]]
-                return<div>{scheme}</div>
+                
+                return<div>{SCHEME_NAME.split("/")[1]}</div>
             }
         },
         {
@@ -175,7 +175,7 @@ export default function TransactionDatewiseNSE(props: any) {
                             );
                         })}
                     </TextField> */}
-                    <div style={{ border: '1.5px solid rgb(210 205 205)', height: "39px", borderRadius: "4px", marginRight: "13px" }} >
+                    <div style={{ border: '1.5px solid rgb(210 205 205)',zIndex:2, height: "39px", borderRadius: "4px", marginRight: "13px" }} >
                         <DateRangePicker
                             onChange={changeHandler}
                             size='md'

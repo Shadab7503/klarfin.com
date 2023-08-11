@@ -13,29 +13,26 @@ import logout from "../../images/logout.png";
 import { sidebarUtils } from "../../utils/interface";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { FilePresent,PowerSettingsNew,ShowChart,PeopleAlt } from '@mui/icons-material';
 
 const sidebarData = {
   sections: [
     {
       name: "Super Admin",
       items: [
-        { icon: cashflows, text: "Users", url: "users" },
-        { icon: cashflows, text: "Investment", url: "investment" },
+        { icon: PeopleAlt, text: "Users", url: "users" },
+        { icon: ShowChart, text: "Investment", url: "investment" },
+        { icon: FilePresent, text: "Upload", url: "upload" },
       ],
     }
   ],
 };
 
 const SideBarSuper = (props: sidebarUtils) => {
-
   const url = window.location.href;
   const lastSegment = url.split('/').pop();
-
   useEffect(() => {
-
-
     const sections = sidebarData.sections;
-
     sections.forEach((each) => {
       each.items.forEach((each) => {
         if (each.url == lastSegment) {
@@ -108,23 +105,19 @@ const SideBarSuper = (props: sidebarUtils) => {
                         {section.items.map((item) => {
                           return (
                             <React.Fragment key={item.text}>
-                              <Link to={'/dashboardSuper/' + item.url}>
+                              <Link to={'/dashboardSuper/' + item.url} style={{ textDecoration: "none" }} >
                                 <ListItem
                                   style={{
                                     padding: "0rem",
                                     cursor: "pointer",
+                                    textDecoration: "none"
                                   }}
                                   onClick={() => {
                                     // props.setSelectedItem(item.text);
                                     // props.setDrawerOpen(false);
                                   }}
                                 >
-                                  <img
-                                    src={item.icon}
-                                    alt={item.text}
-                                    className="section-item-icon"
-                                  />
-
+                                  <item.icon style={{color:"white"}} />
                                   <Paper
                                     elevation={0}
                                     className="section-item-text"
@@ -166,18 +159,12 @@ const SideBarSuper = (props: sidebarUtils) => {
             ml={1}
             className="dashboard-sidebar-section"
           >
-            <img
-              src={logout}
-              alt="logout"
-              height="100%"
-              style={{ cursor: "pointer" }}
-              onClick={() => Logout()}
-            />
             <span
               className="logout"
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer",display:"flex",flexDirection:"row",alignItems:"center",gap:"10px" }}
               onClick={() => Logout()}
-            >
+            > 
+            <PowerSettingsNew style={{color:"white"}} />
               Logout
             </span>
           </Grid>

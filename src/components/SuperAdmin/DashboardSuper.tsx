@@ -11,6 +11,7 @@ import Transactions from "./transaction";
 import RedeemStepper from "./stepper/RedeemStepper";
 import Redeem from "./redeems";
 import CreateOrderOTP from "./CreateOrderOtp";
+import Upload from "./Upload";
 
 const DashboardSuper = (props: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -39,6 +40,10 @@ const DashboardSuper = (props: any) => {
         <Route path="/dashboardSuper/users" element={<SuperAdminLayout
           user={{}} >
           <Users accessToken={accessToken} setIsLoggedIn={setIsLoggedIn} />
+        </SuperAdminLayout>} />
+        <Route path="/dashboardSuper/upload" element={<SuperAdminLayout
+          user={{}} >
+          <Upload accessToken={accessToken} />
         </SuperAdminLayout>} />
         <Route path="/dashboardSuper/investment" element={<SuperAdminLayout
           user={{}} >

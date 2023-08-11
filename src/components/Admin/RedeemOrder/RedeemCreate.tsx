@@ -9,10 +9,12 @@ import {
   Card,
   CardContent,
   Typography,
+  Checkbox
 } from "@mui/material";
 import axios from "axios";
 import { createFolio } from "../../../services/nippon.service";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAppContext } from "../../../Store/AppContext";
 
 const RedeemCreate = ({
   handleNext,
@@ -27,7 +29,8 @@ const RedeemCreate = ({
     var year = currentDate.getFullYear();
     return month + "/" + day + "/" + year;
   };
-
+  const Navigate = useNavigate();
+  const [storeState ,dispatch ] = useAppContext();
   const schemes = [
     {
       value: "LP",
@@ -48,7 +51,55 @@ const RedeemCreate = ({
       opt: "G"
     },
   ];
-  const BankName = [{code:"HDF" , title:"HDFC BANK LTD"}]
+  const BankName = [{ code: "HDF", title: "HDFC BANK LTD" }]
+  const Funds = {
+    "AFWG": "H",
+    "HDFC": "H",
+    "54": "H",
+    "57N": "H",
+    "USTGR": "H",
+    "EDIRG": "P",
+    "1565": "P",
+    "3491": "P",
+    "1746": "P",
+    "LFGPGGR": "127",
+    "USGPGGR": "127",
+    "AFGPGR": "RMF",
+    "LFIGGR": "RMF",
+    "LPIGGR": "RMF",
+    "ONGPGR": "RMF",
+    "CPGPGR": "RMF",
+    "114G": "L",
+    "72SG": "L",
+    "F47RG": "L",
+    "086G": "L",
+    "57G": "L",
+  }
+
+  const ProductCode = [
+    { code: "AFWG", name: "HDFC Arbitrage Fund - Wholesale Plan - Regular Plan - Growth" },
+    { code: "HDFC", name: "HDFC Liquid Fund - Regular Plan - Growth" },
+    { code: "54", name: "HDFC Low Duration Fund - Regular Plan - Growth" },
+    { code: "57N", name: "HDFC Overnight Fund - Regular Plan -  Growth" },
+    { code: "USTGR", name: "HDFC Ultra Short Term Fund - Regular Growth" },
+    { code: "EDIRG", name: "ICICI Prudential Equity Arbitrage Fund - Growth" },
+    { code: "1565", name: "ICICI Prudential Liquid Fund - Regular plan - Growth" },
+    { code: "3491", name: "ICICI Prudential Overnight Fund Growth" },
+    { code: "1746", name: "ICICI Prudential Ultra Short Term Fund - Growth" },
+    { code: "LFGPGGR", name: "Motilal Oswal Liquid Fund - Regular Growth" },
+    { code: "USGPGGR", name: "Motilal Oswal Ultra Short Term Fund - Growth" },
+    { code: "AFGPGR", name: "NIPPON INDIA Arbitrage Fund  - GROWTH PLAN - GROWTH" },
+    { code: "LFIGGR", name: "NIPPON INDIA Liquid Fund - Regular plan - Growth Plan - Growth Option" },
+    { code: "LPIGGR", name: "NIPPON INDIA Low Duration Fund - Growth Plan Growth Option" },
+    { code: "ONGPGR", name: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" },
+    { code: "CPGPGR", name: "NIPPON INDIA Ultra Short Duration Fund - Growth Option" },
+    { code: "114G", name: "SBI Arbitrage Opportunities Fund - Regular Plan - Growth" },
+    { code: "72SG", name: "SBI Liquid Fund Regular Growth" },
+    { code: "F47RG", name: "SBI Magnum Low Duration Fund Regular Growth" },
+    { code: "086G", name: "SBI Magnum Ultra Short Duration Fund Regular Growth" },
+    { code: "57G", name: "SBI Overnight Fund Regular Growth" },
+  ]
+
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",
@@ -84,10 +135,10 @@ const RedeemCreate = ({
     "YES BANK"
   ];
   const { state }: any = useLocation();
-  const Funds = [{ code: "Nippon India", title: "Nippon India" }, { code: "NSE", title: "NSE" }]
+  console.log("state : :::", state,storeState);
   const [formData, setFormData] = useState({
-    fund: "RMF",
-    acno: capturedData.folio_id,
+    fund: "",
+    acno: state.AC_NO,
     scheme: schemes[0].value,
     plan: schemes[0].plan,
     options: "G",
@@ -109,27 +160,27 @@ const RedeemCreate = ({
     appln_id: "MFS264077",
     password: "8H9QWA0K",
     broker_code: "ARN-264077",
-    iin: 5011228926,
+    iin: state.CUSTOMER_ID,
     poa: "N",
     poa_bank_trxn_type: "",
     trxn_acceptance: "OL",
     dp_id: "",
-    acc_no: 50100165499362,
+    acc_no: state.AC_NO,
     bank_name: "HDF",
-    ifsc_code: "HDFC0003895",
+    ifsc_code: storeState.ACTIVEINVESTOR?.IFSC,
     remarks: "test",
     trxn_initiator: "I/O",
     trans_count: 1,
     investor_auth_log: "",
-    amc: "RMF",
-    folio: 5011228926,
-    product_code: "SIP3G",
+    amc: "",
+    folio: state.CUSTOMER_ID,
+    product_code: "AFWG",
     ft_acc_no: "",
     amt_unit_type: "Amount",
-    amt_unit: 5000,
+    amt_unit: "",
     all_units: "N",
     input_ref_no: "",
-    fundType:""
+    fundType: ""
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -158,32 +209,37 @@ const RedeemCreate = ({
     e.preventDefault();
     setValidationErrors({});
     setIsLoading(true);
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/send-OTP`, { Acno: formData.acno, Folio: formData.acno },
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(res => {
-        const data = res.data;
+    axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/redeem`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      )
+      .then(res => {
+        // navigate(`/dashboardSuper/investment`)
+        const { data } = res;
         if (!data.succ) {
+          setIsFailure(true);
           setIsLoading(false);
-          setIsSuccess(false);
           setMsg(data.message);
           return;
         }
-        setIsLoading(false);
-        setPan("");
         setIsSuccess(true);
-        setMsg(`OTP has been sent to XXXXXXXXX${phone}`);
-        capturedDataHandler({ ...formData, "OTPReference": data.OTPData.RefNo });
-        setTimeout(() => {
-          handleNext();
-        }, 3000);
-      }).catch(({ response }) => {
         setIsLoading(false);
-        setIsFailure(true);
-        setMsg("OTP sending failed!")
-        const { data } = response;
-        setValidationErrors(data.validationErrors);
+        setMsg(`Redeem request submitted successfully for Rs ${formData.UnitAmtValue}`)
+        setTimeout(() => {
+          Navigate(`/dashboardAdmin/investment/details/${formData.acno}`);
+        }, 3000);
       })
+      .catch(({ response }) => {
+        setIsLoading(false);
+        const { data } = response;
+        setIsFailure(true);
+        setMsg("Validation Errors!")
+        setValidationErrors(data.validationErrors);
+      });
 
   };
 
@@ -214,7 +270,7 @@ const RedeemCreate = ({
           <Typography variant="subtitle1" gutterBottom>
             Redeem Request
           </Typography>
-          <TextField
+          {/* <TextField
             label="Fund Name"
             name="fundType"
             onChange={handleChange}
@@ -280,46 +336,9 @@ const RedeemCreate = ({
               required
             />
 
-          </>}
-          {
-            formData.fundType == "NSE" && <>
-              <TextField
-                label="IIN"
-                name="iin"
-                value={formData.iin}
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.OTP}
-                helperText={validationErrors.OTP}
-              />
-              <TextField
-                label="Folio"
-                name="folio"
-                value={formData.folio}
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.folio}
-                helperText={validationErrors.folio}
-              />
+          </>} */}
 
-              <TextField
-                label="Account Number"
-                name="acc_no"
-                value={formData.acc_no}
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.acc_no}
-                helperText={validationErrors.acc_no}
-                disabled
-              />
-
-              <TextField
+          {/* <TextField
                 label="Bank Name"
                 name="bank_name"
                 value={formData.bank_name}
@@ -349,25 +368,31 @@ const RedeemCreate = ({
                 fullWidth
                 error={!!validationErrors.ifsc_code}
                 helperText={validationErrors.ifsc_code}
-              />
+              /> */}
 
-              <TextField
-                label="Amount"
-                name="amt_unit"
-                value={formData.amt_unit}
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                error={!!validationErrors.amt_unit}
-                helperText={validationErrors.amt_unit}
-              />
-            </>
-          }
-
-
-
-
+          <TextField
+            label="Total Investment"
+            name="total_investment"
+            value={100000}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.amt_unit}
+            helperText={validationErrors.amt_unit}
+          />
+          <TextField
+            label="Redeemption Amount"
+            name="amt_unit"
+            value={formData.amt_unit}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.amt_unit}
+            helperText={validationErrors.amt_unit}
+          />
+          <Checkbox/><span>Redeem entire amount</span>
           {/* <TextField
             label="OTP"
             name="OTP"
@@ -532,8 +557,27 @@ const RedeemCreate = ({
             error={!!validationErrors.SelfValidate}
             helperText={validationErrors.SelfValidate}
           /> */}
+          <TextField
+            label="Scheme"
+            name="product_code"
+            onChange={handleChange}
+            value={formData.product_code}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!validationErrors.product_code}
+            helperText={validationErrors.product_code}
+            required
+            select
+          >
+            {ProductCode.map((each, idx) => (
+              <MenuItem key={idx} value={each.code}>
+                {each.name}
+              </MenuItem>
+            ))}
+          </TextField>
 
-          {formData.fundType !== "" && <Button
+          <Button
             variant="contained"
             color="primary"
             type="submit"
@@ -546,7 +590,7 @@ const RedeemCreate = ({
             ) : (
               "Submit"
             )}
-          </Button>}
+          </Button>
         </form>
       </CardContent>
       <Snackbar

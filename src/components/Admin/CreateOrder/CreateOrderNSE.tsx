@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, MenuItem, CircularProgress, Alert, Snackbar, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, Modal, Box, MenuItem, CircularProgress, Alert, Snackbar, Card, CardContent, Typography, Divider } from '@mui/material';
 import axios from 'axios';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Clear } from '@mui/icons-material';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAppContext } from '../../../Store/AppContext';
+
 const CreateOrderNSE = ({ accessToken }) => {
+    const [storeState, dispatch] = useAppContext();
+    const [open, setOpen] = React.useState(false);
+    const [OTP, setOTP] = useState("");
+    const [modelName, setModelName] = useState("");
+    const handleClose = () => setOpen(false);
     const navigate = useNavigate();
-    const { folio }: any = useParams();
     const { state }: any = useLocation();
+    const [isResume, setIsResume] = useState(false);
     const [validationErrors, setValidationErrors] = useState<any>({});
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isFailure, setIsFailure] = useState(false);
-    console.log("state", state);
-    const [msg, setMsg] = useState("");
-
+    console.log("state ejrhwvej", state);
+    const [msg, setMsg] = React.useState("");
+    useEffect(() => {
+        if (state) {
+            if (Object.keys(state).length > 1) {
+                setIsResume(true);
+            } else {
+                setIsResume(false);
+            }
+        }
+    })
     const BankName = [
         { code: "HDF", title: "HDFC BANK LTD" },
         { code: "ICI", title: "ICICI Bank" },
@@ -21,18 +37,46 @@ const CreateOrderNSE = ({ accessToken }) => {
         { code: "SBI", title: "State Bank of India" }
     ]
 
+    const TimeHorizon = [
+        "0 - 3 Months",
+        "3 - 12 Months",
+        "More than 1 year"
+    ]
+    const Funds = {
+        "AFWG": "H",
+        "HDFC": "H",
+        "54": "H",
+        "57N": "H",
+        "USTGR": "H",
+        "EDIRG": "P",
+        "1565": "P",
+        "3491": "P",
+        "1746": "P",
+        "LFGPGGR": "127",
+        "USGPGGR": "127",
+        "AFGPGR": "RMF",
+        "LFIGGR": "RMF",
+        "LPIGGR": "RMF",
+        "ONGPGR": "RMF",
+        "CPGPGR": "RMF",
+        "114G": "L",
+        "72SG": "L",
+        "F47RG": "L",
+        "086G": "L",
+        "57G": "L",
+    }
+
     const [formData, setFormData] = useState({
-        "amc": "RMF",
-        "iin": state.folio.Folio,
+        "iin": storeState.ACTIVEINVETOR.folio.Folio,
         "sub_trxn_type": "N",
         "poa": "N",
         "poa_bank_trxn_type": "",
-        "trxn_acceptance": "OL", //ALL for all
+        "trxn_acceptance": "", //ALL for all
         "demat_user": "N",
         "dp_id": "",
-        "bank": state.BANK,
-        "ac_no": state.ACNUM,
-        "ifsc_code": state.IFSC,
+        "bank": BankName.filter((each) => each.code == storeState.ACTIVEINVETOR.BANK)[0].code,
+        "ac_no": storeState.ACTIVEINVETOR.ACNUM,
+        "ifsc_code": storeState.ACTIVEINVETOR.IFSC,
         "sub_broker_arn_code": "",
         "sub_broker_code": "",
         "euin_opted": "Y",
@@ -47,7 +91,7 @@ const CreateOrderNSE = ({ accessToken }) => {
         "instrm_branch": "",
         "instrm_charges": "",
         "micr": "",
-        "rtgs_code": "",
+        "rtgs_code": storeState.ACTIVEINVETOR.IFSC,
         "neft_ifsc": "",
         "advisory_charge": "",
         "dd_charge": "",
@@ -79,7 +123,8 @@ const CreateOrderNSE = ({ accessToken }) => {
         "process_mode": "",
         "channel_type": "",
         "folio": "",
-        "product_code": "",
+        "product_code": !isResume ? state?.SCHEME_NAME?.split("/")[0] : "",
+        "amc": !isResume ? state?.AMC_NAME?.split("/")[0] : "",
         "ft_acc_no": "",
         "reinvest": "Z",
         "amount": "",
@@ -101,42 +146,70 @@ const CreateOrderNSE = ({ accessToken }) => {
         "FREEDOM_SCHEME_OPTION": "",
         "instrm_amount": "",
         "fundType": "Various funds through NSE",
-        "PayMode":"xxxxxxxxx"
+        "PayMode": "xxxxxxxxx",
+        "time_horizon": ""
     })
 
     const ProductCode = [
-        { key: "LPIGGR", name: "NIPPON INDIA LOW DURATION FUND (G)" },
-        { key: "LFIGGR", name: "NIPPON INDIA LIQUID FUND (G)" },
-        { key: "ONGPGR", name: "NIPPON INDIA OVERNIGHT FUND (G)" },
+        { code: "AFWG", name: "HDFC Arbitrage Fund - Wholesale Plan - Regular Plan - Growth" },
+        { code: "HDFC", name: "HDFC Liquid Fund - Regular Plan - Growth" },
+        { code: "54", name: "HDFC Low Duration Fund - Regular Plan - Growth" },
+        { code: "57N", name: "HDFC Overnight Fund - Regular Plan -  Growth" },
+        { code: "USTGR", name: "HDFC Ultra Short Term Fund - Regular Growth" },
+        { code: "EDIRG", name: "ICICI Prudential Equity Arbitrage Fund - Growth" },
+        { code: "1565", name: "ICICI Prudential Liquid Fund - Regular plan - Growth" },
+        { code: "3491", name: "ICICI Prudential Overnight Fund Growth" },
+        { code: "1746", name: "ICICI Prudential Ultra Short Term Fund - Growth" },
+        { code: "LFGPGGR", name: "Motilal Oswal Liquid Fund - Regular Growth" },
+        { code: "USGPGGR", name: "Motilal Oswal Ultra Short Term Fund - Growth" },
+        { code: "AFGPGR", name: "NIPPON INDIA Arbitrage Fund  - GROWTH PLAN - GROWTH" },
+        { code: "LFIGGR", name: "NIPPON INDIA Liquid Fund - Regular plan - Growth Plan - Growth Option" },
+        { code: "LPIGGR", name: "NIPPON INDIA Low Duration Fund - Growth Plan Growth Option" },
+        { code: "ONGPGR", name: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" },
+        { code: "CPGPGR", name: "NIPPON INDIA Ultra Short Duration Fund - Growth Option" },
+        { code: "114G", name: "SBI Arbitrage Opportunities Fund - Regular Plan - Growth" },
+        { code: "72SG", name: "SBI Liquid Fund Regular Growth" },
+        { code: "F47RG", name: "SBI Magnum Low Duration Fund Regular Growth" },
+        { code: "086G", name: "SBI Magnum Ultra Short Duration Fund Regular Growth" },
+        { code: "57G", name: "SBI Overnight Fund Regular Growth" },
     ]
 
-    const Funds = [
-        { key: "RMF", name: "Nippon India Mutual Fund" },
-        { key: "H", name: "HDFC Mutual Fund" },
-        { key: "L", name: "SBI Mutual Fund" },
-        { key: "P", name: "ICICI Prudential Mutual Fund" },
-        { key: "MOF", name: "Motilal Oswal Mutual Fund" },
-    ];
-
     const PaymentMode = [
-        { key: "TR", name: "RTGS / NEFT" },
-        { key: "OL", name: "Online" },
-        { key: "M", name: "Debit Mandate" },
+        { code: "TR", name: "RTGS / NEFT" },
+        { code: "OL", name: "Online" },
+        { code: "M", name: "Debit Mandate" },
     ]
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+        if (name == "product_code") {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value,
+                ["amc"]: Funds[value]
+            }))
+        }else if(name == "payment_mode" &&  value == "OL"){
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value,
+                ["instrm_amount"]: formData.amount
+            }))
+        }
+        else {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         console.log(formData);
         setIsLoading(true);
-        if (formData.payment_mode == "TR") {
+        setOpen(true)
+        if (formData.payment_mode == "OL") {
+            setModelName("OL");
             axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
                 {
                     headers: { Authorization: `Bearer ${accessToken}` }
@@ -151,46 +224,98 @@ const CreateOrderNSE = ({ accessToken }) => {
                     setIsLoading(false);
                     setIsSuccess(true);
                     setMsg(`Order submitted successfully for Rs ${formData.amount}`)
-                    setTimeout(() => {
-                        if (formData.payment_mode == 'NEFT') {
-                            navigate(`/dashboardAdmin/nippon-bank/${folio}`, { state: state })
-                            return;
-                        }
-                    }, 3000)
-
+                    return;
                 }).catch(({ response }) => {
                     setIsLoading(false);
                     const { data } = response;
                     //setValidationErrors(data.validationErrors);
                 })
-        } else{
+        } else if (formData.payment_mode == "M") {
+            //payment for e mandate
             axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`, formData,
                 {
                     headers: { Authorization: `Bearer ${accessToken}` }
                 }).then(res => {
                     const { data } = res;
+                    console.log(res)
                     if (!data.succ) {
                         setIsLoading(false);
                         setMsg(data.message)
                         setIsFailure(true);
                         return;
                     }
+                    setModelName("M")
                     setIsSuccess(true);
-                    setMsg(`OTP sent to ${state.user_id.email}`)
+                    setMsg(`OTP sent to ${storeState.ACTIVEINVETOR.user_id.email}`)
                     setIsLoading(false);
-                    //axios.post('url',{data},{header}).then((res)=>{})
-                    setTimeout(() => {
-                        navigate(`/dashboardAdmin/investment/create-order-otp/${folio}`, { state: { state, formData } })
-                    }, 5000);
                     return;
                 }).catch(({ response }) => {
                     setIsLoading(false);
-                    const { data } = response;
-                    setValidationErrors(data.validationErrors);
+                    console.log(response)
+                    //const { data } = response;
+                    //setValidationErrors(data.validationErrors);
                     return;
                 })
+        } else if (formData.payment_mode == "TR") {
+            setModelName("TR")
+            setIsLoading(false)
         }
     };
+
+    const handleSubmitPOPUP = async (event) => {
+        event.preventDefault();
+        setIsLoading(true);
+        await axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/verify_otp_createotbm`, { otp: OTP },
+            {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            }).then((res) => {
+
+                if (!res.data.succ) {
+                    setMsg(res.data.message)
+                    setIsFailure(true);
+                    setIsLoading(false);
+                    return;
+                }
+                axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
+                    {
+                        headers: { Authorization: `Bearer ${accessToken}` }
+                    }).then(res => {
+                        const { data } = res;
+                        if (!data.succ) {
+                            setIsLoading(false);
+                            setMsg(data.message)
+                            setIsFailure(true);
+                            return;
+                        }
+                        setIsLoading(false);
+                        setIsSuccess(true);
+                        setMsg(`Order submitted successfully for Rs ${formData.amount}`)
+                        setTimeout(() => {
+                            formData.fundType == "Various funds through NSE" ?
+                                navigate(`/dashboardAdmin/investment/nse/details/${state.state.folio.Folio}`) :
+                                navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
+                        }, 3000)
+
+                    }).catch(({ response }) => {
+                        setIsLoading(false);
+                        const { data } = response;
+                        setIsFailure(true);
+                        setMsg(data.message);
+                        setValidationErrors(data.validationErrors);
+                        return;
+                    })
+                return;
+            }
+            ).catch(({ response }) => {
+                setIsLoading(false);
+                console.log("response", response)
+                const { data } = response;
+                setIsFailure(true);
+                setMsg(data.message);
+                data.validationErrors && setValidationErrors(data.validationErrors);
+                return;
+            })
+    }
 
     const handleCloseSnackbar = () => {
         setIsFailure(false);
@@ -201,7 +326,7 @@ const CreateOrderNSE = ({ accessToken }) => {
             <Card sx={{ maxWidth: 600, margin: '0 auto' }}>
                 <CardContent>
                     <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                        <TextField
+                        {/* {!isResume && <TextField
                             label="Fund"
                             name="amc"
                             onChange={handleChange}
@@ -210,16 +335,17 @@ const CreateOrderNSE = ({ accessToken }) => {
                             margin="normal"
                             fullWidth
                             select
+                            disabled={isResume}
                             required
                             error={!!validationErrors.Fund}
                             helperText={validationErrors.Fund}
                         >
                             {
                                 Funds.map((ele, idx) => {
-                                    return <MenuItem key={idx} value={ele.key} >{ele.name}</MenuItem>
+                                    return <MenuItem key={idx} value={ele.code} >{ele.name}</MenuItem>
                                 })
                             }
-                        </TextField>
+                        </TextField>} */}
                         {/* <TextField
                             label="IIN"
                             name="iin"
@@ -233,6 +359,111 @@ const CreateOrderNSE = ({ accessToken }) => {
                             helperText={validationErrors.iin}
                             required /> */}
                         <TextField
+                            label="Amount"
+                            name="amount"
+                            value={formData.amount}
+                            onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.amount}
+                            helperText={validationErrors.amount}
+                            required
+                        />
+                        {!isResume && <> <TextField
+                            label="Time Horizon"
+                            name="time_horizon"
+                            onChange={handleChange}
+                            value={formData.time_horizon}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.product_code}
+                            helperText={validationErrors.product_code}
+                            required
+                            select
+                        >
+                            {TimeHorizon.map((each, idx) => (
+                                <MenuItem key={idx} value={each}>
+                                    {each}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                            <Typography>Our Recommendation</Typography> </>}
+                        <TextField
+                            label="Scheme"
+                            name="product_code"
+                            onChange={handleChange}
+                            value={formData.product_code}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.product_code}
+                            helperText={validationErrors.product_code}
+                            required
+                            select
+                            disabled={isResume}
+                        >
+                            {ProductCode.map((each, idx) => (
+                                <MenuItem key={idx} value={each.code}>
+                                    {each.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        {!isResume && <> <TextField
+                            label="Amount"
+                            name="amount"
+                            value={formData.amount}
+                            onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.amount}
+                            helperText={validationErrors.amount}
+                            required
+                        />
+                            <TextField
+                                label="Scheme"
+                                name="product_code"
+                                onChange={handleChange}
+                                value={formData.product_code}
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                error={!!validationErrors.product_code}
+                                helperText={validationErrors.product_code}
+                                required
+                                select
+                                disabled={isResume}
+                            >
+                                {ProductCode.map((each, idx) => (
+                                    <MenuItem key={idx} value={each.code}>
+                                        {each.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                label="Amount"
+                                name="amount"
+                                value={formData.amount}
+                                onChange={handleChange}
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                error={!!validationErrors.amount}
+                                helperText={validationErrors.amount}
+                                required
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                disabled={isLoading}
+                                fullWidth
+                                sx={{ marginTop: 2 }}
+                            >
+                                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'ADD OTHER FUNDS'}
+                            </Button> </>}
+                        <TextField
                             label="Bank"
                             name="bank"
                             onChange={handleChange}
@@ -245,11 +476,11 @@ const CreateOrderNSE = ({ accessToken }) => {
                             select
                             defaultValue={formData.bank}
                         >
-                            {BankName.filter((ele) => ele.code == formData.bank).map((ele, indx) => {
-                                return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
+                            {BankName.filter((each) => each.code == storeState.ACTIVEINVETOR.BANK).map((ele, indx) => {
+                                return <MenuItem key={indx} value={ele.code} >{`${ele.title} (${formData.ac_no})`}</MenuItem>
                             })}
                         </TextField>
-                        <TextField
+                        {/* <TextField
                             label="Account Number"
                             name="ac_no"
                             value={formData.ac_no}
@@ -260,9 +491,9 @@ const CreateOrderNSE = ({ accessToken }) => {
                             error={!!validationErrors.ac_no}
                             helperText={validationErrors.ac_no}
                             required
-                            disabled
-                        />
-                        <TextField
+
+                        /> */}
+                        {/* <TextField
                             label="Bank IFSC Code"
                             name="ifsc_code"
                             value={formData.ifsc_code}
@@ -273,38 +504,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                             error={!!validationErrors.ifsc_code}
                             helperText={validationErrors.ifsc_code}
                             required
-                            disabled
-                        />
-                        <TextField
-                            label="Product Code"
-                            name="product_code"
-                            onChange={handleChange}
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            error={!!validationErrors.product_code}
-                            helperText={validationErrors.product_code}
-                            required
-                            select
-                        >
-                            {ProductCode.map((each, idx) => (
-                                <MenuItem key={idx} value={each.key}>
-                                    {each.name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <TextField
-                            label="Amount"
-                            name="amount"
-                            value={formData.amount}
-                            onChange={handleChange}
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            error={!!validationErrors.amount}
-                            helperText={validationErrors.amount}
-                            required
-                        />
+                        /> */}
                         <TextField
                             label="Payment Mode"
                             name="payment_mode"
@@ -318,12 +518,11 @@ const CreateOrderNSE = ({ accessToken }) => {
                             select
                         >
                             {PaymentMode.map((each, idx) => (
-                                <MenuItem key={idx} value={each.key}>
+                                <MenuItem key={idx} value={each.code}>
                                     {each.name}
                                 </MenuItem>
                             ))}
                         </TextField>
-
                         {formData.payment_mode == "OL" && <>
                             <TextField
                                 label="Bill Desk Bank"
@@ -340,7 +539,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                                     return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
                                 })}
                             </TextField>
-                            <TextField
+                            {/* <TextField
                                 label="Instrument Amount"
                                 name="instrm_amount"
                                 onChange={handleChange}
@@ -349,7 +548,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                                 fullWidth
                                 error={!!validationErrors.instrm_amount}
                                 helperText={"Equal to Sum of Transaction amount"}
-                            />
+                            /> */}
                         </>
                         }
                         {
@@ -365,7 +564,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                                     error={!!validationErrors.instrm_amount}
                                     select
                                 >
-                                    {BankName.filter((ele) => ele.code == formData.bank).map((ele, indx) => {
+                                    {BankName.filter((ele) => ele.code == "HDF").map((ele, indx) => {
                                         return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
                                     })}
                                 </TextField>
@@ -381,20 +580,6 @@ const CreateOrderNSE = ({ accessToken }) => {
                                 />
                             </>
                         }
-                        {
-                            formData.payment_mode == "TR" && <>
-                                <TextField
-                                    label="RTGS Code"
-                                    name="rtgs_code"
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    margin="normal"
-                                    fullWidth
-                                    error={!!validationErrors.instrm_amount}
-                                />
-                            </>
-                        }
-
                         <Button
                             variant="contained"
                             color="primary"
@@ -403,7 +588,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                             fullWidth
                             sx={{ marginTop: 2 }}
                         >
-                            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+                            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'INVEST'}
                         </Button>
                     </form>
                 </CardContent>
@@ -422,6 +607,148 @@ const CreateOrderNSE = ({ accessToken }) => {
                     sx={{ marginBottom: 2 }}
                 ><Alert severity='error' >{msg}</Alert></Snackbar>
             </Card>
+            {modelName == "TR" && <div>
+
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{
+                        position: 'absolute' as 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -75%)',
+                        bgcolor: 'background.paper',
+                        borderRadius: "10px",
+                        minWidth: "40vw",
+                        boxShadow: 24,
+                        padding:"8px 16px 16px 16px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}>
+                        <Box sx={{display:"flex",width:"100%",justifyContent:"end"}} ><div onClick={handleClose} style={{cursor:"pointer"}} ><Clear/></div></Box>
+                        <Typography variant='h5' >RTGS</Typography>
+                        <Typography id="modal-modal-description">
+                            Kindly make payment of {formData.amount} from your bank account
+                        </Typography>
+                        <Typography id="modal-modal-description">
+                            via RTGS and provide us with the UTR here.
+                        </Typography>
+                        <TextField
+                            label="UTR Number"
+                            name="utr_no"
+                            onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.utr_no}
+                        />
+                        <TextField
+                            type='date'
+                            focused
+                            label="Transfer Date"
+                            name="transfer_date"
+                            onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.transfer_date}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={isLoading}
+                            fullWidth
+                            sx={{ marginTop: 2, width: "150px", height: "40px" }}
+                        >
+                            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'INVEST'}
+                        </Button>
+                    </Box>
+                </Modal>
+            </div>}
+            {modelName == "OL" && <div>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{
+                        position: 'absolute' as 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -75%)',
+                        bgcolor: 'background.paper',
+                        borderRadius: "10px",
+                        minWidth: "40vw",
+                        boxShadow: 24,
+                        p: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}>
+                        <Typography variant='h5' m={2}>Online Payment Link</Typography>
+                        <Divider sx={{ mb: 2, color: "blue" }} />
+                        <Typography id="modal-modal-description">
+                            Kindly check your email for the payment link
+                        </Typography>
+                    </Box>
+                </Modal>
+            </div>}
+            {modelName == "M" && <div>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{
+                        position: 'absolute' as 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -75%)',
+                        bgcolor: 'background.paper',
+                        borderRadius: "10px",
+                        minWidth: "40vw",
+                        boxShadow: 24,
+                        p: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}>
+                        <Typography variant='h5' >E Mandate</Typography>
+                        <Divider />
+                        <Typography id="modal-modal-description">
+                            Please enter OTP sent to your registered mobile for confirmation
+                        </Typography>
+                        <Divider />
+                        <TextField
+                            label="Enter OTP"
+                            name="otp"
+                            onChange={(e) => { setOTP(e.target.value) }}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            error={!!validationErrors.otp}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={isLoading}
+                            fullWidth
+                            sx={{ marginTop: 2, width: "150px", height: "40px" }}
+                            onClick={handleSubmitPOPUP}
+                        >
+                            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'INVEST'}
+                        </Button>
+                    </Box>
+                </Modal>
+            </div>}
         </div>
     );
 };

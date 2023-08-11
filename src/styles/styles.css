@@ -596,8 +596,9 @@ a {
 
 .topbar {
   padding: 0.7rem 1rem;
-  box-shadow: 2px 2px #e0e0e0;
   border-bottom: 1px solid #3491d5;
+  background-color: white;
+  z-index:5;
 }
 
 .company-name {
@@ -1151,6 +1152,7 @@ a {
   .features-section {
     margin: 4rem 0rem;
   }
+
   .works {
     padding: 4rem 0rem 2rem;
   }
@@ -1202,6 +1204,12 @@ a {
   /* .dashboard-sidebar {
     padding: 0rem 0.8rem;
   } */
+  .sidebar{
+    display: none;
+  }
+  .layout-childern{
+    width: 100%;
+  }
   .business-credit-heading {
     margin-bottom: 2rem;
   }
@@ -1353,6 +1361,7 @@ a {
   } */
 }
 @media only screen and (max-width: 500px) {
+  
   .heading1 {
     font-size: 1.3rem;
   }

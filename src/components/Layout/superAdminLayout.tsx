@@ -28,16 +28,14 @@ const SuperAdminLayout = (props: { children: JSX.Element, user: any }) => {
           xs={12}
           style={{ maxHeight: "100vh", overflow: "auto" }}
         >
-          <Grid container>
-            <Grid item xs={12}>
-              <Typography variant="h5" style={{display:'flex',justifyContent:'flex-end',height:"5vh",alignItems:"center",marginRight:'20px'}} >SuperAdmin</Typography><hr />
+          <Grid container >
+            <Grid item xs={12} sx={{position:"fixed",width:"85%",zIndex:5}}>
+              <Typography variant="h5" style={{padding:"12px",display: 'flex', color: "white",height:"100%" ,justifyContent: 'flex-end', alignItems: "center" ,backgroundColor:"#2f85d7"}} >SuperAdmin</Typography>
             </Grid>
-
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{marginTop:"50px"}}>
               {
                 props.children
               }
-
             </Grid>
           </Grid>
         </Grid>

@@ -5,11 +5,9 @@ import TopBar from "../Dashboard/TopBar";
 
 
 const AdminLayout = (props:{children:JSX.Element,user:any}) => {
- 
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<string>("investing");
     const [name,setName] = useState(props.user.companyName)
-
     return (
       <div className="dashboard" style={{height:"100vh",width:"100vw"}}>
         <Grid container className="dashboard-container">
@@ -29,18 +27,15 @@ const AdminLayout = (props:{children:JSX.Element,user:any}) => {
             style={{ maxHeight: "100vh", overflow: "auto" }}
           >
             <Grid container>
-              <Grid item xs={12}>
+            <Grid item xs={12}>
                 <TopBar
-                  setDrawerOpen={setDrawerOpen}
-                  setSelectedItem={setSelectedItem}
                   companyName={name}
+                  accessToken={props.children.props.accessToken}
                 />
               </Grid>
-              <Grid item xs={12}>
-                 {
-                    props.children
+              <Grid item xs={12} sx={{marginTop:"60px"}}>{
+                    props.children 
                  }
-              
               </Grid>
             </Grid>
           </Grid>

@@ -48,7 +48,7 @@ export default function InvestmentScreen(props) {
   const handleClose = () => setOpen(false);
   const [statusOfinvestMentList, setstatusOfinvestMentList] = useState(1);
   const [investmentList, setInvestmentList] = useState([]);
-  const [invtType,setInvtType] = useState(["Individual","Proprietorship","Partnership","Company"])
+  const [invtType, setInvtType] = useState(["Individual", "Proprietorship", "Partnership", "Company"])
   //Investment from superAdmin
   const [columns, setColumns] = useState([
     { field: "idx", headerName: "SN", width: 100 },
@@ -121,7 +121,7 @@ export default function InvestmentScreen(props) {
                 >
                   Redeem
                 </Grid>
-                { params.row.is_OTBM == 0 && <>
+                {params.row.is_OTBM == 0 && <>
                   <Grid
                     item
                     className="bills-pay"
@@ -133,13 +133,13 @@ export default function InvestmentScreen(props) {
                         state: params.row,
                       });
                     }}
-                      >
+                  >
                     OBTM
                   </Grid>
                 </>}
               </>
             )}
-             
+
             {params.row.status == 1 && (
               <>
                 <Grid
@@ -191,9 +191,9 @@ export default function InvestmentScreen(props) {
     const investmentDataRes = investmentRes.data;
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getData();
-  },[]);
+  }, []);
 
   const style = {
     position: "absolute",
@@ -210,69 +210,68 @@ export default function InvestmentScreen(props) {
   return (
     <div style={{ fontFamily: 'Montserrat' }}>
       <Grid
-      item
-      xs={12}
-      px={10}
-      mt={5}
-      sx={{ maxWidth: "95vw", height: "100vh" }}
-    >
-      <Button
-        type="submit"
-        sx={{
-          background: "#231955",
-          fontFamily: "Work Sans",
-          fontWeight: "bold",
-          padding: "0.5rem 1rem",
-          borderRadius: "2rem",
-          fontSize: "0.8rem",
-          color: "#fff",
-          "&:hover": {
-            backgroundColor: "#231955",
-          },
-        }}
-        onClick={() => {
-          navigate(`/dashboardSuper/add-investment`, { state: { status: 0 } });
-        }}
+        item
+        xs={12}
+        px={10}
+        mt={5}
+        sx={{ maxWidth: "95vw", height: "100vh" }}
       >
-        Add Investor
-      </Button>
+        <Button
+          type="submit"
+          sx={{
+            background: "#231955",
+            fontFamily: "Work Sans",
+            fontWeight: "bold",
+            padding: "0.5rem 1rem",
+            borderRadius: "2rem",
+            fontSize: "0.8rem",
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: "#231955",
+            },
+          }}
+          onClick={() => {
+            navigate(`/dashboardSuper/add-investment`, { state: { status: 0 } });
+          }}
+        >
+          Add Investor
+        </Button>
 
-      <h2 style={{ marginBottom: "20px" }}>All Investments</h2>
+        <h2 style={{ marginBottom: "20px" }}>All Investments</h2>
 
-      <div style={{ height: "100vh", width: "100%" }}>
-        <DataGrid
-          //  hideFooter={true}
-          rowsPerPageOptions={[50, 100, 1000]}
-          
-          rows={investmentList.map((each: any, idx: number) => {
-           // console.log(each);
-            const obj = {};
-            Object.keys(each).forEach((key) => {
-              let value = each[key];
-              if (key === "amount" || key === "portfolio" || key == "returns") {
-                value = value.toLocaleString("en-IN");
-              }
-              //  if(key=='status') setstatusOfinvestMentList(each[key])
-              obj[key] = value;
-            });
-            console.log("Object Data",obj);
-            return {
-              ...obj,
-              id: each._id,
-              idx: idx + 1,
-              org: each.user_id.name,
-              fund: each.fund_id.name,
-              is_OTBM : each.is_OTBM,
-              status: each.status,             
-              type: invtType[each.type],
-            };
-          })}
-          columns={columns.map((each) => {
-            return { ...each };
-          })}
-        />
-      </div>
-    </Grid>
+        <div style={{ height: "100vh", width: "100%" }}>
+          <DataGrid
+            //  hideFooter={true}
+            rowsPerPageOptions={[50, 100, 1000]}
+
+            rows={investmentList.map((each: any, idx: number) => {
+              // console.log(each);
+              const obj = {};
+              Object.keys(each).forEach((key) => {
+                let value = each[key];
+                if (key === "amount" || key === "portfolio" || key == "returns") {
+                  value = value.toLocaleString("en-IN");
+                }
+                //  if(key=='status') setstatusOfinvestMentList(each[key])
+                obj[key] = value;
+              });
+              return {
+                ...obj,
+                id: each._id,
+                idx: idx + 1,
+                org: each.user_id.name,
+                fund: each.fund_id.name,
+                is_OTBM: each.is_OTBM,
+                status: each.status,
+                type: invtType[each.type],
+              };
+            })}
+            columns={columns.map((each) => {
+              return { ...each };
+            })}
+          />
+        </div>
+      </Grid>
     </div>
   );
 }

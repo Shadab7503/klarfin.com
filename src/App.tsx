@@ -16,12 +16,14 @@ import { User } from "./utils/interface";
 import {Helmet} from "react-helmet";
 import ForgotPasswordAdmin from "./components/SuperAdmin/ForgotPassword";
 import ForgotPasswordUser from "./components/Admin/ForgotPasswordAdmin";
+import { useAppContext } from "./Store/AppContext";
 
 
 
 
 const App = () => {
   const [accessToken, setAccessToken] = useState<string>("");
+  const [storeState,dispatch] = useAppContext();
   const [superAccessToken, setSuperAccessToken] = useState<string>("");
   const [user, setUser] = useState<User>({} as User);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -36,6 +38,8 @@ const App = () => {
       if (tokens) {
         const tokensObj = JSON.parse(tokens);
         setAccessToken(tokensObj.accessToken);
+        dispatch({type:"SET_ACCESSTOKEN",payload:tokensObj.accessToken})
+
       }else {
         setChecking(false);
       }
@@ -54,6 +58,7 @@ const App = () => {
         .then((response) => {
           if ("role" in response.data) {
             setUser(response.data);
+            dispatch({type:"SET_USER" ,payload:response.data})
             setIsLoggedIn(true);
             setChecking(false);
             console.log(response.data);

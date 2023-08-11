@@ -25,8 +25,8 @@ export default function HorizontalLinearStepper({ accessToken }) {
     inv_id: location._id,
     pan: location.folio?.pan,
     folio: location.folio?.Folio,
-    fund_id:"",
-    fundType:"",
+    fund_id:"64c227460accf04ea8e95a96",
+    fundType:"Various funds through NSE",
     ACTYPE:"SAVINGS"
   });
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -112,6 +112,7 @@ export default function HorizontalLinearStepper({ accessToken }) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    console.log(value)
     setCapturedData((prevData) => ({
       ...prevData,
       "fund_id":value._id,
