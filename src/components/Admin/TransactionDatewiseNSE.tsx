@@ -1,152 +1,38 @@
 import {
-    Grid, AppBar,
-    Toolbar,
-    Button,
-    MenuItem,
-    TextField,
-    Alert,
-    Snackbar,
+    Grid,
+    Box,
+    Tab,
 } from '@mui/material';
+import { TabPanel, TabContext,TabList } from '@material-ui/lab'
+import TransactionDatewise from './TransactionDatewise';
 import 'rsuite/dist/rsuite.min.css';
-import { DateRangePicker } from 'rsuite';
-import { DataGrid } from '@mui/x-data-grid';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import Loading from '../Dashboard/Loading';
-import { useParams } from 'react-router-dom';
-import { format } from 'date-fns';
-import { Stack } from '@mui/joy';
-import { Typography } from '@material-ui/core';
+import React from 'react';
+import TransactionPending from './TransactionPending';
 
 export default function TransactionDatewiseNSE(props: any) {
-    const SchemeType = {
-        "ONGPGR":"NIPPON INDIA OVERNIGHT FUND (G)",
-        "LPIGGR":"NIPPON INDIA LOW DURATION FUND (G)",
-        "LFIGGR":"NIPPON INDIA LIQUID FUND (G)",
-    }
-    const [tranx, setTranx] = useState<any>([]);
-    const { folio_id } = useParams();
-    const [isError, setError] = useState(false);
-    const [message, setMessage] = useState("");
-    const [columns, setColumns] = useState([
-        {
-            field: 'id', headerName: 'S.No', width: 90, renderHeader: () => (
-                <strong>
-                    {'S.No'}
-                </strong>
-            ),
-        },
-        {
-            field:'SCHEME_NAME', headerName: 'Fund', width: 380, renderHeader: () => (
-                <strong>
-                    {'Fund'}
-                </strong>
-            ),
-            renderCell:(params)=>{
-                let { SCHEME_NAME } = params.row;
-                
-                return<div>{SCHEME_NAME.split("/")[1]}</div>
-            }
-        },
-        {
-            field: 'TRXN_TYPE',
-            headerName: 'Transaction Type',
-            width: 240, renderHeader: () => (
-                <strong>
-                    {'Transaction Type'}
-                </strong>
-            ),
-            renderCell: (params) => {
-                let { TRXN_TYPE, PAYMENT_MODE } = params.row;
-                return <div>{TRXN_TYPE.split(" ")[1]}</div>;
-            },
-        },
-        {
-            field: 'AMOUNT', headerName: 'Amount', width: 180, renderHeader: () => (
-                <strong>
-                    {'Amount'}
-                </strong>
-            ), renderCell: (params) => {
-                const { AMOUNT, TRXN_STATUS } = params.row;
-               
-                if ( TRXN_STATUS== 'Pending') {
-                    return <Stack ><Typography variant='body1' >{AMOUNT}</Typography><Typography style={{ color: '#FDD017' }} variant='caption'>{TRXN_STATUS}</Typography></Stack>
-                } else if(TRXN_STATUS == "Rejected / Reversal") {
-                    return <Stack ><Typography variant='body1' >{AMOUNT}</Typography><Typography style={{ color: 'red' }} variant='caption'>{TRXN_STATUS.split("/")[0]}</Typography></Stack>
-                } else {
-                    return <Stack ><Typography variant='body1' >{AMOUNT}</Typography><Typography style={{ color: 'green' }} variant='caption'>{TRXN_STATUS}</Typography></Stack>
-                }
-            }
-        },
-        {
-            field: 'AUTHORIZED_DATE_TIME', headerName: 'Transaction Date', width: 240, renderHeader: () => (
-                <strong>
-                    {'Transaction Date'}
-                </strong>
-            ),
-        },
-    ]);
-    const today = new Date();
-    const [loading, setLoading] = useState(false);
-    const [date, setDate] = useState(format(today, 'MM/dd/yyyy'))
-    console.log("folio :", folio_id)
-    const dateConverter = (str) => {
-        const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        var date = new Date(str);
-        var mnth = (date.getMonth());
-        var day = ("0" + date.getDate()).slice(-2);
-        var year = date.getFullYear();
-        return `${day}-${month[mnth]}-${year}`;
-    }
-    const [isDisable, SetisDisable] = useState(true);
-    const [IntervalDate, setIntervalDate] = useState({
-        startDate: dateConverter(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
-        endDate: dateConverter(new Date().getTime()),
-    });
-
-    const getTranxData = async () => {
-        setLoading(true);
-        try {
-            const res = axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/nse/transaction`, { iin: folio_id, from_date: IntervalDate.startDate, to_date: IntervalDate.endDate, triggered_trxn: "N", initiated_by: "B" },
-                { headers: { Authorization: `Bearer ${props.accessToken}` 
-            }}).then((res)=>{
-                const { data } = res;
-                setLoading(false)
-                if(!data.succ){
-                    setError(true);
-                    setMessage(data.message);
-                    return;
-                }
-                setTranx(data.resData);
-                console.log("res : ", res);
-            })
-
-        } catch {
-            setLoading(false)
-            setError(true);
-            setMessage("Failed to Fetching Data from Server")
-            return;
-        }
-        SetisDisable(true);
-    }
-    useEffect(() => {
-        getTranxData()
-    }, [])
-  
-    const changeHandler = (e) => {
-        console.log(e)
-        const startDate = dateConverter(e[0])
-        const endDate = dateConverter(e[1])
-        setIntervalDate({
-            endDate: endDate,
-            startDate: startDate,
-        })
-        console.log(IntervalDate)
-        SetisDisable(false);
-    }
+    const [value, setValue] = React.useState("1");
+    const handleChange = (newValue: string) => {
+        setValue(newValue);
+      };
 
     return <Grid container spacing={2} xs>
-        <Grid item xs={12} sx={{ ml: 4, maxWidth: "90vw", height: '100vh' }}>
+        <Box>
+            <TabContext value={value}  >
+                <Box sx={{ width:"82vw",borderBottom: 2,margin:"15px 0 0 15px", borderColor: 'divider', bgcolor: '#318ad6', color: 'white' }}>
+                    <TabList onChange={(event, newValue) => handleChange(newValue)} TabIndicatorProps={{
+                        style: { backgroundColor: 'white', color: 'white' },
+                    }}>
+                        <Tab style={{ color: 'white', fontWeight: 650 }} label="Transactions" value="1" />
+                        <Tab style={{ color: 'white', fontWeight: 650 }} label="Pending Transactions" value="2" />
+                    </TabList>
+                </Box>
+                <TabPanel value="1"><TransactionDatewise accessToken={props.accessToken} /></TabPanel>
+                <TabPanel value="2">
+                    <TransactionPending accessToken={props.accessToken} />
+                </TabPanel>
+            </TabContext>
+        </Box>
+        {/* <Grid item xs={12} sx={{ ml: 4, maxWidth: "90vw", height: '100vh' }}>
             <Snackbar
                 open={isError}
                 autoHideDuration={4000}
@@ -158,23 +44,6 @@ export default function TransactionDatewiseNSE(props: any) {
             </Snackbar>
             <AppBar style={{ backgroundColor: "white", display: 'flex', width: '76vw', flexDirection: 'row', justifyContent: "flex-end" }} position="static" elevation={0}   >
                 <Toolbar sx={{ display: 'flex', alignItems: "center", margin: '0px' }}>
-                    {/* <TextField
-                        label="Scheme"
-                        name="scheme"
-                        onChange={changeHandler}
-                        value={filter.scheme}
-                        sx={{ mr: 2 }}
-                        select
-                        size='small'
-                    >
-                        {schemes.map((each, idx) => {
-                            return (
-                                <MenuItem key={idx} value={each.value}>
-                                    {each.name}
-                                </MenuItem>
-                            );
-                        })}
-                    </TextField> */}
                     <div style={{ border: '1.5px solid rgb(210 205 205)',zIndex:2, height: "39px", borderRadius: "4px", marginRight: "13px" }} >
                         <DateRangePicker
                             onChange={changeHandler}
@@ -217,6 +86,6 @@ export default function TransactionDatewiseNSE(props: any) {
                     })}
                 />}
             </div>
-        </Grid>
+        </Grid> */}
     </Grid>
 }

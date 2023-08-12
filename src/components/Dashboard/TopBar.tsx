@@ -1,13 +1,6 @@
-import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
-import MenuIcon from "@mui/icons-material/Menu";
-import { TopBarProps } from "../../utils/interface";
-import company from "../../images/company-logo.png";
-import settings from "../../images/settings.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, MenuItem, TextField } from "@mui/material";
-import Home from "../Main/Home/Home";
-import Investment from "../SuperAdmin/Investment";
 import { useAppContext } from '../../Store/AppContext';
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -35,7 +28,6 @@ const TopBar = ({ accessToken, companyName }) => {
       })
       .then(({ data }) => {
         const Data = data.investments.filter((ele)=>ele.fundType === "Various funds through NSE");
-        console.log("Data ",Data)
         dispatch({ type: "SET_INVESTORS", payload: Data})
         dispatch({ type: "SET_ACTIVE_INVESTORS", payload: Data[0] })
         setDefaultInvestor(Data[0])
@@ -66,6 +58,7 @@ const TopBar = ({ accessToken, companyName }) => {
       height="60px"
       width="82vw"
       display="flex"
+      zIndex={10}
     >
       <Grid item xl={2} lg={3} sm={4} xs={6}>
         <Grid container sx={{ ml: 4 }}>

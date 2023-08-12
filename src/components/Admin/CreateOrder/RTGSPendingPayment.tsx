@@ -2,47 +2,50 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, CircularProgress, Box, Modal, Typography } from '@mui/material';
 import axios from 'axios';
+import { FormatNumber } from '../../../utils/formatNumber';
 import { Clear } from '@mui/icons-material';
-import { useAppContext } from '../../../Store/AppContext';
 
-function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setValidationErrors, setIsFailure, isLoading, accessToken, formData, handleChange, open, validationErrors }) {
+function RTGSPendingPayment({ accessToken, isModel, setIsModel, formData }) {
+
+  const [msg, setMsg] = useState("");
+  const [isFailure, setIsFailure] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
-  const [storeState,dispatch] = useAppContext();
-  const handleClose =async () => {
-   
-    await axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/pendingtrans`,formData,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(res => {
-        const { data } = res;
-        if (!data.succ) {
-          setIsLoading(false);
-          setMsg(data.message)
-          setIsFailure(true);
-          return;
-        }
-        setIsLoading(false);
-        setIsSuccess(true);
-        navigate(`/dashboardAdmin/investment/nse/details/pending/${storeState.ACTIVEINVETOR.folio.Folio}` ,{state:"Please fill UTR No. and transfer date to finish transaction"})
-        setOpen(false)
-      }).catch(({ response }) => {
-        setIsLoading(false);
-        const { data } = response;
-        setIsFailure(true);
-        setMsg(data.message);
-        setValidationErrors(data.validationErrors);
-        return;
-      })
-    return;
+  const [Data, setData] = useState({ ...formData });
+
+  const dateConverter = (str) => {
+    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    var date = new Date(str);
+    var mnth = (date.getMonth());
+    var day = ("0" + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+    return `${day}-${month[mnth]}-${year}`;
+  }
+
+  const handleChange = (event) => {
+    let { name, value } = event.target;
+    if(name == "transfer_date"){
+      value = dateConverter(value);
+    }
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+  };
+
+  const handleClose = () => {
+    //add this formData to db form future payments
+    setIsModel(false)
   }
   const handleSubmit = async () => {
-    await axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
+    await axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, Data,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }).then(res => {
         const { data } = res;
         if (!data.succ) {
-          setIsLoading(false);
           setMsg(data.message)
           setIsFailure(true);
           return;
@@ -50,18 +53,17 @@ function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setVa
         setIsLoading(false);
         setIsSuccess(true);
         setMsg(`Order submitted successfully for Rs ${formData.amount}`)
-        setTimeout(() => {
-          formData.fundType == "Various funds through NSE" ?
-            navigate(`/dashboardAdmin/investment/nse/details/${state.state.folio.Folio}`) :
-            navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
-        }, 3000)
+        // setTimeout(() => {
+        //   formData.fundType == "Various funds through NSE" ?
+        //     navigate(`/dashboardAdmin/investment/nse/details/${state.state.folio.Folio}`) :
+        //     navigate(`/dashboardAdmin/investment/details/${state.state.folio.Folio}`)
+        // }, 3000)
 
       }).catch(({ response }) => {
         setIsLoading(false);
         const { data } = response;
         setIsFailure(true);
         setMsg(data.message);
-        setValidationErrors(data.validationErrors);
         return;
       })
     return;
@@ -69,12 +71,13 @@ function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setVa
 
   return (
     <Modal
-      open={open}
+      open={isModel}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       BackdropProps={{ onClick: (event) => event.stopPropagation() }}
     >
+
       <Box sx={{
         position: 'absolute' as 'absolute',
         top: '50%',
@@ -90,12 +93,12 @@ function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setVa
         alignItems: "center"
       }}>
         <Box sx={{ display: "flex", width: "100%", justifyContent: "end" }} ><div onClick={handleClose} style={{ cursor: "pointer" }} ><Clear /></div></Box>
-        <Typography variant='h5' >RTGS</Typography>
+        <Typography variant='h5' >RTGS/NEFT</Typography>
         <Typography id="modal-modal-description">
-          Kindly make payment of {formData.amount} from your bank account
+          Kindly make payment of Rs. {FormatNumber(Data.amount)} from your bank account
         </Typography>
         <Typography id="modal-modal-description">
-          via RTGS and provide us with the UTR here.
+          via RTGS/NEFT and provide the following details.
         </Typography>
         <TextField
           label="UTR Number"
@@ -104,7 +107,6 @@ function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setVa
           variant="outlined"
           margin="normal"
           fullWidth
-          error={!!validationErrors.utr_no}
         />
         <TextField
           type='date'
@@ -115,7 +117,6 @@ function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setVa
           variant="outlined"
           margin="normal"
           fullWidth
-          error={!!validationErrors.transfer_date}
         />
         <Button
           variant="contained"
@@ -125,11 +126,11 @@ function RTGSPayment({ setIsLoading, setOpen, setIsSuccess, setMsg, state, setVa
           onClick={handleSubmit}
           sx={{ marginTop: 2, width: "150px", height: "40px" }}
         >
-          { isLoading ? <CircularProgress size={24} color="inherit" /> : 'INVEST'}
+          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'INVEST'}
         </Button>
       </Box>
     </Modal>
   )
 }
 
-export default RTGSPayment;
+export default RTGSPendingPayment;

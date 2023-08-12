@@ -24,7 +24,7 @@ function Upload({ accessToken }) {
             setTransaction_report(event.target.files[0]);
         }
     };
-    const handleSubmit = async (event: any) => {
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
         const formData = new FormData();
         formData.append("nav_report", nav_report)
@@ -52,7 +52,6 @@ function Upload({ accessToken }) {
                     setIsFailure(true);
                     setMessage(data.message);
                     setIsLoading(false)
-                    setIsUploaded(true);
                     setProgress(0)
                     return;
                 }
@@ -72,7 +71,7 @@ function Upload({ accessToken }) {
             return;
         }
     };
-    if (isUploaded) { return <Loading /> }
+    
     return (
         <Card sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "90vh" }}>
             <Paper elevation={2} sx={{ p: 3 }}>

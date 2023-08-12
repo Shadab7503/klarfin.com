@@ -31,7 +31,7 @@ const CreateOrder = ({ accessToken }) => {
     },
   
   ]
-  console.log("state",state);
+ 
   const bankNames = [
     "--SELECT--",
     "AU SMALL FINANCE BANK",

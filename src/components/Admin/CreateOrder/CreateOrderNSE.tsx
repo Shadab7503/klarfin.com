@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Modal, Box, MenuItem, CircularProgress, Alert, Snackbar, Card, CardContent, Typography, Divider } from '@mui/material';
 import axios from 'axios';
-import { Clear } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../../Store/AppContext';
+import RTGSPayment from './RTGSPayment';
 
 const CreateOrderNSE = ({ accessToken }) => {
     const [storeState, dispatch] = useAppContext();
     const [open, setOpen] = React.useState(false);
     const [OTP, setOTP] = useState("");
     const [modelName, setModelName] = useState("");
-    const handleClose = () => setOpen(false);
+    const handleClose = () => { setOpen(false); }
     const navigate = useNavigate();
     const { state }: any = useLocation();
     const [isResume, setIsResume] = useState(false);
@@ -18,7 +18,15 @@ const CreateOrderNSE = ({ accessToken }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isFailure, setIsFailure] = useState(false);
-    console.log("state ejrhwvej", state);
+    const [TransactionCount, setTransactionCount] = useState([{
+        "product_code": "",
+        "amount": ""
+    }, {
+        "product_code": "",
+        "amount": ""
+    }]
+    )
+
     const [msg, setMsg] = React.useState("");
     useEffect(() => {
         if (state) {
@@ -84,7 +92,7 @@ const CreateOrderNSE = ({ accessToken }) => {
         "remarks": "",
         "payment_mode": "",
         "billdesk_bank": "",
-        "instrm_bank": "",
+        "instrm_bank": "HDF",
         "instrm_ac_no": "",
         "instrm_no": "",
         "instrm_date": "",
@@ -144,7 +152,7 @@ const CreateOrderNSE = ({ accessToken }) => {
         "FREEDOM_TENURE": "",
         "FREEDOM_SWP_AMOUNT": "",
         "FREEDOM_SCHEME_OPTION": "",
-        "instrm_amount": "",
+        "instrm_amount": "5000",  //sum of all the scheme amounts
         "fundType": "Various funds through NSE",
         "PayMode": "xxxxxxxxx",
         "time_horizon": ""
@@ -188,11 +196,12 @@ const CreateOrderNSE = ({ accessToken }) => {
                 [name]: value,
                 ["amc"]: Funds[value]
             }))
-        }else if(name == "payment_mode" &&  value == "OL"){
+        } else if (name == "payment_mode" && (value == "OL" || value == "M" || value == "TR")) {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value,
-                ["instrm_amount"]: formData.amount
+                ["instrm_amount"]: formData.amount,
+                ["billdesk_bank"]: "HDF"
             }))
         }
         else {
@@ -208,8 +217,8 @@ const CreateOrderNSE = ({ accessToken }) => {
         console.log(formData);
         setIsLoading(true);
         setOpen(true)
-        if (formData.payment_mode == "OL") {
-            setModelName("OL");
+        if (formData.payment_mode == "OL" || formData.payment_mode == "M") {
+            setModelName(formData.payment_mode);
             axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/create-order`, formData,
                 {
                     headers: { Authorization: `Bearer ${accessToken}` }
@@ -230,33 +239,35 @@ const CreateOrderNSE = ({ accessToken }) => {
                     const { data } = response;
                     //setValidationErrors(data.validationErrors);
                 })
-        } else if (formData.payment_mode == "M") {
-            //payment for e mandate
-            axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`, formData,
-                {
-                    headers: { Authorization: `Bearer ${accessToken}` }
-                }).then(res => {
-                    const { data } = res;
-                    console.log(res)
-                    if (!data.succ) {
-                        setIsLoading(false);
-                        setMsg(data.message)
-                        setIsFailure(true);
-                        return;
-                    }
-                    setModelName("M")
-                    setIsSuccess(true);
-                    setMsg(`OTP sent to ${storeState.ACTIVEINVETOR.user_id.email}`)
-                    setIsLoading(false);
-                    return;
-                }).catch(({ response }) => {
-                    setIsLoading(false);
-                    console.log(response)
-                    //const { data } = response;
-                    //setValidationErrors(data.validationErrors);
-                    return;
-                })
-        } else if (formData.payment_mode == "TR") {
+        }
+        // else if (formData.payment_mode == "M") {
+        //     //payment for e mandate
+        //     axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/creatotbmotp`, formData,
+        //         {
+        //             headers: { Authorization: `Bearer ${accessToken}` }
+        //         }).then(res => {
+        //             const { data } = res;
+        //             console.log(res)
+        //             if (!data.succ) {
+        //                 setIsLoading(false);
+        //                 setMsg(data.message)
+        //                 setIsFailure(true);
+        //                 return;
+        //             }
+        //             setModelName("M")
+        //             setIsSuccess(true);
+        //             setMsg(`OTP sent to ${storeState.ACTIVEINVETOR.user_id.email}`)
+        //             setIsLoading(false);
+        //             return;
+        //         }).catch(({ response }) => {
+        //             setIsLoading(false);
+        //             console.log(response)
+        //             //const { data } = response;
+        //             //setValidationErrors(data.validationErrors);
+        //             return;
+        //         })
+        // } 
+        else if (formData.payment_mode == "TR") {
             setModelName("TR")
             setIsLoading(false)
         }
@@ -370,27 +381,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                             helperText={validationErrors.amount}
                             required
                         />
-                        {!isResume && <> <TextField
-                            label="Time Horizon"
-                            name="time_horizon"
-                            onChange={handleChange}
-                            value={formData.time_horizon}
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            error={!!validationErrors.product_code}
-                            helperText={validationErrors.product_code}
-                            required
-                            select
-                        >
-                            {TimeHorizon.map((each, idx) => (
-                                <MenuItem key={idx} value={each}>
-                                    {each}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                            <Typography>Our Recommendation</Typography> </>}
-                        <TextField
+                        {isResume && <TextField
                             label="Scheme"
                             name="product_code"
                             onChange={handleChange}
@@ -410,50 +401,65 @@ const CreateOrderNSE = ({ accessToken }) => {
                                 </MenuItem>
                             ))}
                         </TextField>
+
+                        }
                         {!isResume && <> <TextField
-                            label="Amount"
-                            name="amount"
-                            value={formData.amount}
+                            label="Time Horizon"
+                            name="time_horizon"
                             onChange={handleChange}
+                            value={formData.time_horizon}
                             variant="outlined"
                             margin="normal"
                             fullWidth
-                            error={!!validationErrors.amount}
-                            helperText={validationErrors.amount}
+                            error={!!validationErrors.product_code}
+                            helperText={validationErrors.product_code}
                             required
-                        />
-                            <TextField
-                                label="Scheme"
-                                name="product_code"
-                                onChange={handleChange}
-                                value={formData.product_code}
-                                variant="outlined"
-                                margin="normal"
-                                fullWidth
-                                error={!!validationErrors.product_code}
-                                helperText={validationErrors.product_code}
-                                required
-                                select
-                                disabled={isResume}
-                            >
-                                {ProductCode.map((each, idx) => (
-                                    <MenuItem key={idx} value={each.code}>
-                                        {each.name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            <TextField
-                                label="Amount"
-                                name="amount"
-                                value={formData.amount}
-                                onChange={handleChange}
-                                variant="outlined"
-                                margin="normal"
-                                fullWidth
-                                error={!!validationErrors.amount}
-                                helperText={validationErrors.amount}
-                                required
-                            />
+                            select
+                        >
+                            {TimeHorizon.map((each, idx) => (
+                                <MenuItem key={idx} value={each}>
+                                    {each}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                            <Typography>Our Recommendation</Typography>
+                            {TransactionCount.map((ele) => {
+                                return <>
+                                    <TextField
+                                        label="Amount"
+                                        name="amount"
+                                        value={formData.amount}
+                                        onChange={handleChange}
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        error={!!validationErrors.amount}
+                                        helperText={validationErrors.amount}
+                                        required
+                                    />
+                                    <TextField
+                                        label="Scheme"
+                                        name="product_code"
+                                        onChange={handleChange}
+                                        value={formData.product_code}
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        error={!!validationErrors.product_code}
+                                        helperText={validationErrors.product_code}
+                                        required
+                                        select
+                                        disabled={isResume}
+                                    >
+                                        {ProductCode.map((each, idx) => (
+                                            <MenuItem key={idx} value={each.code}>
+                                                {each.name}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                </>
+                            })}
+
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -523,7 +529,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                                 </MenuItem>
                             ))}
                         </TextField>
-                        {formData.payment_mode == "OL" && <>
+                        {/* {formData.payment_mode == "OL" && <>
                             <TextField
                                 label="Bill Desk Bank"
                                 name="billdesk_bank"
@@ -539,7 +545,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                                     return <MenuItem key={indx} value={ele.code} >{ele.title}</MenuItem>
                                 })}
                             </TextField>
-                            {/* <TextField
+                            <TextField
                                 label="Instrument Amount"
                                 name="instrm_amount"
                                 onChange={handleChange}
@@ -548,10 +554,10 @@ const CreateOrderNSE = ({ accessToken }) => {
                                 fullWidth
                                 error={!!validationErrors.instrm_amount}
                                 helperText={"Equal to Sum of Transaction amount"}
-                            /> */}
+                            />
                         </>
-                        }
-                        {
+                        } */}
+                        {/* {
                             formData.payment_mode == "M" && <>
                                 <TextField
                                     label="Instrument Bank"
@@ -579,7 +585,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                                     helperText={"Equal to Sum of Transaction amount"}
                                 />
                             </>
-                        }
+                        } */}
                         <Button
                             variant="contained"
                             color="primary"
@@ -608,69 +614,9 @@ const CreateOrderNSE = ({ accessToken }) => {
                 ><Alert severity='error' >{msg}</Alert></Snackbar>
             </Card>
             {modelName == "TR" && <div>
-
-                <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={{
-                        position: 'absolute' as 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -75%)',
-                        bgcolor: 'background.paper',
-                        borderRadius: "10px",
-                        minWidth: "40vw",
-                        boxShadow: 24,
-                        padding:"8px 16px 16px 16px",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center"
-                    }}>
-                        <Box sx={{display:"flex",width:"100%",justifyContent:"end"}} ><div onClick={handleClose} style={{cursor:"pointer"}} ><Clear/></div></Box>
-                        <Typography variant='h5' >RTGS</Typography>
-                        <Typography id="modal-modal-description">
-                            Kindly make payment of {formData.amount} from your bank account
-                        </Typography>
-                        <Typography id="modal-modal-description">
-                            via RTGS and provide us with the UTR here.
-                        </Typography>
-                        <TextField
-                            label="UTR Number"
-                            name="utr_no"
-                            onChange={handleChange}
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            error={!!validationErrors.utr_no}
-                        />
-                        <TextField
-                            type='date'
-                            focused
-                            label="Transfer Date"
-                            name="transfer_date"
-                            onChange={handleChange}
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            error={!!validationErrors.transfer_date}
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            disabled={isLoading}
-                            fullWidth
-                            sx={{ marginTop: 2, width: "150px", height: "40px" }}
-                        >
-                            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'INVEST'}
-                        </Button>
-                    </Box>
-                </Modal>
+                <RTGSPayment state={state} setValidationErrors={setValidationErrors} validationErrors={validationErrors} isLoading={isLoading} handleChange={handleChange} formData={formData} open={open} setOpen={setOpen} setMsg={setMsg} setIsFailure={setIsFailure} setIsLoading={setIsLoading} setIsSuccess={setIsSuccess} accessToken={accessToken} />
             </div>}
-            {modelName == "OL" && <div>
+            {modelName == "OL" &&  <div>
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -693,13 +639,16 @@ const CreateOrderNSE = ({ accessToken }) => {
                     }}>
                         <Typography variant='h5' m={2}>Online Payment Link</Typography>
                         <Divider sx={{ mb: 2, color: "blue" }} />
-                        <Typography id="modal-modal-description">
-                            Kindly check your email for the payment link
-                        </Typography>
+                        {isLoading ? <CircularProgress size={24} color="inherit" />
+                            :
+                            <Typography id="modal-modal-description">
+                                Kindly check your email for the payment link
+                            </Typography>
+                        }
                     </Box>
                 </Modal>
             </div>}
-            {modelName == "M" && <div>
+            {/* {modelName == "M" && <div>
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -723,7 +672,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                         <Typography variant='h5' >E Mandate</Typography>
                         <Divider />
                         <Typography id="modal-modal-description">
-                            Please enter OTP sent to your registered mobile for confirmation
+                            Transaction Completed
                         </Typography>
                         <Divider />
                         <TextField
@@ -748,7 +697,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                         </Button>
                     </Box>
                 </Modal>
-            </div>}
+            </div>} */}
         </div>
     );
 };

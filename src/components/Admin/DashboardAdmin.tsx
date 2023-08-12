@@ -7,7 +7,6 @@ import HorizontalLinearStepper from "./CreateInvesters/stepper";
 import CreateOrderNippon from "./CreateOrder/CreateOrderNippon";
 import CreateOrderNSE from "./CreateOrder/CreateOrderNSE";
 import Orders from "./orders";
-import Transactions from "./Transaction-bkt";
 import RedeemStepper from "./RedeemOrder/RedeemStepper";
 import Redeem from "./redeems";
 import CashFlows from "./CashFlows";
@@ -19,12 +18,11 @@ import Upload_stepper from "./Upload_doc/upload_stepper";
 // import CreditManagement from "./CreditManagement";
 import Investment from "../Admin/Investment";
 import NipponBank from "./NipponBank";
-import CreateOrderOTP from "./CreateOrder/CreateOrderOTP";
 import NEFTAccountDetails from "./CreateInvesters/Nippon/NEFTAccountDetails";
 import TransactionDatewiseNSE from "./TransactionDatewiseNSE";
-import OnlinePayment from "./CreateOrder/OnlinePayment";
 import RTGSPayment from "./CreateOrder/RTGSPayment";
 import ContactUs from "./ContactUs";
+import TransactionPending from "./TransactionPending";
 
 const DashboardAdmin = (props) => {
   const { user, accessToken} = props;
@@ -48,15 +46,6 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/nse/order/:folio" element={<AdminLayout
           user={{}} >
           <CreateOrderNSE accessToken={accessToken} />
-        </AdminLayout>} />
-
-        <Route path="/dashboardAdmin/nse/order/rtgs/:folio" element={<AdminLayout
-          user={{}} >
-          <RTGSPayment accessToken={accessToken} />
-        </AdminLayout>} />
-        <Route path="/dashboardAdmin/nse/order/online/:folio" element={<AdminLayout
-          user={{}} >
-          <OnlinePayment accessToken={accessToken}/>
         </AdminLayout>} />
         <Route path="/dashboardAdmin/contact" element={<AdminLayout
           user={{}} >
@@ -86,9 +75,9 @@ const DashboardAdmin = (props) => {
           user={{}} >
           <TransactionDatewiseNSE accessToken={accessToken} />
         </AdminLayout>} />
-        <Route path="/dashboardAdmin/investment/tranx/:folio_id" element={<AdminLayout
+        <Route path="/dashboardAdmin/investment/nse/details/pending/:folio_id" element={<AdminLayout
           user={{}} >
-          <Transactions accessToken={accessToken} />
+          <TransactionPending accessToken={accessToken} />
         </AdminLayout>} />
         <Route path="/dashboardAdmin/investment/redeem/:folio_id" element={<AdminLayout
           user={{}} >
@@ -97,12 +86,7 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/add-investment/accountdetails" element={<AdminLayout
           user={{}} >
           <NEFTAccountDetails accessToken={accessToken} />
-        </AdminLayout>} />
-        <Route path="/dashboardAdmin/investment/create-order-otp/:folio_id" element={<AdminLayout
-          user={{}} >
-          <CreateOrderOTP accessToken={accessToken} />
-        </AdminLayout>} />
-        
+        </AdminLayout>} />     
         <Route path="/dashboardAdmin/investing" element={<AdminLayout user={user} >
           <Investment user={user} accessToken={accessToken} /></AdminLayout>} />
         <Route path="/dashboardAdmin/cashflow" element={<AdminLayout user={user} >
@@ -114,7 +98,6 @@ const DashboardAdmin = (props) => {
         <Route path="/dashboardAdmin/upload-doc" element={<AdminLayout user={user} ><Upload_stepper user={user} accessToken={accessToken} /></AdminLayout>}/>
         <Route path="*" element={<Navigate to="/dashboardAdmin/investing" replace />} />
       </Routes>
-
     </BrowserRouter>
   );
 };

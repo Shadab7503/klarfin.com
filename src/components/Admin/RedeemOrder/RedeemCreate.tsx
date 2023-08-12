@@ -30,7 +30,7 @@ const RedeemCreate = ({
     return month + "/" + day + "/" + year;
   };
   const Navigate = useNavigate();
-  const [storeState ,dispatch ] = useAppContext();
+  const [storeState, dispatch] = useAppContext();
   const schemes = [
     {
       value: "LP",
@@ -135,7 +135,7 @@ const RedeemCreate = ({
     "YES BANK"
   ];
   const { state }: any = useLocation();
-  console.log("state : :::", state,storeState);
+  console.log("state : :::", state);
   const [formData, setFormData] = useState({
     fund: "",
     acno: state.AC_NO,
@@ -174,13 +174,15 @@ const RedeemCreate = ({
     investor_auth_log: "",
     amc: "",
     folio: state.CUSTOMER_ID,
-    product_code: "AFWG",
+    product_code:ProductCode.filter((ele)=>ele.code == state.SCHEME_NAME?.split("/")[0])[0].code,
     ft_acc_no: "",
     amt_unit_type: "Amount",
     amt_unit: "",
     all_units: "N",
     input_ref_no: "",
-    fundType: ""
+    fundType: "",
+    total_investment: "1000",
+
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -192,13 +194,20 @@ const RedeemCreate = ({
   const [validationErrors, setValidationErrors] = useState<any>({});
   const [pan, setPan] = useState(capturedData.pan);
   const handleChange = event => {
+    event.preventDefault();
     const { name, value } = event.target;
-    if (name == "scheme") {
-      const data = schemes.find(each => each.value == value);
-      if (!data) return;
-      setFormData({ ...formData, plan: data.plan, scheme: data.value });
+    // if (name == "scheme") {
+    //   const data = schemes.find(each => each.value == value);
+    //   if (!data) return;
+    //   setFormData({ ...formData, plan: data.plan, scheme: data.value });
+    // }
+    
+    if (name == "checked" && value == "on") {
+      setFormData(prevData => ({
+        ...prevData,
+        ["amt_unit"]: formData.total_investment,
+      }));
     }
-
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
@@ -373,7 +382,7 @@ const RedeemCreate = ({
           <TextField
             label="Total Investment"
             name="total_investment"
-            value={100000}
+            value={formData.total_investment}
             onChange={handleChange}
             variant="outlined"
             margin="normal"
@@ -392,7 +401,7 @@ const RedeemCreate = ({
             error={!!validationErrors.amt_unit}
             helperText={validationErrors.amt_unit}
           />
-          <Checkbox/><span>Redeem entire amount</span>
+          <Checkbox name="checked" onChange={handleChange} /><span>Redeem entire amount</span>
           {/* <TextField
             label="OTP"
             name="OTP"

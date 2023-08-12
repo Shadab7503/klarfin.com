@@ -15,7 +15,6 @@ function appReducer(storeState, action) {
         case 'SET_USER':
             return { ...storeState, USER: action.payload };
         case 'SET_INVESTORS':
-            console.log("payload ",action.payload)
             return { ...storeState, INVESTORS: action.payload };
         case 'SET_ACTIVE_INVESTORS':
             return { ...storeState, ACTIVEINVETOR: action.payload };

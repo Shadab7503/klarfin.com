@@ -8,7 +8,7 @@ import { Button } from "react-scroll";
 import { useAppContext } from "../../Store/AppContext";
 
 export default function Investment(props: any) {
-  const [state, dispatch] = useAppContext();
+  const [storeState, dispatch] = useAppContext();
   const [open, setOpen] = React.useState(false);
   const [tranx, setTranx] = useState<any>([]);
   const [Data, setData] = useState({
@@ -29,6 +29,14 @@ export default function Investment(props: any) {
     "INB": "Indian Bank",
     "SBI": "State Bank of India"
   })
+  const dateConverter = (str) => {
+    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    var date = new Date(str);
+    var mnth = (date.getMonth());
+    var day = ("0" + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+    return `${day}-${month[mnth]}-${year}`;
+  }
 
   const [loading, setLoading] = useState(false);
   const [SumInProcessAmt, setSumInProcessAmt] = useState(0);
@@ -38,32 +46,37 @@ export default function Investment(props: any) {
 
   const getTranxData = async () => {
     setLoading(true);
-    await axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/nse/transaction`, { iin: "5011228926", from_date: "01-Mar-2023", to_date: "07-Aug-2023", triggered_trxn: "N", initiated_by: "B" },
+    await axios.post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/nse/transaction`, { iin: storeState.ACTIVEINVETOR.folio.Folio, from_date: "01-Mar-2023", to_date: dateConverter(Date.now()), triggered_trxn: "N", initiated_by: "B" },
       {
         headers: {
           Authorization: `Bearer ${props.accessToken}`
         }
       }).then(async (res) => {
         const { resData } = await res.data;
-        console.log("resData : ", resData)
         const objectData = {}
+        let amount = 0;
         await resData?.map((ele) => {
+          amount = +ele.AMOUNT + amount;
           if (objectData[ele.SCHEME_NAME]) {
+            const numb = Number(objectData[ele.SCHEME_NAME].AMOUNT) + Number(ele.AMOUNT);
             objectData[ele.SCHEME_NAME] = {
-              AMOUNT: parseFloat(objectData[ele.SCHEME_NAME].AMOUNT) + parseFloat(ele.AMOUNT)
+              ...ele,
+              AMOUNT: numb
             }
           }
           objectData[ele.SCHEME_NAME] = {
-            ...ele
+            ...ele,
           }
         })
+        setSumTotalAmount(amount);
+       
         setData({ ...Data, ...objectData });
       })
     setLoading(false)
   }
   useEffect(() => {
     getTranxData()
-  }, [])
+  }, [storeState.ACTIVEINVETOR])
 
   if (loading) return <Loading />
   return (
@@ -83,7 +96,7 @@ export default function Investment(props: any) {
           <Grid sx={{ display: "flex", flexDirection: "row" }} >
             <Paper elevation={2} sx={{ padding: "16px", textAlign: "center", width: "50%" }}>
               <Typography style={{ fontWeight: 600, color: "grey" }} variant="body1">Total Invested</Typography>
-              <Typography variant="h4" >{FormatNumber(35648.83)}</Typography>
+              <Typography variant="h4" >{FormatNumber(SumTotalAmt)}</Typography>
             </Paper>
             <Paper elevation={2} sx={{ padding: "16px", textAlign: "center", width: "50%" }}>
               <Typography style={{ fontWeight: 600, color: "grey" }} variant="body1">Current Value</Typography>
@@ -96,7 +109,7 @@ export default function Investment(props: any) {
               <Typography variant="h4" >{FormatNumber(37465.56)}</Typography>
             </Paper>
             <Paper elevation={2} sx={{ padding: "16px", textAlign: "center", width: "50%" }} >
-              <Typography style={{ fontWeight: 600, color: "grey" }} variant="body1" >Returns through Klarfin Withrawal till Date</Typography>
+              <Typography style={{ fontWeight: 600, color: "grey" }} variant="body1" >Returns through Klarfin till Date</Typography>
               <Typography variant="h4" >{FormatNumber(487365389.93)}</Typography>
             </Paper>
           </Grid>
@@ -153,19 +166,19 @@ export default function Investment(props: any) {
                     <Typography variant="h6"  >
                       {FormatNumber(value.AMOUNT)}
                     </Typography>
-                    <Typography variant="caption" color="#32CD32" sx={{textAlign:"end"}} >
+                    <Typography variant="caption" color="#32CD32" sx={{ textAlign: "end" }} >
                       +{FormatNumber(value.AMOUNT)}
                     </Typography>
                   </div>
                 }
               </Grid>
               <Grid item xs={12} sm={6} md={2.5} display="flex" justifyContent="center" alignItems="center">
-                <Typography variant="body1">{value.CUSTOMER_ID}</Typography>
+                <Typography variant="body1">{FormatNumber(value.CUSTOMER_ID)}</Typography>
               </Grid>
               <Grid container xs={12} sm={6} md={4} display="flex" justifyContent="center" alignItems="center">
                 <Grid item sx={{ display: "flex", flexDirection: "row", gap: "10px" }} >
                   <div style={{ padding: "10px", width: "100px", borderRadius: "5px", textAlign: "center", color: "white", backgroundColor: "#ffa500", cursor: "pointer" }} onClick={(e) => navigate(`/dashboardAdmin/nse/order/${value.CUSTOMER_ID}`, { state: value })}  > Buy More</div>
-                  <div style={{ padding: "10px", width: "100px", borderRadius: "5px", textAlign: "center", color: "white", backgroundColor: "#318cd6", cursor: "pointer" }} onClick={(e) => navigate(`/dashboardAdmin/redeem/${value.CUSTOMER_ID}`,{ state: value })} > Redeem </div>
+                  <div style={{ padding: "10px", width: "100px", borderRadius: "5px", textAlign: "center", color: "white", backgroundColor: "#318cd6", cursor: "pointer" }} onClick={(e) => navigate(`/dashboardAdmin/redeem/${value.CUSTOMER_ID}`, { state: value })} > Redeem </div>
                 </Grid>
               </Grid>
             </div>
