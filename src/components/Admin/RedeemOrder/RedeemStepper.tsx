@@ -13,7 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SendOTP from './sendOTP';
 import RedeemCreate from './RedeemCreate';
 
-const steps = ['Send OTP', 'Redeem'];
+const steps = ['Create Redeem', 'Done'];
 
 export default function RedeemStepper({ accessToken }) {
   const [activeStep, setActiveStep] = React.useState(0);

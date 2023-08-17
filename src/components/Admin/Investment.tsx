@@ -4,22 +4,235 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../Dashboard/Loading";
 import { Divider, Paper, Typography, Grid } from "@mui/material";
 import { FormatNumber, ConvertToPercentage } from '../../utils/formatNumber';
-import { Button } from "react-scroll";
 import { useAppContext } from "../../Store/AppContext";
+
+const dummyData = [
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "ONGP",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN",
+    "Transaction_Description": "Purchase",
+    "Transaction_Date": "2023-08-01T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "ONGP",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN",
+    "Transaction_Description": "Redemption",
+    "Transaction_Date": "2023-08-04T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "ONGP",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN",
+    "Transaction_Description": "Purchase",
+    "Transaction_Date": "2023-08-02T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "LFIG",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA LIQUID FUND - GROWTH PLAN - GROWTH OPTION",
+    "Transaction_Description": "Redemption",
+    "Transaction_Date": "2023-08-05T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "ONGP",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN",
+    "Transaction_Description": "Redemption",
+    "Transaction_Date": "2023-08-01T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "LFIG",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA LIQUID FUND - GROWTH PLAN - GROWTH OPTION",
+    "Transaction_Description": "Purchase",
+    "Transaction_Date": "2023-08-03T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "ONGP",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN",
+    "Transaction_Description": "Redemption",
+    "Transaction_Date": "2023-08-02T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "LFIG",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA LIQUID FUND - GROWTH PLAN - GROWTH OPTION",
+    "Transaction_Description": "Redemption",
+    "Transaction_Date": "2023-08-01T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "ONGP",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN",
+    "Transaction_Description": "Redemption",
+    "Transaction_Date": "2023-08-01T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  }, {
+    "_id": "64dc8b7b52c33b11829e1dde",
+    "Investor_Name": "Siddhant Gupta",
+    "Scheme_Code": "LFIG",
+    "PAN1": "AVLPG2653F",
+    "Folio_Number": "4.77291E+11",
+    "Fund_Description": "NIPPON INDIA LIQUID FUND - GROWTH PLAN - GROWTH OPTION",
+    "Transaction_Description": "Purchase",
+    "Transaction_Date": "2023-08-03T18:30:00.000Z",
+    "Nav": "122.4885",
+    "Units": "163.281",
+    "Amount": "20000",
+    "Transaction_Number": "13897942",
+    "Org_Purchase_Date": "2023-07-30T18:30:00.000Z",
+    "Org_Purchase_Amount": "99995",
+    "Org_Purchase_Units": "816.78",
+    "Product_Code": "RMFONGP",
+    "createdAt": "2023-08-16T08:40:27.251Z",
+    "updatedAt": "2023-08-16T08:40:27.251Z",
+    "__v": 0
+  },
+]
+
 
 export default function Investment(props: any) {
   const [storeState, dispatch] = useAppContext();
   const [open, setOpen] = React.useState(false);
   const [tranx, setTranx] = useState<any>([]);
+  const [netInvestment, setnetInvestment] = useState(0);
+  const [data,setDatas] = useState<any>({});
   const [Data, setData] = useState({
-    'ONGPGR/NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN': {
+    'Scheme_Description': {
       AMOUNT: '0',
       CUSTOMER_ID: '',
       INVESTOR_NAME: ''
     }
   });
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
   const navigate = useNavigate();
   const [invtType, setInvtType] = useState([{ code: 1, name: "Individual" }, { code: 2, name: "Proprietorship" }, { code: 3, name: "Partnership" }, { code: 4, name: "Company" }])
   const [Banks, setBanks] = useState({
@@ -43,6 +256,73 @@ export default function Investment(props: any) {
   const [SumTotalAmt, setSumTotalAmount] = useState(0);
   const [SumInvestedAmt, setSumInvestedAmt] = useState(0);
   const str = "en-IN";
+  //console.log("state : ", storeState)
+
+  const getTransactionReports = async () => {
+    await axios.get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/transactionreport`, {
+      params: {
+        pan: storeState.ACTIVEINVETOR.folio.pan,
+      },
+      headers: {
+        Authorization: `Bearer ${props.accessToken}`
+      }
+    }).then(async (res) => {
+      console.log("res : ", res)
+      const { data } = res.data;
+      let arrData: any = [];
+      let objectData: any = {
+        // totalRedeemunits: 0,
+        // totalPurchaseunits: 0,
+        // totalPurchaseAmount: 0,
+        // totalRedeemAmount: 0
+      }
+
+      dummyData.map((ele) => {
+        //addition the Purchase Units and Redeem units
+        // if (ele.Transaction_Description == "Purchase") {
+        //   objectData["totalPurchaseunits"] = +objectData["totalPurchaseunits"] + Number(ele.Units)
+        //   objectData["totalPurchaseAmount"] = +objectData["totalPurchaseAmount"] + Number(ele.Amount)
+        // } else if (ele.Transaction_Description == "Redemption") {
+        //   objectData["totalRedeemunits"] = +objectData["totalRedeemunits"] + Number(ele.Units)
+        //   objectData["totalRedeemAmount"] = +objectData["totalRedeemAmount"] + Number(ele.Amount)
+        // }
+        //Seprated the different fund elements
+        if (objectData[ele.Fund_Description]) {
+          let valu = +objectData[ele.Fund_Description]["Amount"];
+          let units = +objectData[ele.Fund_Description]["Units"];
+          if (ele.Transaction_Description == "Redemption") {
+            valu = valu - Number(ele.Amount);
+            units = units - Number(ele.Units);
+          } else if (ele.Transaction_Description == "Purchase") {
+            valu = valu + Number(ele.Amount);
+            units = units + Number(ele.Units);
+          }
+          objectData[ele.Fund_Description] = {
+            ...ele, Amount: valu,Units:units
+          }
+        } else {
+          let amount = ele.Amount;
+          let units = ele.Units;
+          if (ele.Transaction_Description == "Redemption") {
+            objectData[ele.Fund_Description] = {...ele,Amount:-amount,Units: -units};
+          } else if (ele.Transaction_Description == "Purchase") {
+            objectData[ele.Fund_Description] = ele;
+          }
+        }
+      })
+      setDatas(objectData);
+      console.log(objectData);
+      // await axios.get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/navreport`, {
+      //   params:{arrData},
+      //   headers: {
+      //     Authorization: `Bearer ${props.accessToken}`
+      //   }
+      // }).then((res) => {
+      //   console.log("res : ", res)
+      // })
+    })
+  }
+
 
   const getTranxData = async () => {
     setLoading(true);
@@ -69,13 +349,14 @@ export default function Investment(props: any) {
           }
         })
         setSumTotalAmount(amount);
-       
+
         setData({ ...Data, ...objectData });
       })
     setLoading(false)
   }
   useEffect(() => {
-    getTranxData()
+    getTranxData();
+    getTransactionReports();
   }, [storeState.ACTIVEINVETOR])
 
   if (loading) return <Loading />
@@ -142,38 +423,38 @@ export default function Investment(props: any) {
           </Grid>
         </div>
         <Divider sx={{ mb: 2, mt: 3 }} />
-        {Object.entries(Data)?.map((each, idx) => {
+        {Object.entries(data)?.map((each, idx) => {
           const key = each[0];
-          const value = each[1];
+          const value:any = each[1];
           return <>
             <div key={idx} style={{ display: 'flex', flexDirection: 'row', minWidth: '69vw', justifyContent: 'center' }}>
               <Grid item xs={12} sm={6} md={3}>
                 <Typography style={{ fontWeight: 600 }} variant="body1">
-                  {each[0].split("/")[1]}
+                  {key}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6} md={2.5} display="flex" justifyContent="center" alignItems="center">
                 {(SumTotalAmt - (SumInvestedAmt - SumInProcessAmt)) < 0 ?
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <Typography variant="h6" color="red" >
-                      {FormatNumber(value.AMOUNT)}
+                      {FormatNumber(value.Amount)}
                     </Typography>
                     <Typography variant="caption" color="red" >
-                      {FormatNumber(value.AMOUNT)}
+                      {FormatNumber(value.Amount)}
                     </Typography>
                   </div>
                   : <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <Typography variant="h6"  >
-                      {FormatNumber(value.AMOUNT)}
+                      {FormatNumber(value.Amount)}
                     </Typography>
                     <Typography variant="caption" color="#32CD32" sx={{ textAlign: "end" }} >
-                      +{FormatNumber(value.AMOUNT)}
+                      +{FormatNumber(value.Amount)}
                     </Typography>
                   </div>
                 }
               </Grid>
               <Grid item xs={12} sm={6} md={2.5} display="flex" justifyContent="center" alignItems="center">
-                <Typography variant="body1">{FormatNumber(value.CUSTOMER_ID)}</Typography>
+                <Typography variant="body1">{FormatNumber(value.Units)}</Typography>
               </Grid>
               <Grid container xs={12} sm={6} md={4} display="flex" justifyContent="center" alignItems="center">
                 <Grid item sx={{ display: "flex", flexDirection: "row", gap: "10px" }} >
