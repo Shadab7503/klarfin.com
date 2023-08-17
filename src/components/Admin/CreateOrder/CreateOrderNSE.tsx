@@ -13,6 +13,8 @@ const CreateOrderNSE = ({ accessToken }) => {
     const handleClose = () => { setOpen(false); }
     const navigate = useNavigate();
     const { state }: any = useLocation();
+    const { value,data} = state;
+    console.log("state",state)
     const [isResume, setIsResume] = useState(false);
     const [validationErrors, setValidationErrors] = useState<any>({});
     const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +45,30 @@ const CreateOrderNSE = ({ accessToken }) => {
         { code: "IDB", title: "IDBI Bank" },
         { code: "INB", title: "Indian Bank" },
         { code: "SBI", title: "State Bank of India" }
+    ]
+
+    const ProductCode = [
+        { code: "AFWG", name: "HDFC Arbitrage Fund - Wholesale Plan - Regular Plan - Growth" },
+        { code: "HDFC", name: "HDFC Liquid Fund - Regular Plan - Growth" },
+        { code: "54", name: "HDFC Low Duration Fund - Regular Plan - Growth" },
+        { code: "57N", name: "HDFC Overnight Fund - Regular Plan -  Growth" },
+        { code: "USTGR", name: "HDFC Ultra Short Term Fund - Regular Growth" },
+        { code: "EDIRG", name: "ICICI Prudential Equity Arbitrage Fund - Growth" },
+        { code: "1565", name: "ICICI Prudential Liquid Fund - Regular plan - Growth" },
+        { code: "3491", name: "ICICI Prudential Overnight Fund Growth" },
+        { code: "1746", name: "ICICI Prudential Ultra Short Term Fund - Growth" },
+        { code: "LFGPGGR", name: "Motilal Oswal Liquid Fund - Regular Growth" },
+        { code: "USGPGGR", name: "Motilal Oswal Ultra Short Term Fund - Growth" },
+        { code: "AFGPGR", name: "NIPPON INDIA Arbitrage Fund  - GROWTH PLAN - GROWTH" },
+        { code: "LFIGGR", name: "NIPPON INDIA LIQUID FUND - GROWTH PLAN - GROWTH OPTION" },
+        { code: "LPIGGR", name: "NIPPON INDIA Low Duration Fund - Growth Plan Growth Option" },
+        { code: "ONGPGR", name: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" },
+        { code: "CPGPGR", name: "NIPPON INDIA Ultra Short Duration Fund - Growth Option" },
+        { code: "114G", name: "SBI Arbitrage Opportunities Fund - Regular Plan - Growth" },
+        { code: "72SG", name: "SBI Liquid Fund Regular Growth" },
+        { code: "F47RG", name: "SBI Magnum Low Duration Fund Regular Growth" },
+        { code: "086G", name: "SBI Magnum Ultra Short Duration Fund Regular Growth" },
+        { code: "57G", name: "SBI Overnight Fund Regular Growth" },
     ]
 
     const TimeHorizon = [
@@ -131,8 +157,8 @@ const CreateOrderNSE = ({ accessToken }) => {
         "process_mode": "",
         "channel_type": "",
         "folio": "",
-        "product_code": !isResume ? state?.SCHEME_NAME?.split("/")[0] : "",
-        "amc": !isResume ? state?.AMC_NAME?.split("/")[0] : "",
+        "product_code": !isResume ? ProductCode.filter((ele)=>ele.name.toUpperCase() == value?.Fund_Description.toUpperCase())[0]?.code : "",
+        "amc": !isResume ? value?.AMC_NAME : "",
         "ft_acc_no": "",
         "reinvest": "Z",
         "amount": "",
@@ -157,30 +183,6 @@ const CreateOrderNSE = ({ accessToken }) => {
         "PayMode": "xxxxxxxxx",
         "time_horizon": ""
     })
-
-    const ProductCode = [
-        { code: "AFWG", name: "HDFC Arbitrage Fund - Wholesale Plan - Regular Plan - Growth" },
-        { code: "HDFC", name: "HDFC Liquid Fund - Regular Plan - Growth" },
-        { code: "54", name: "HDFC Low Duration Fund - Regular Plan - Growth" },
-        { code: "57N", name: "HDFC Overnight Fund - Regular Plan -  Growth" },
-        { code: "USTGR", name: "HDFC Ultra Short Term Fund - Regular Growth" },
-        { code: "EDIRG", name: "ICICI Prudential Equity Arbitrage Fund - Growth" },
-        { code: "1565", name: "ICICI Prudential Liquid Fund - Regular plan - Growth" },
-        { code: "3491", name: "ICICI Prudential Overnight Fund Growth" },
-        { code: "1746", name: "ICICI Prudential Ultra Short Term Fund - Growth" },
-        { code: "LFGPGGR", name: "Motilal Oswal Liquid Fund - Regular Growth" },
-        { code: "USGPGGR", name: "Motilal Oswal Ultra Short Term Fund - Growth" },
-        { code: "AFGPGR", name: "NIPPON INDIA Arbitrage Fund  - GROWTH PLAN - GROWTH" },
-        { code: "LFIGGR", name: "NIPPON INDIA Liquid Fund - Regular plan - Growth Plan - Growth Option" },
-        { code: "LPIGGR", name: "NIPPON INDIA Low Duration Fund - Growth Plan Growth Option" },
-        { code: "ONGPGR", name: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" },
-        { code: "CPGPGR", name: "NIPPON INDIA Ultra Short Duration Fund - Growth Option" },
-        { code: "114G", name: "SBI Arbitrage Opportunities Fund - Regular Plan - Growth" },
-        { code: "72SG", name: "SBI Liquid Fund Regular Growth" },
-        { code: "F47RG", name: "SBI Magnum Low Duration Fund Regular Growth" },
-        { code: "086G", name: "SBI Magnum Ultra Short Duration Fund Regular Growth" },
-        { code: "57G", name: "SBI Overnight Fund Regular Growth" },
-    ]
 
     const PaymentMode = [
         { code: "TR", name: "RTGS / NEFT" },

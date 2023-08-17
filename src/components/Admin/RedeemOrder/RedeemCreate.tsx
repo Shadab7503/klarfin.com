@@ -15,6 +15,7 @@ import axios from "axios";
 import { createFolio } from "../../../services/nippon.service";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppContext } from "../../../Store/AppContext";
+import { FormatNumber } from "../../../utils/formatNumber";
 
 const RedeemCreate = ({
   handleNext,
@@ -89,7 +90,7 @@ const RedeemCreate = ({
     { code: "LFGPGGR", name: "Motilal Oswal Liquid Fund - Regular Growth" },
     { code: "USGPGGR", name: "Motilal Oswal Ultra Short Term Fund - Growth" },
     { code: "AFGPGR", name: "NIPPON INDIA Arbitrage Fund  - GROWTH PLAN - GROWTH" },
-    { code: "LFIGGR", name: "NIPPON INDIA Liquid Fund - Regular plan - Growth Plan - Growth Option" },
+    { code: "LFIGGR", name: "NIPPON INDIA Liquid Fund - Growth Plan - Growth Option" },
     { code: "LPIGGR", name: "NIPPON INDIA Low Duration Fund - Growth Plan Growth Option" },
     { code: "ONGPGR", name: "NIPPON INDIA OVERNIGHT FUND - GROWTH PLAN" },
     { code: "CPGPGR", name: "NIPPON INDIA Ultra Short Duration Fund - Growth Option" },
@@ -135,10 +136,11 @@ const RedeemCreate = ({
     "YES BANK"
   ];
   const { state }: any = useLocation();
+  const { value,data } = state;
   console.log("state : :::", state);
   const [formData, setFormData] = useState({
     fund: "",
-    acno: state.AC_NO,
+    acno: value.AC_NO,
     scheme: schemes[0].value,
     plan: schemes[0].plan,
     options: "G",
@@ -146,7 +148,7 @@ const RedeemCreate = ({
     UnitamtFlag: "A",
     UnitAmtValue: "",
     Tpin: "A",
-    bank: (state.BANK ? state.BANK : " "),
+    bank: (value.BANK ? value.BANK : " "),
     oldihno: 0,
     trdate: getDate(),
     entdate: getDate(),
@@ -160,7 +162,7 @@ const RedeemCreate = ({
     appln_id: "MFS264077",
     password: "8H9QWA0K",
     broker_code: "ARN-264077",
-    iin: state.CUSTOMER_ID,
+    iin: value.CUSTOMER_ID,
     poa: "N",
     poa_bank_trxn_type: "",
     trxn_acceptance: "OL",
@@ -173,16 +175,15 @@ const RedeemCreate = ({
     trans_count: 1,
     investor_auth_log: "",
     amc: "",
-    folio: state.CUSTOMER_ID,
-    product_code:ProductCode.filter((ele)=>ele.code == state.SCHEME_NAME?.split("/")[0])[0].code,
+    folio: value.CUSTOMER_ID,
+    product_code:ProductCode.filter((ele)=>ele.name.toUpperCase() == value?.Fund_Description.toUpperCase())[0]?.code,
     ft_acc_no: "",
     amt_unit_type: "Amount",
     amt_unit: "",
     all_units: "N",
     input_ref_no: "",
     fundType: "",
-    total_investment: "1000",
-
+    total_investment: `${FormatNumber(value?.currentUnits * data[0]?.NAV)}`,
   });
 
   const [isLoading, setIsLoading] = useState(false);
