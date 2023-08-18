@@ -40,7 +40,7 @@ export default function Investment(props: any) {
     setLoading(true);
     await axios.get(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/transactionreport`, {
       params: {
-        pan: storeState.ACTIVEINVETOR.folio.pan,
+        pan: storeState.ACTIVEINVETOR?.folio.pan,
       },
       headers: {
         Authorization: `Bearer ${props.accessToken}`
@@ -52,12 +52,12 @@ export default function Investment(props: any) {
 
       data.map((ele) => {
         if (objectData[ele.Fund_Description]) {
-          if (ele.Transaction_Description == "Purchase") {
+          if (ele.Transaction_Description.includes("Purchase")) {
             const pAmount = objectData[ele.Fund_Description]?.purchaseAmount || 0 + Number(ele.Amount);
             const pUnits = +objectData[ele.Fund_Description]?.currentUnits || 0 + Number(ele.Units);
             const redeemUnit = +objectData[ele.Fund_Description]?.redeemUnits || 0
             objectData[ele.Fund_Description] = { ...ele, purchaseAmount: pAmount, currentUnits: pUnits, redeemUnits: redeemUnit }
-          } else if (ele.Transaction_Description == "Redemption") {
+          } else if (ele.Transaction_Description.includes("Redemption")) {
             const pAmount = objectData[ele.Fund_Description]?.purchaseAmount || 0;
             const rUnits = +objectData[ele.Fund_Description].currentUnits - Number(ele.Units);
             const redeemUnit = objectData[ele.Fund_Description]?.redeemUnits || 0 + Number(ele.Units);
@@ -65,9 +65,9 @@ export default function Investment(props: any) {
           }
         } else {
           arrData.push(ele.Scheme_Code);
-          if (ele.Transaction_Description == "Purchase") {
+          if (ele.Transaction_Description.includes("Purchase")) {
             objectData[ele.Fund_Description] = { ...ele, redeemUnits: 0, purchaseAmount: ele.Amount, currentUnits: Number(ele.Units) }
-          } else if (ele.Transaction_Description == "Redemption") {
+          } else if (ele.Transaction_Description.includes("Redemption")) {
             objectData[ele.Fund_Description] = { ...ele, redeemUnits: Number(ele.Units), purchaseAmount: 0, currentUnits: -Number(ele.Units) }
           }
         }
@@ -82,7 +82,6 @@ export default function Investment(props: any) {
         }
       }).then((res) => {
         setNavList(res.data.data);
-
         setTotalSum(totalSum => ({
           ...totalSum,
           totalInvested: 0,
@@ -90,26 +89,44 @@ export default function Investment(props: any) {
           totalEarnedYesterDay: 0,
           totalEarnedTillDate: 0
         }))
-        Object.entries(objectData)?.map((each) => {
+        Object.entries(objectData)?.map(async (each) => {
           const value: any = each[1];
           const filteredData: any = [];
           const seenDates = new Set();
-          res.data.data.filter(ele => {
+          await res.data.data.filter(ele => {
             if (ele.Scheme_Code == value.Scheme_Code && !seenDates.has(ele.NAV_Date)) {
               seenDates.add(ele.NAV_Date);
               filteredData.push(ele);
             }
           })
-          setTotalSum(totalSum => ({
-            ...totalSum,
-            totalInvested: Number(totalSum.totalInvested) + Number(value.purchaseAmount),
-            totalCurrentValue: Number(totalSum.totalCurrentValue) + Number(value.currentUnits) * filteredData[0].NAV,
-            totalEarnedYesterDay: Number(totalSum.totalEarnedYesterDay) + value.currentUnits * (filteredData[0].NAV - filteredData[1].NAV),
-            totalEarnedTillDate: Number(totalSum.totalEarnedTillDate) + (value.currentUnits * filteredData[0].NAV) + (value.currentUnits * (filteredData[0].NAV - filteredData[1].NAV))
-          }))
+          console.log("filter", filteredData)
+          if (filteredData.length > 1) {
+            setTotalSum(totalSum => ({
+              ...totalSum,
+              totalInvested: Number(totalSum.totalInvested) + Number(value.purchaseAmount),
+              totalCurrentValue: Number(totalSum.totalCurrentValue) + Number(value.currentUnits) * filteredData[0].NAV,
+              totalEarnedYesterDay: Number(totalSum.totalEarnedYesterDay) + value.currentUnits * (filteredData[0].NAV - filteredData[1].NAV),
+              totalEarnedTillDate: Number(totalSum.totalEarnedTillDate) + (value.currentUnits * (filteredData[0].NAV - filteredData[1].NAV))
+            }))
+          }else if(filteredData.length == 1){
+            setTotalSum(totalSum => ({
+              ...totalSum,
+              totalInvested: Number(totalSum.totalInvested) + Number(value.purchaseAmount),
+              totalCurrentValue: Number(totalSum.totalCurrentValue) + Number(value.currentUnits) * filteredData[0].NAV,
+              totalEarnedYesterDay: Number(totalSum.totalEarnedYesterDay) + value.currentUnits * (0),
+              totalEarnedTillDate: Number(totalSum.totalEarnedTillDate) + (value.currentUnits * (0))
+            }))
+          }else if(filteredData.length == 0){
+            setTotalSum(totalSum => ({
+              ...totalSum,
+              totalInvested: Number(totalSum.totalInvested) + Number(value.purchaseAmount),
+              totalCurrentValue: Number(totalSum.totalCurrentValue) + Number(value.currentUnits) * 0,
+              totalEarnedYesterDay: Number(totalSum.totalEarnedYesterDay) + value.currentUnits * 0,
+              totalEarnedTillDate: Number(totalSum.totalEarnedTillDate) + (value.currentUnits * 0)
+            }))
+          }
 
         })
-
       })
     })
     setLoading(false)
@@ -216,6 +233,7 @@ export default function Investment(props: any) {
           const value: any = each[1];
           const filteredData: any = [];
           const seenDates = new Set();
+          const units =  value.currentUnits < 0? -(value.currentUnits):value.currentUnits;
           NavList.filter(ele => {
             if (ele.Scheme_Code == value.Scheme_Code && !seenDates.has(ele.NAV_Date)) {
               seenDates.add(ele.NAV_Date);
@@ -237,7 +255,7 @@ export default function Investment(props: any) {
                       {FormatNumber(value.purchaseAmount)}
                     </Typography>
                     <Typography variant="caption" color="red" sx={{ textAlign: "end" }}>
-                      {FormatNumber((value.currentUnits * (data[0]?.NAV - data[1]?.NAV)))}
+                      -{FormatNumber((units * (data[0]?.NAV - data[1]?.NAV)))}
                     </Typography>
                   </div>
                   : <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -245,7 +263,7 @@ export default function Investment(props: any) {
                       {FormatNumber(value.purchaseAmount)}
                     </Typography>
                     <Typography variant="caption" color="#32CD32" sx={{ textAlign: "end" }} >
-                      +{FormatNumber((value.currentUnits * (data[0]?.NAV - data[1]?.NAV)))}
+                      +{FormatNumber((units * (data[0]?.NAV - data[1]?.NAV) || 0))}
                     </Typography>
                   </div>
                 }

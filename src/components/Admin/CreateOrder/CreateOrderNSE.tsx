@@ -13,7 +13,7 @@ const CreateOrderNSE = ({ accessToken }) => {
     const handleClose = () => { setOpen(false); }
     const navigate = useNavigate();
     const { state }: any = useLocation();
-    const { value,data} = state;
+    const { value , data} = state;
     console.log("state",state)
     const [isResume, setIsResume] = useState(false);
     const [validationErrors, setValidationErrors] = useState<any>({});
@@ -158,7 +158,7 @@ const CreateOrderNSE = ({ accessToken }) => {
         "channel_type": "",
         "folio": "",
         "product_code": !isResume ? ProductCode.filter((ele)=>ele.name.toUpperCase() == value?.Fund_Description.toUpperCase())[0]?.code : "",
-        "amc": !isResume ? value?.AMC_NAME : "",
+        "amc": !isResume ? Funds[ProductCode.filter((ele)=>ele.name.toUpperCase() == value?.Fund_Description.toUpperCase())[0]?.code] : "",
         "ft_acc_no": "",
         "reinvest": "Z",
         "amount": "",
@@ -178,7 +178,7 @@ const CreateOrderNSE = ({ accessToken }) => {
         "FREEDOM_TENURE": "",
         "FREEDOM_SWP_AMOUNT": "",
         "FREEDOM_SCHEME_OPTION": "",
-        "instrm_amount": "5000",  //sum of all the scheme amounts
+        "instrm_amount": "",  //sum of all the scheme amounts
         "fundType": "Various funds through NSE",
         "PayMode": "xxxxxxxxx",
         "time_horizon": ""
@@ -198,7 +198,7 @@ const CreateOrderNSE = ({ accessToken }) => {
                 [name]: value,
                 ["amc"]: Funds[value]
             }))
-        } else if (name == "payment_mode" && (value == "OL" || value == "M" || value == "TR")) {
+        } else if (name == "payment_mode") {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value,
@@ -235,6 +235,9 @@ const CreateOrderNSE = ({ accessToken }) => {
                     setIsLoading(false);
                     setIsSuccess(true);
                     setMsg(`Order submitted successfully for Rs ${formData.amount}`)
+                    setTimeout(() => {
+                        navigate("/dashboardAdmin/investing")
+                    }, 4000);
                     return;
                 }).catch(({ response }) => {
                     setIsLoading(false);

@@ -9,7 +9,6 @@ import { useAppContext } from '../../Store/AppContext';
 import { FormatNumber } from '../../utils/formatNumber';
 
 export default function TransactionPending({ accessToken }) {
-    const { state }:any = useLocation();
     const [loading, setLoading] = useState(false);
     const [storeState, dispatch] = useAppContext();
     const [formData, setFormData] = useState();
@@ -125,12 +124,12 @@ export default function TransactionPending({ accessToken }) {
 
         },
     ]);
-    console.log(state);
+    
     const getTranxData = () => {
         setLoading(true);
         axios
             .post(`${process.env.REACT_APP_BACKEND_HOST}v1/user/investment/getpendingtrans`,
-                { iin: storeState.ACTIVEINVETOR.folio.Folio },
+                { iin: storeState.ACTIVEINVETOR?.folio.Folio },
                 { headers: { Authorization: `Bearer ${accessToken}` } })
             .then(({ data }) => {
                 setLoading(false)
@@ -140,9 +139,7 @@ export default function TransactionPending({ accessToken }) {
                     return;
                 }
                 setTranx(data.Transaction);
-                setIsSuccess(true)
-                { state && setMessage(state) }
-              
+                setIsSuccess(true)              
                 return;
             }).catch((error) => {
                 setLoading(false)
@@ -165,14 +162,14 @@ export default function TransactionPending({ accessToken }) {
                 style={{ backgroundColor: "red" }}
             ><span style={{ color: "white" }} >{message}</span></Alert>
         </Snackbar>
-        {state && <Snackbar
+        {/* {state && <Snackbar
             open={isSuccess}
             autoHideDuration={4000}
             onClose={() => setIsSuccess(false)}
         >
             <Alert severity='success'
             >{message}</Alert>
-        </Snackbar>}
+        </Snackbar>} */}
         <div style={{ height: '80vh', width: '75vw' }}>
             {loading ? <Loading /> : <DataGrid
                 sx={{ mt: 2 }}

@@ -25,7 +25,7 @@ const SideBar = (props: sidebarUtils) => {
         name: "",
         items: [
           { icon: AccountBalance, text: "Home", isClickable: true, url: "/dashboardAdmin/investing" },
-          { icon: AccountBalanceWallet, text: "Invest", isClickable: true, url: `/dashboardAdmin/nse/order/${storeState.ACTIVEINVETOR?.folio.Folio}` },
+          { icon: AccountBalanceWallet, text: "Invest", isClickable: true, url: `/dashboardAdmin/nse/order/${storeState.ACTIVEINVETOR?.folio.Folio}`},
           { icon: Receipt, text: "Transaction History", isClickable: true, url: `/dashboardAdmin/investment/nse/details/${storeState.ACTIVEINVETOR?.folio.Folio}` },
           { icon: Call, text: "Contact Support", isClickable: true, url: "/dashboardAdmin/contact" },
         ],
@@ -117,7 +117,7 @@ const SideBar = (props: sidebarUtils) => {
                                     gap: "10px"
                                   }}
                                   onClick={() => {
-                                    navigate(item.url)
+                                    navigate(item.url ,{state:{status:0}})
                                     props.setSelectedItem(item.text);
                                     props.setDrawerOpen(false);
                                   }}

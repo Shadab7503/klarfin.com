@@ -182,7 +182,7 @@ const RedeemCreate = ({
     amt_unit: "",
     all_units: "N",
     input_ref_no: "",
-    fundType: "",
+    fundType: "NSE",
     total_investment: `${FormatNumber(value?.currentUnits * data[0]?.NAV)}`,
   });
 
