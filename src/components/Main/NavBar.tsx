@@ -42,7 +42,9 @@ const NavBar = () => {
         </Link>
       </Grid>
       <Grid item xs={12} className="drawerItem">
-        <Link to="/">Login</Link>
+        <a href="/login" style={{ color: "#30a8d8" }}>
+          Login here
+        </a>
       </Grid>
       <Grid item xs={12} style={{ textAlign: "center" }}>
         <a href="/register">
@@ -114,7 +116,7 @@ const NavBar = () => {
                 </Link>
               </Grid>
               <Grid item sx={{ display: { xs: "none", md: "block" } }}>
-                <a href="/">
+                <a href="/login">
                   <div className="navItem">Login</div>
                 </a>
               </Grid>

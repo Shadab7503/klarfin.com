@@ -431,7 +431,7 @@ const SignUp = () => {
                   </Grid>
                   <Grid item xs={12} className="not-registered">
                     Already have an account?{" "}
-                    <a href="/" style={{ color: "#30a8d8" }}>
+                    <a href="/login" style={{ color: "#30a8d8" }}>
                       Login here!
                     </a>
                   </Grid>
