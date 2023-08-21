@@ -20,7 +20,7 @@ export default function Investment(props: any) {
   })
 
   const navigate = useNavigate();
-  const [invtType, setInvtType] = useState([{ code: 1, name: "Individual" }, { code: 2, name: "Proprietorship" }, { code: 3, name: "Partnership" }, { code: 4, name: "Company" }])
+  //const [invtType, setInvtType] = useState([{ code: 1, name: "Individual" }, { code: 2, name: "Proprietorship" }, { code: 3, name: "Partnership" }, { code: 4, name: "Company" }])
   const [Banks, setBanks] = useState({
     "HDF": "HDFC Bank",
     "ICI": "ICICI Bank",
