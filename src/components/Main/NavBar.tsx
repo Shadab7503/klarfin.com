@@ -116,12 +116,12 @@ const NavBar = () => {
                 </Link>
               </Grid>
               <Grid item sx={{ display: { xs: "none", md: "block" } }}>
-                <a href="/login">
+                <a href="https://app.klarfin.com/">
                   <div className="navItem">Login</div>
                 </a>
               </Grid>
               <Grid item>
-                <a href="/register">
+                <a href="https://app.klarfin.com/register">
                   <Button
                     sx={{
                       display: { xs: "none", md: "inline" },
