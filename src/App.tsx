@@ -1,31 +1,56 @@
-import Home from "./components/Main/Home/Home";
-import About from "./components/Main/About/About";
-import Contact from "./components/Main/Contact/Contact";
-import Login from "./components/UserEntry/Login";
-import LoginSuper from "./components/SuperAdmin/LoginSuper";
-import DashboardSuper from "./components/SuperAdmin/DashboardSuper";
-import SignUp from "./components/UserEntry/SignUp";
-import Dashboard from "./components/Dashboard/Dashboard";
-import Verify from "./components/Verify/Verify";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./styles/styles.css";
+import "./App.css";
+import Footer from "./HOF/Footer";
+import Home from "./Components/Home/Home";
+import Navbar from "./HOF/Navbar";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Layout from "./HOF/Layout";
+import Solutions from "./Components/Solutions/Solutions";
+import About from "./Components/About/About";
+import ContactUs from "./Components/ContactUs/ContactUs";
+import ScrollToTop from "./Utilities/scrollTop";
 
-const App = () => {
+function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/loginSuper" element={<LoginSuper />} />
-        <Route path="/dashboardSuper" element={<DashboardSuper />} />
-        <Route path="/register" element={<SignUp />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/verify" element={<Verify />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <ScrollToTop>
+        <Routes>
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <Home />
+              </Layout>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <Layout>
+                <About />
+              </Layout>
+            }
+          />
+          <Route
+            path="/solutions/save"
+            element={
+              <Layout>
+                <Solutions />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/contact"
+            element={
+              <Layout>
+                <ContactUs />
+              </Layout>
+            }
+          />
+        </Routes>
+      </ScrollToTop>
+    </Router>
   );
-};
+}
 
 export default App;

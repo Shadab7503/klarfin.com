@@ -1,0 +1,65 @@
+*{
+  font-family:'Helvetica';
+}
+
+.App {
+  text-align: center;
+}
+
+@font-face {
+  font-family: "logoFont";
+  src: url(../Fonts/ZenTokyoZoo-Regular.ttf);
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.logo{
+  font-family: logoFont;
+  font-size: 5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.link_tags{
+  color:"#e0e0e0"
+}
+.scrol-partner::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+/*h-shadow, v-shadow, blur, spread:*/
+.scrol-partner{
+  border-radius: 0.2rem;
+  padding: 0;
+}
+
+
+
+@keyframes Scroll {
+  0%{
+    transform: translateX(0);
+  }
+  100%{
+    transform: translateX(-50%);
+  }
+}
+
+.scrol-partner-box {
+  animation: Scroll infinite 30s linear;
+}
+
+.scrol-partner-box1 {
+  animation: Scroll infinite 15s linear;
+}
+
+
+.scrol-partner-box:hover{
+  animation-play-state: paused;
+}
+.scrol-partner-box1:hover{
+  animation-play-state: paused;
+}
