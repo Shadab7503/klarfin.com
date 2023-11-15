@@ -58,11 +58,11 @@ const ContactUs = () => {
   };
 
   return (
-    <Box sx={{width:"100%",display:"flex",flexDirection:"column",alignItems:"center",color:"white"}}>
+    <Box sx={{display:"flex",flexDirection:"column",alignItems:"center",p:{xs:2,md:6}}}>
       <Typography sx={{fontSize:"1.5rem",fontWeight:"600"}} >Contact Us</Typography>
       <Grid container justifyContent="center">
         <Grid item lg={6} md={8} sm={9} xs={11} sx={{display:'flex',flexDirection:"column",gap:"1rem"}} >
-          <InputLabel required sx={{color:"white"}}>
+          <InputLabel required >
             Name
           </InputLabel>
           <TextField
@@ -73,14 +73,14 @@ const ContactUs = () => {
                 ? "Field cannot be empty"
                 : ""
             }
-            FormHelperTextProps={{ style: { fontSize: "0.9rem" } }}
+            FormHelperTextProps={{ style: { fontSize: "0.9rem" ,padding:"1rem"} }}
             fullWidth
             onChange={handleChange}
             name="name"
             variant="standard"
-            sx={{ input: { color: 'white',fontWeight:"600" } }}
+            sx={{ input: { fontWeight:"600" } }}
           ></TextField>
-          <InputLabel required sx={{color:"white"}}>
+          <InputLabel required >
             Email
           </InputLabel>
           <TextField
@@ -97,9 +97,9 @@ const ContactUs = () => {
             name="email"
             variant="standard"
             className="contact-form-field"
-            sx={{ input: { color: 'white',fontWeight:"600" } }}
+            sx={{ input: {fontWeight:"600" } }}
           ></TextField>
-          <InputLabel required sx={{color:"white"}}>
+          <InputLabel required >
             Phone
           </InputLabel>
           <TextField
@@ -111,15 +111,15 @@ const ContactUs = () => {
                 ? "Enter valid phone number"
                 : ""
             }
-            FormHelperTextProps={{ style: { fontSize: "0.9rem",color:"white" } }}
+            FormHelperTextProps={{ style: { fontSize: "0.9rem", } }}
             fullWidth
             onChange={handleChange}
             name="phone"
             variant="standard"
             className="contact-form-field"
-            sx={{ input: { color: 'white',fontWeight:"600" } }}
+            sx={{ input: { fontWeight:"600" } }}
           ></TextField>
-          <InputLabel required sx={{color:"white",fontWeight:"500"}}>
+          <InputLabel required sx={{fontWeight:"500"}}>
             Message
           </InputLabel>
           <TextField
@@ -135,7 +135,7 @@ const ContactUs = () => {
             onChange={handleChange}
             name="message"
             className="contact-form-field"
-            inputProps={{ style: { color: 'white',fontWeight:"600" }}}
+            inputProps={{ style: {fontWeight:"600" }}}
             multiline
             rows={3}
           ></TextField>
@@ -146,11 +146,12 @@ const ContactUs = () => {
               fontFamily: "Work Sans",
               fontWeight: "bold",
               margin: "1rem 0rem",
+              color:"white",
               "&:hover": {
                 backgroundColor: "#231955",
               },
               padding: "0.7rem 2rem",
-              color: "white",
+            
             }}
             onClick={handleSubmit}
           >
