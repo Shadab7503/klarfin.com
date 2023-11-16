@@ -11,7 +11,7 @@ function HowToEarn() {
       title: "Save",
       id: 1,
       content:
-        "7 crore small businesses are losing billions in free money by not putting their idle cash to work. klarfin is the treasury partner for businesses helping them monetise their current account",
+        "7 crore small businesses are losing billions in free money by not putting their idle cash to work. Klarfin is the treasury partner for businesses helping them monetise their current account",
       Keypoint: "Full safety and transparency, Fully liquid, Assured returns",
       image: ImageSave,
     },

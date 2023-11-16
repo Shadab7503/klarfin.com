@@ -67,7 +67,7 @@ function SolutionCard({ name, amount, duration ,isMain}: any) {
           Money you will have in {duration} days
         </Typography>
         <Typography
-          sx={{ fontSize: "1.7rem", fontWeight: "550", color:(isMain? "#00c500":"#3086d7") }}
+          sx={{ fontSize: "1.7rem", fontWeight: "550", color:(isMain? "#00ff90":"#3086d7") }}
         >
           ₹{FormatNumber(returns[name].returnsAmt)}
         </Typography>

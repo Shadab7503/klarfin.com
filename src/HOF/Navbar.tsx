@@ -177,13 +177,13 @@ function Navbar() {
                 Save
               </MenuItem>
               <MenuItem
-                sx={{ fontSize: "1rem", fontWeight: "550", color: "#3089d6", }}
+                sx={{ fontSize: "1rem",cursor:"default" ,fontWeight: "550", color: "#3089d6", }}
                 onClick={handleMenuClose}
               >
                 Borrow (Coming soon)
               </MenuItem>
               <MenuItem
-                sx={{ fontSize: "1rem", fontWeight: "550", color: "#3089d6", }}
+                sx={{ fontSize: "1rem",cursor:"default", fontWeight: "550", color: "#3089d6", }}
                 onClick={handleMenuClose}
               >
                 Spend (Coming soon)
