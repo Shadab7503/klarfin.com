@@ -3,8 +3,9 @@ import sigUpImg from "../../Utilities/Images/signup-image.png";
 import { ArrowDropDown } from "@mui/icons-material";
 
 function HowWorks() {
-  const CONTENTS = [
-    "Share bank statement to see see how much of your cash is idle and losing value and how much you can safely invest with klarfin to generate surplus money ",
+  const 
+  CONTENTS = [
+    "Share bank statement to see see how much of your cash is idle and losing value and how much you can safely invest with Klarfin to generate surplus money ",
     "Complete free registration process including KYC",
     "Make investments with a single click via the platform or automate your investment with set and forget rules",
     "Watch how your investment is generating returns on live reporting tools",
@@ -62,7 +63,7 @@ function HowWorks() {
                 sx={{ backgroundColor: "white", p: 2,marginLeft:"" ,borderRadius: "1rem",display:"flex",flexDirection:"row",gap:"1rem",alignItems:"center"}}
                 >
                 <Box sx={{fontWeight:"550",backgroundColor:"#133249",p:2,color:"white",borderRadius:"50%"}}>{1}.</Box> 
-                <Typography sx={{fontWeight:"550"}}>{"Share bank statement to see see how much of your cash is idle and losing value and how much you can safely invest with klarfin to generate surplus money"}</Typography>
+                <Typography sx={{fontWeight:"550"}}>{"Share bank statement to see see how much of your cash is idle and losing value and how much you can safely invest with Klarfin to generate surplus money"}</Typography>
               </Box>
               <ArrowDropDown sx={{color:"white",fontSize:"3rem",marginTop:"-1.3rem",marginLeft:"4rem"}}/>
             </Box>

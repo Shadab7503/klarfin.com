@@ -7,7 +7,7 @@ function KeyFetures() {
   const CONTENT = [
     {
       title: "Safety",
-      body: "Your money flows directly to AMCs. klarfin is a technology platform and does not keep your money.",
+      body: "Your money flows directly to AMCs. Klarfin is a technology platform and does not keep your money.",
     },
     {
       title: "Transparency",
@@ -15,7 +15,7 @@ function KeyFetures() {
     },
     {
       title: "Liquidity",
-      body: "Redeem your funds anytime with no lock-in period. if you need to take everything out on short notice, it’s up to you.",
+      body: "Redeem your funds anytime with no lock-in period. If you need to take everything out on short notice, it’s up to you.",
     },
     { title: "Returns", body: "Get highest returns on short term funds" },
     {

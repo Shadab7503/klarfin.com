@@ -51,7 +51,7 @@ function HowToEarn() {
         <Typography
           sx={{ fontSize: "1.5rem", fontWeight: 600,p:2,color: "#2f87d7" }}
         >
-          How to improve cash flows with klarfin?
+          How to improve cash flows with Klarfin?
         </Typography>
       </Box>
       {CardDetails.map((ele) => {

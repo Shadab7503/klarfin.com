@@ -42,7 +42,7 @@ function SolutionMonetise() {
     >
       <Box sx={{ textAlign: "center"}}>
         <Typography sx={{ fontSize: "1.5rem", fontWeight: "550" }}>
-          See how klarfin{" "}
+          See how Klarfin{" "}
           <span style={{ fontSize: "1.6rem", color: "#008001" }}>
             {" "}
             monetises{" "}
